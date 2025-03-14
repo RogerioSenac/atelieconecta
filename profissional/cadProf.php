@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             // Redirecionar para o painel de acesso
-            header('Location: DashAcessoProf.php');
+            header('Location: loginProf.php');
             exit();
         } catch (Exception $e) {
             $error = "Erro ao salvar os dados: " . $e->getMessage();
