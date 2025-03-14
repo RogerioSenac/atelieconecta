@@ -1,0 +1,18 @@
+# Ignora o arquivo de configuração do Firebase
+/config/chave.json
+
+# Ignora a pasta de dependências do Composer
+/vendor/
+
+# Ignora arquivos de ambiente
+.env
+
+# Ignora arquivos de configuração do IDE (se estiver usando PHPStorm, VSCode, etc)
+.idea/
+.vscode/
+
+# Ignora arquivos de log
+*.log
+
+# Ignora arquivos temporários
+*.tmp
