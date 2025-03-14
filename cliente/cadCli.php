@@ -9,7 +9,7 @@ $msg = "";
 if (isset($_POST['cpf'])) {
     $factory = (new Factory())
         ->withServiceAccount('../chave.json')
-        ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/');
+        ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
     $database = $factory->createDatabase();
 
     $novoUser = [

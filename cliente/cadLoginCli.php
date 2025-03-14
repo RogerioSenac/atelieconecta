@@ -6,7 +6,7 @@ use Kreait\Firebase\ServiceAccount;
 
 $factory = (new Factory())
     ->withServiceAccount('../chave.json')
-    ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/');
+    ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $msg = "";
 

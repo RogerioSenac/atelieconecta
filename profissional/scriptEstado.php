@@ -36,7 +36,7 @@ $estadosBrasil = [
 ];
 
 // URL do seu banco de dados Firebase
-$databaseUrl = 'https://pi-a24-default-rtdb.firebaseio.com/'; // Substitua com a URL do seu banco de dados
+$databaseUrl = 'https://atelieconecta-d9030-default-rtdb.firebaseio.com/'; // Substitua com a URL do seu banco de dados
 
 // Autenticação do Firebase
 $firebase = (new Factory)
