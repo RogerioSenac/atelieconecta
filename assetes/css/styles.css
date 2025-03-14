@@ -1,0 +1,1019 @@
+/*Inserir Fonte Local*/
+@font-face {
+    font-family: "Roboto";
+    src: url(../../assets/Roboto/Roboto-VariableFont_wdth,wght.ttf);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* z-index: -1; */
+}
+
+span {
+    color: #ff8400;
+    font-weight: normal;
+}
+
+.btn-login {
+    width: 70px;
+    height: 25px;
+}
+
+.service-item img {
+    width: 290px;
+    height: 100px;
+}
+
+header {
+    background-color: rgb(51, 51, 51);
+    position: fixed;
+    top: 0;
+    /* Posiciona a section no topo */
+    left: 0;
+    /* Posiciona a section à esquerda */
+    width: 100%;
+    /* Faz a section ocupar toda a largura da tela */
+    z-index: 1000;
+    margin: 5px;
+    width: 99.5%;
+}
+
+header .container {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.logo {
+    /* margin-left: -50px; */
+    height: 40px;
+    width: auto;
+}
+
+nav ul {
+    position: relative;
+    list-style: none;
+    display: flex;
+    gap: 50px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 14pt;
+    font-weight: normal;
+    /* text-shadow: 2px 2px 2px black; */
+}
+
+.login-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.banner {
+    background: url('../img/carreteis_escuro.png') no-repeat center center/cover;
+    color: black;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    /* margin-top: 10px; */
+    margin: 5px;
+    min-height: 100vh;
+}
+
+.banner h1 {
+    font-size: 2.5em;
+    color: white;
+    margin-top: 150px;
+}
+
+.banner p {
+    font-size: 1.2em;
+    color: white;
+}
+
+/*********************************************/
+/*------------- Seção Serviços --------------*/
+/*********************************************/
+.services {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 5px;
+    background: url('../img/servico_fundo_escuro75.png') no-repeat center center/cover;
+    color: black;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    margin-top: 10px;
+    background-color: white;
+    border: none;
+    min-height: 100vh;
+    background-size: 110%;
+    align-content: center;
+}
+
+.services .servicos {
+    width: 65%;
+}
+
+/* .servicos h2 {
+    padding-bottom: 10px;
+} */
+
+.services .container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Permite que os itens se ajustem à largura disponível */
+    gap: 20px;
+    /* Espaçamento entre as colunas */
+    justify-content: space-between;
+    /* Garante que os itens fiquem distribuídos de forma equitativa */
+    align-items: center;
+    align-content: center;
+}
+
+.services .service-item {
+    flex: 1 1 30%;
+    /* Cada item ocupará no máximo 30% da largura disponível */
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Fundo branco com 20% de opacidade */
+    color: #e0e7f2;
+    border-radius: 20px 20px;
+    /* border: solid red; */
+}
+
+.services .service-item:hover {
+    transform: translateY(-10px);
+    /* Eleva o card em 10px ao passar o mouse */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
+    /* Aumenta a sombra para dar a impressão de flutuação */
+}
+
+.services img {
+    width: 100%;
+    /* Ajusta a largura para 100% do contêiner */
+    height: 200px;
+    /* Define uma altura fixa para as imagens */
+    object-fit: cover;
+    /* Garante que as imagens mantenham a proporção e cubram o espaço, sem distorcer */
+    max-width: 100%;
+    /* Garante que as imagens não ultrapassem o limite da div */
+    border-radius: 20px 20px 0px 0px;
+}
+
+.services h2 {
+    text-align: center;
+    color: white;
+}
+
+.services p {
+    color: white;
+    font-size: large;
+    font-weight: bolder;
+}
+
+/*********************************************/
+/*------------- Seção Depoimentos------------*/
+/*********************************************/
+.comentario {
+    background: url('../img/comentario_fundo70.png') no-repeat center center/cover;
+    color: black;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    margin-top: 30px;
+    background-color: white;
+    border: none;
+    min-height: 100vh;
+}
+
+.comentario h2 {
+    text-align: center;
+    color: white;
+}
+
+.list-group {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+/* Cada depoimento */
+.depoimento-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f9f9f97c;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.depoimento-item:hover {
+    transform: scale(1.03);
+}
+
+/* Foto do usuário */
+.user-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    margin-bottom: 10px;
+}
+
+/* Nome do usuário */
+.h5_depoimento {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* Data do comentário */
+.depoimento-date {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+/* Texto do depoimento */
+.p_depoimento {
+    font-size: 1rem;
+    text-align: center;
+    color: #555;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.05);
+    max-width: 90%;
+}
+
+.flex {
+    flex: 1 1 20%;
+    /* Cada item ocupará no máximo 30% da largura disponível */
+    display: flex;
+}
+
+/*********************************************/
+/*------------- Seção Quem Somos------------*/
+/*********************************************/
+.container-quem-somos {
+    display: flex;
+    /* Ativa o Flexbox para o alinhamento */
+    background: url('../img/sobreFundo.png') no-repeat center center/cover;
+    color: white;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    background-color: white;
+    justify-content: space-between;
+    /* Alinha os itens no centro verticalmente */
+    align-items: center;
+    /* Alinha os itens no centro horizontalmente */
+    text-align: justify;
+    /* Garante que o texto dentro da section fique centralizado */
+    min-height: 100vh;
+    /* A section ocupa toda a altura da tela */
+}
+
+.container-quem-somos .icones {
+    height: 450px;
+    width: 100%;
+
+}
+
+.container-quem {
+    width: 80%;
+
+    align-items: center;
+    justify-items: center;
+}
+
+.row-q {
+    display: flex;
+}
+
+.container-quem .row .p-2 {
+    display: flex;
+    width: auto;
+    justify-content: center;
+}
+
+.container-quem p {
+
+    align-self: center;
+    text-align: justify;
+
+}
+
+.container-quem-somos p {
+    /* font-family: 'Courier New', Courier, monospace; */
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: white;
+    text-align: justify;
+    /* Alinha o texto pelo modo Justificado */
+    line-height: 1.6;
+    /* Opicional: melhora a legibilidade */
+    font-weight: normal;
+    max-width: 70%;
+    align-content: center;
+}
+
+/*********************************************/
+/*------------- Seção Contato ---------------*/
+/*********************************************/
+/* Configuração da seção com vídeo */
+.contato {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    /* Ocupa toda a altura da tela */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Vídeo ocupando todo o fundo */
+.contato video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.contato .imagem {
+    z-index: 1000;
+}
+
+/* Ajuste da imagem */
+.contato .img-contato img {
+    height: 400px;
+    width: 400px;
+    margin-top: 0px;
+}
+
+section.contato .txt-contato {
+    margin-top: -20px;
+    width: 50%;
+    margin-left: 650px;
+}
+
+section.contato .txt-contato p {
+    text-align: justify;
+    font-weight: normal;
+}
+
+section.contato .txt-contato h2 {
+    text-align: center;
+    font-size: 35px;
+    line-height: 40px;
+    margin-bottom: 30px;
+}
+
+section.contato .txt-contato h2 span {
+    font-size: 35px;
+    display: block;
+}
+
+/* Estilizando o texto */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Botões de redes sociais */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.contato .btn-social i {
+    color: white;
+}
+
+.btn-social button {
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ff8400;
+    font-size: 25px;
+    text-align: center;
+    margin: 0px 10px;
+}
+
+.btn-social button:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
+    box-shadow: 0px 0px 20px #ff8400;
+    cursor: pointer;
+}
+
+/*********************************************/
+/*------------- Seção Rodapé ----------------*/
+/*********************************************/
+footer {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.247);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.rodape {
+    justify-items: center;
+}
+
+.txt_logo {
+    width: 300px;
+    /* text-shadow: 2px 2px 2px black; */
+}
+
+.logo_dev {
+    width: 90px;
+    height: 90px;
+}
+
+
+/*********************************************/
+/*---------- Area de Perfil Acesso ----------*/
+/*********************************************/
+.perfil {
+    display: flex;
+    margin: 5px;
+    background: url('../img/perfil_1Cinza.png') no-repeat center center/cover;
+    padding: 100px 0;
+    min-height: 77vh;
+    justify-content: center;
+    align-items: center;    
+}
+
+.perfil .tipo-perfil {
+    /* margin-top: 30px; */
+    width: 250px;
+    height: 250px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    color: #070707;
+}
+
+.perfil .btn-perfil:hover {
+    transform: translateY(-10px);
+    /* Eleva o card em 10px ao passar o mouse */
+}
+
+.perfil img {
+    width: 250px;
+    /* Ajusta a largura para 100% do contêiner */
+    height: 250px;
+    /* Define uma altura fixa para as imagens */
+    border-radius: 100%;
+}
+
+p.texto {
+    display: flex;
+    color: white;
+    font-size: 14pt;
+    font-weight: normal;
+    width: 100px;
+    justify-content: center;
+    margin-left: 70px;
+    margin-top: 0px;
+}
+
+/*-------Area Login de acesso---------*/
+
+.error-message {
+    display: none;
+    color: red;
+    /* background-color: #ff4d4d; */
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+
+.interface {
+    margin: 5px;
+    background: url('../img/login_1.jpeg') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    background-color: black;
+    border: none;
+    min-height: 100vh;
+}
+
+.interface2 {
+    margin: 5px;
+    background: url('../img/loginUsuario_1.jpeg') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    background-color: black;
+    border: none;
+    height: 720px;
+}
+
+.acesso {
+    margin-top: 100px;
+    margin-left: 800px;
+}
+
+form {
+    max-width: 500px;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+form input,
+form textarea {
+    width: 100%;
+    margin: 0px auto;
+    background-color: #464545;
+    border: 0px;
+    outline: 0px;
+    padding: 20px 15px;
+    border-radius: 15px;
+    color: #ff8400;
+    font-size: 18px;
+}
+
+form textarea {
+    /* Desabilitar o redimensionamento do TextArea */
+    resize: none;
+    max-width: 100%;
+}
+
+form .btn-enviar input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 120px;
+    background: #ff8400;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+form .btn-enviar input:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 20px #ff8400;
+    transition: 0.2s;
+}
+
+form a {
+    color: white;
+    text-decoration: none;
+}
+
+.interface .btn-secondary {
+    color: white;
+}
+
+/* .etiqueta {
+    margin: 5px;
+    background: url('../img/cadastro_2.jpeg') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    background-color: black;
+    border: none;
+    min-height: 100vh;
+} */
+
+.etiqueta h2 {
+    margin-top: -50px;
+    color: black;
+}
+
+.cadContainer {
+    margin-top: 80px;
+    max-width: 600px;
+    /* Defina um tamanho fixo para evitar centralização automática */
+    margin-left: 0;
+    /* Alinha completamente à esquerda */
+    padding: 20px;
+    text-align: left;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    /* Alinha os inputs à esquerda */
+    gap: 10PX 0;
+}
+
+.col {
+    padding: 5px;
+}
+
+.row .btn-secondary {
+    width: 100px;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    padding: 0px 10px;
+    /* margin-left: 210px; */
+}
+
+
+/*************************************************/
+/***            Responsividade                 ***/
+/*************************************************/
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    /* Estilos para smartphones */
+    /* Menu */
+    .logo {
+        height: 40px;
+        width: 65px;
+    }
+
+    /*banner - OK sem ajuste*/
+
+    /*services*/
+    .services {
+        padding: 100px 0;
+        /* Ajuste o padding para telas menores */
+        background-size: cover;
+    }
+
+    .services .container {
+        justify-content: center;
+    }
+
+    .row {
+        flex: 0 0 100%;
+        width: 300px;
+        justify-content: center;
+
+    }
+
+    .row .service-item {
+        flex: 0 0 50%;
+        /* Ajuste para ocupar 100% da largura em telas pequenas */
+        margin: 3%;
+        /* Espaçamento entre os itens */
+        margin-bottom: 5px;
+        /* Espaçamento de 2px entre os itens */
+    }
+
+    .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 100%;
+        border-radius: none;
+    }
+
+    /*comentario - ok aguardando implementação bg*/
+
+    /*quem somos*/
+    .container-quem-somos {
+        padding: 20px 0;
+    }
+
+    .container-quem-somos .icones {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container-quem-somos .row img {
+        min-height: 50px;
+        width: 100%;
+    }
+
+    .container-quem-somos .row p {
+        text-align: justify;
+        font-size: 1rem;
+        padding: 2px;
+    }
+
+    .container-quem-somos .col-12 {
+        padding: 2px;
+    }
+
+    /*contato*/
+    .contato video {
+        position: absolute;
+        width: 100%;
+        /* Ajusta a largura do vídeo */
+        height: 100%;
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    section.contato .txt-contato {
+        margin-top: 20px;
+        width: 50%;
+        margin-left: 0px;
+        padding: 5px;
+        width: 100%;
+
+    }
+
+    /*footer OK sem ajuste*/
+
+    /*Menu de perfil*/
+    /*perfil*/
+    .perfil {
+        padding: 100px 0;
+        /* Ajuste o padding para telas menores */
+        background: none;
+        background-color: #996566;
+
+    }
+
+    .perfil .tipo-perfil {
+        margin-top: 30px;
+        width: 250px;
+        height: 250px;
+        padding: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        color: #070707;
+        margin-left: 75px;
+    }
+
+
+
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Estilos para tablets */
+
+    /* Menu OK sem ajuste*/
+
+    /*banner OK sem ajuste*/
+
+    /*services*/
+    .services {
+        padding: 100px 0;
+        /* Ajuste o padding para telas menores */
+        background-size: cover;
+    }
+
+    .services .container {
+        justify-content: center;
+    }
+
+    .service-item {
+        flex: 0 0 50%;
+        /* Ajuste para ocupar 100% da largura em telas pequenas */
+        margin: 3%;
+        /* Espaçamento entre os itens */
+        margin-bottom: 5px;
+        /* Espaçamento de 2px entre os itens */
+    }
+
+    .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 100%;
+        border-radius: none;
+    }
+
+    /*comentario */
+
+    .comentario {
+        padding: 100px;
+        margin: 3px;
+    }
+
+    /*quem somos*/
+    .container-quem-somos {
+        padding: 100px;
+        margin: 3px;
+    }
+
+    .container-quem {
+        width: 100%;
+    }
+
+
+    .container-quem-somos .icones {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container-quem-somos .row img {
+        min-height: 50px;
+        width: 100%;
+    }
+
+    .container-quem-somos .row p {
+        text-align: justify;
+        font-size: 1rem;
+        padding: 2px;
+    }
+
+    .container-quem-somos .col-12 {
+        padding: 2px;
+    }
+
+    /*contato*/
+    .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    section.contato .txt-contato {
+        margin-top: 20px;
+        width: 50%;
+        margin-left: 0px;
+        padding: 15px;
+        width: 100%;
+
+    }
+
+    /*footer ok sem ajuste*/
+    .rodape {
+
+        margin: 3px;
+    }
+
+    /*Menu de perfil*/
+    body {
+        background-color: #975d5e;
+    }
+
+    .perfil {
+        display: block;
+        padding: 100px 0;
+        background: none;
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        border: solid black;
+        justify-items: center;
+
+    }
+
+    .perfil .tipo-perfil {
+        width: 200px;
+        height: 200px;
+        justify-items: center;
+        margin: 25px;
+    }
+
+    .perfil img {
+        width: 200px;
+        /* Ajusta a largura para 100% do contêiner */
+        height: 200px;
+        /* Define uma altura fixa para as imagens */
+    }
+
+    .perfil .texto {
+        margin: 0;
+        justify-items: center;
+    }
+
+
+
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    /* Estilos para desktops */
+
+    /* Menu */
+
+    /*banner*/
+
+    /*services*/
+    .services {
+        padding: 100px 0;
+        /* Ajuste o padding para telas menores */
+        background-size: cover;
+    }
+
+    .services .container {
+        display: flex;
+        justify-content: center;
+
+        /* width: auto; */
+
+    }
+
+    .row {
+        flex: 0 0 100%;
+        width: 300px;
+        justify-content: center;
+
+    }
+
+    .services .service-item {
+        flex: 0 0 25%;
+        /* Ajustado para 30% de largura para 3 cards por linha */
+        margin: 2%;
+        /* Espaçamento entre os itens */
+        margin-bottom: 5px;
+        /* Espaçamento de 15px entre as linhas */
+        /* Ajuste da altura e largura para ser mais proporcional */
+        height: auto;
+        /* Altura automática para ajustar conforme o conteúdo */
+        min-height: 60px;
+        /* Define uma altura mínima para os cards, ajustando conforme o conteúdo */
+        background-color: rgba(255, 255, 255, 0.8);
+        /* Leve opacidade para manter o contraste com o fundo */
+        color: #000;
+    }
+
+    .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajusta a altura das imagens para telas maiores */
+        width: 100%;
+        object-fit: cover;
+        /* Garante que a imagem cubra completamente o espaço */
+        border-radius: none;
+    }
+
+    .services h2 {
+        text-align: center;
+        color: white;
+    }
+
+    .services p {
+        color: #000;
+    }
+
+    /*comentario*/
+    .comentario {
+        padding: 100px;
+        margin: 3px;
+    }
+
+    .comentario .row {
+        width: auto;
+    }
+
+    /*quem somos*/
+    .container-quem-somos {
+        justify-content: center;
+    }
+
+    .container-quem-somos .row {
+        width: inherit;
+        justify-content: space-between;
+    }
+
+    .container-quem-somos .p-2 p {
+        width: auto;
+        gap: 5px;
+    }
+
+
+    /*contato*/
+
+    /*footer*/
+}
