@@ -120,7 +120,7 @@ $codigosDDI = [
 // Conectar ao Firebase
 $firebase = (new Factory())
     ->withServiceAccount('../chave.json')
-    ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/')
+    ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/')
     ->createDatabase();
 
 // Inserir os códigos DDI no Firebase

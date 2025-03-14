@@ -8,7 +8,7 @@ use Kreait\Firebase\Exception\FirebaseException;
 
 $factory = (new Factory())
 ->withServiceAccount('../config/chave.json')
-    ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/');
+    ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $msg = "";
 

@@ -10,7 +10,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
 
     $factory = (new Factory)
         ->withServiceAccount('../chave.json')
-        ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/');
+        ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
     try {
         $auth = $factory->createAuth();

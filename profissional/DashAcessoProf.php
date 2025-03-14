@@ -12,7 +12,7 @@ use Kreait\Firebase\Factory;
 
 $factory = (new Factory())
 ->withServiceAccount('../config/chave.json')
-    ->withDatabaseUri('https://pi-a24-default-rtdb.firebaseio.com/');
+    ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $database = $factory->createDatabase();
 $auth = $factory->createAuth();
