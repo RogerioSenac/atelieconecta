@@ -1,24 +1,15 @@
 <?php return array(
     'root' => array(
-        'name' => '__root__',
+        'name' => 'rogerio/atelieconecta',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '0a8f659a6d6fb6a00047f315bc14cbed594f0464',
+        'reference' => '3bee0a88e2097d522868f15835fac0de4b7e543f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '0a8f659a6d6fb6a00047f315bc14cbed594f0464',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'brick/math' => array(
             'pretty_version' => '0.11.0',
             'version' => '0.11.0.0',
@@ -352,6 +343,15 @@
             'reference' => '34a5b96d0b65a5dddb7d20f09b6527a43faede24',
             'type' => 'library',
             'install_path' => __DIR__ . '/../rize/uri-template',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'rogerio/atelieconecta' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '3bee0a88e2097d522868f15835fac0de4b7e543f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

@@ -2,7 +2,7 @@
 /config/chave.json
 
 # Ignora a pasta de dependências do Composer
-#/vendor/
+/vendor/
 
 # Ignora arquivos de ambiente
 .env

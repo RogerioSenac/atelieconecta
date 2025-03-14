@@ -119,7 +119,7 @@ $codigosDDI = [
 
 // Conectar ao Firebase
 $firebase = (new Factory())
-    ->withServiceAccount('../chave.json')
+    ->withServiceAccount('../config/chave.json')
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/')
     ->createDatabase();
 

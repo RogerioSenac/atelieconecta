@@ -40,7 +40,7 @@ $databaseUrl = 'https://atelieconecta-d9030-default-rtdb.firebaseio.com/'; // Su
 
 // Autenticação do Firebase
 $firebase = (new Factory)
-    ->withServiceAccount('../chave.json') // Caminho para o arquivo JSON da chave do Firebase
+    ->withServiceAccount('../config/chave.json') // Caminho para o arquivo JSON da chave do Firebase
     ->withDatabaseUri($databaseUrl) // Especifica o URL correto do banco de dados
     ->createDatabase();
 

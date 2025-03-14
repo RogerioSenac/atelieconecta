@@ -6,7 +6,7 @@ use Kreait\Firebase\ServiceAccount;
 
 // Conectar ao Firebase
 $factory = (new Factory())
-    ->withServiceAccount('../chave.json')  // Caminho para o seu arquivo de chave JSON
+    ->withServiceAccount('../config/chave.json')  // Caminho para o seu arquivo de chave JSON
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');  // URL do seu banco de dados Firebase
 
 $database = $factory->createDatabase();
