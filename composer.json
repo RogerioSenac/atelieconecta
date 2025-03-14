@@ -1,5 +1,15 @@
 {
-    "require": {
-        "kreait/firebase-php": "^5.26"
-    }
+    "name": "rogerio/atelieconecta",
+    "autoload": {
+        "psr-4": {
+            "Rogerio\\Atelieconecta\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "rogeriosenac",
+            "email": "roge.pupo.toledo@gmail.com"
+        }
+    ],
+    "require": {}
 }

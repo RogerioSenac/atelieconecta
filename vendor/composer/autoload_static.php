@@ -29,6 +29,7 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
         ),
         'R' => 
         array (
+            'Rogerio\\Atelieconecta\\' => 22,
             'Rize\\' => 5,
             'Riverline\\MultiPartParser\\' => 26,
             'Ramsey\\Uuid\\' => 12,
@@ -119,6 +120,10 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
         'StellaMaris\\Clock\\' => 
         array (
             0 => __DIR__ . '/..' . '/stella-maris/clock/src',
+        ),
+        'Rogerio\\Atelieconecta\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Rize\\' => 
         array (

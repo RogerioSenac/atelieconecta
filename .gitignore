@@ -16,3 +16,4 @@
 
 # Ignora arquivos temporários
 *.tmp
+/vendor/
