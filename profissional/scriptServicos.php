@@ -18,7 +18,6 @@ $servicos = [
     ['nome' => 'Consertos e ajustes'],
     ['nome' => 'Estilista'],
     ['nome' => 'Modelagem'],
-    ['nome' => 'Outros'],
     ['nome' => 'Teste'],
 ];
 
