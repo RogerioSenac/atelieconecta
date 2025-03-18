@@ -80,7 +80,7 @@ nav ul li a {
 }
 
 .banner {
-    background: url('../img/carreteis_escuro.png') no-repeat center center/cover;
+    background: url('../img/carreteis_escuro10.png') no-repeat center center/cover;
     color: black;
     text-align: center;
     padding: 100px 0;
@@ -109,7 +109,7 @@ nav ul li a {
     justify-content: center;
     align-content: center;
     margin: 5px;
-    background: url('../img/servico_fundo_escuro75.png') no-repeat center center/cover;
+    background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
     color: black;
     text-align: center;
     padding: 100px 0;
@@ -191,7 +191,7 @@ nav ul li a {
 /*------------- Seção Depoimentos------------*/
 /*********************************************/
 .comentario {
-    background: url('../img/comentario_fundo70.png') no-repeat center center/cover;
+    background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
     color: black;
     text-align: center;
     padding: 100px 0;
@@ -279,7 +279,7 @@ nav ul li a {
 .container-quem-somos {
     display: flex;
     /* Ativa o Flexbox para o alinhamento */
-    background: url('../img/sobreFundo.png') no-repeat center center/cover;
+    background: url('../../assets/img/sobreFundo10.png') no-repeat center center/cover;
     color: white;
     box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
     background-color: white;
@@ -473,7 +473,7 @@ footer {
 .perfil {
     display: flex;
     margin: 5px;
-    background: url('../img/perfil_1Cinza.png') no-repeat center center/cover;
+    background: url('../img/perfil_Cinza10.jpeg') no-repeat center center/cover;
     padding: 100px 0;
     min-height: 77vh;
     justify-content: center;
@@ -530,7 +530,7 @@ p.texto {
 
 .interface {
     margin: 5px;
-    background: url('../img/login_1.jpeg') no-repeat center center/cover;
+    background: url('../img/login10.png') no-repeat center center/cover;
     color: white;
     text-align: center;
     padding: 100px 0;
@@ -542,7 +542,7 @@ p.texto {
 
 .interface2 {
     margin: 5px;
-    background: url('../img/loginUsuario_1.jpeg') no-repeat center center/cover;
+    background: url('../img/loginUsuario10.jpeg') no-repeat center center/cover;
     color: white;
     text-align: center;
     padding: 100px 0;

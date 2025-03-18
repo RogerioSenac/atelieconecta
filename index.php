@@ -67,7 +67,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6 col-md-4 service-item">
-                        <img src="./assets/img/estilista.jpg" alt="Serviço 4">
+                        <img src="./assets/img/servico-4.jpeg" alt="Serviço 4">
                         <p>Estilista</p>
                     </div>
                     <div class="col-6 col-md-4 service-item">
@@ -239,8 +239,7 @@
     <footer>
         <div class="rodape">
             <div>
-                <img class="logo_dev" src="./assets/img/logo developers RGT fundo preto(sem-fundo).png"
-                    alt="logo astronauta">
+                <img class="logo_dev" src="./assets/img/logo_devergt10.jpeg" alt="logo astronauta">
             </div>
             <p>&copy; 2025 Plataforma de Corte e Costura. Todos os direitos reservados.</p>
             <div class="txt_logo">
