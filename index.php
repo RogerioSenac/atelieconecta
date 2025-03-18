@@ -88,7 +88,7 @@
             <div class="container">
 
                 <div class="row">
-                    <!-- Card de Depoimentos -->
+                    <!-- Card de Depoimentos atuais -->
                     <div class="col-md-6">
                         <div class="list-group">
                             <?php
