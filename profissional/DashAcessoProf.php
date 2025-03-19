@@ -11,7 +11,7 @@ require '../vendor/autoload.php';
 use Kreait\Firebase\Factory;
 
 $factory = (new Factory())
-->withServiceAccount('../config/chave.json')
+    ->withServiceAccount('../config/chave.json')
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $database = $factory->createDatabase();
@@ -66,82 +66,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
         <div class="profile-container">
             <div class="banner"></div>
             <div class="profile-header">
-                <img src="<?php echo htmlspecialchars($fotoPerfil ?? '../assets/img/perfil_cliente10.png', ENT_QUOTES, 'UTF-8'); ?>"
-                    alt="Foto de Perfil" class="profile-img">
+                <img src="<?php echo htmlspecialchars($fotoPerfil ?? '../assets/img/perfil_cliente.png', ENT_QUOTES, 'UTF-8'); ?>" alt="Foto de Perfil" class="profile-img">
             </div>
 
             <div class="data-section">
                 <?php if ($userData): ?>
-                <?php foreach ($userData as $user): ?>
-                <div class="row">
-                    <div class="col-md-6 dadosPessoais">
-                        <div class="info-row-nome">
-                            <div class="info-item"><i class="fas fa-user"></i>
-                                <?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        </div>
-                        <div class="info-row-end">
-                            <div class="info-item"><i class="fas fa-house"></i>
-                                <?php echo htmlspecialchars($user['rua'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        </div>
-                        <div class="info-row-complEnd">
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['bairro'], ENT_QUOTES, 'UTF-8'); echo ",&nbsp"; ?>
+                    <?php foreach ($userData as $user): ?>
+                        <div class="row">
+                            <div class="col-md-6 dadosPessoais">
+                                <div class="info-row-nome">
+                                    <div class="info-item"><i class="fas fa-user"></i> <?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                </div>
+                                <div class="info-row-end">
+                                    <div class="info-item"><i class="fas fa-house"></i> <?php echo htmlspecialchars($user['rua'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                </div>
+                                <div class="info-row-complEnd">
+                                    <div class="info-item"><?php echo htmlspecialchars($user['bairro'], ENT_QUOTES, 'UTF-8');
+                                                            echo ",&nbsp"; ?></div>
+                                    <div class="info-item"><?php echo htmlspecialchars($user['cidade'], ENT_QUOTES, 'UTF-8');
+                                                            echo ",&nbsp"; ?></div>
+                                    <div class="info-item"><?php echo htmlspecialchars($user['estado'], ENT_QUOTES, 'UTF-8');
+                                                            echo ",&nbsp"; ?></div>
+                                    <div class="info-item"><?php echo htmlspecialchars($user['cep'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                </div>
+                                <div class="info-row-contato">
+                                    <div class="info-item"><i class="fas fa-mobile-alt"></i> <?php echo htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                    <div class="info-item"><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?></div>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['cidade'], ENT_QUOTES, 'UTF-8'); echo ",&nbsp"; ?>
-                            </div>
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['estado'], ENT_QUOTES, 'UTF-8'); echo ",&nbsp"; ?>
-                            </div>
-                            <div class="info-item"><?php echo htmlspecialchars($user['cep'], ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                        </div>
-                        <div class="info-row-contato">
-                            <div class="info-item"><i class="fas fa-mobile-alt"></i>
-                                <?php echo htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8'); ?></div>
-                            <div class="info-item"><i class="fas fa-envelope"></i>
-                                <?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6 dadosSociais text-start">
-                        <!-- Seção para exibir as redes sociais -->
-                        <p class="tagService mt-3">Redes Sociais:</p>
-                        <div class="info-item"><i class="fab fa-whatsapp"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['whatsapp'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+                            <div class="col-md-6 dadosSociais text-start">
+                                <!-- Seção para exibir as redes sociais -->
+                                <p class="tagService mt-3">Redes Sociais:</p>
+                                <div class="info-item"><i class="fab fa-whatsapp"></i> <?php echo htmlspecialchars($user['redes_sociais']['whatsapp'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?></div>
+                                <div class="info-item"><i class="fab fa-instagram"></i> <?php echo htmlspecialchars($user['redes_sociais']['instagram'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?></div>
+                                <div class="info-item"><i class="fab fa-facebook"></i> <?php echo htmlspecialchars($user['redes_sociais']['facebook'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?></div>
+                            </div>
                         </div>
-                        <div class="info-item"><i class="fab fa-instagram"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['instagram'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
-                        </div>
-                        <div class="info-item"><i class="fab fa-facebook"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['facebook'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
-                        </div>
-                    </div>
-                </div>
 
-                <p class="tagService">Serviços Principais:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
-                            alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                    </div>
+                        <p class="tagService">Serviços Principais:</p>
+                        <div class="services-container">
+                            <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
+                                <div class="service-card">
+                                    <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png" alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
+                                    <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <p class="tagService mt-3">Outros Serviços:</p>
+                        <div class="services-container">
+                            <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
+                                <div class="service-card">
+                                    <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                                    <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     <?php endforeach; ?>
-                </div>
-
-                <p class="tagService mt-3">Outros Serviços:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php endforeach; ?>
                 <?php else: ?>
-                <p>Nenhum dado encontrado.</p>
+                    <p>Nenhum dado encontrado.</p>
                 <?php endif; ?>
             </div>
 

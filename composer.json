@@ -1,14 +1,14 @@
 {
-    "name": "wagne/atelieconecta",
+    "name": "rogerio/atelieconecta",
     "autoload": {
         "psr-4": {
-            "Wagne\\Atelieconecta\\": "src/"
+            "Rogerio\\Atelieconecta\\": "src/"
         }
     },
     "authors": [
         {
-            "name": "profWagnerToth",
-            "email": "wagnertoth@outlook.com"
+            "name": "rogeriosenac",
+            "email": "roge.pupo.toledo@gmail.com"
         }
     ],
     "require": {
