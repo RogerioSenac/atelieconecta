@@ -11,5 +11,7 @@
             "email": "roge.pupo.toledo@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "kreait/firebase-php": "^5.26"
+    }
 }
