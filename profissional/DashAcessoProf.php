@@ -11,7 +11,7 @@ require '../vendor/autoload.php';
 use Kreait\Firebase\Factory;
 
 $factory = (new Factory())
-->withServiceAccount(__DIR__.'/assets/config/chave.json')
+->withServiceAccount('../config/chave.json')
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $database = $factory->createDatabase();
