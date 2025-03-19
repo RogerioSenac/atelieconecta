@@ -7,7 +7,7 @@ use Kreait\Firebase\Exception\AuthException;
 use Kreait\Firebase\Exception\FirebaseException;
 
 $factory = (new Factory())
-->withServiceAccount(__DIR__.'/assets/config/chave.json')
+->withServiceAccount('../config/chave.json')
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $msg = "";
