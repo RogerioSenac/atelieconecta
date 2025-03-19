@@ -11,19 +11,15 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '27592325262b385204a263c2ab632d6e' => __DIR__ . '/..' . '/kreait/clock/src/Clock.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
-        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'W' => 
-        array (
-            'Wagne\\Atelieconecta\\' => 20,
-        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php81\\' => 23,
@@ -33,6 +29,7 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
         ),
         'R' => 
         array (
+            'Rogerio\\Atelieconecta\\' => 22,
             'Rize\\' => 5,
             'Riverline\\MultiPartParser\\' => 26,
             'Ramsey\\Uuid\\' => 12,
@@ -108,10 +105,6 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
     );
 
     public static $prefixDirsPsr4 = array (
-        'Wagne\\Atelieconecta\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src',
-        ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
@@ -127,6 +120,10 @@ class ComposerStaticInitb68356ac91884b50af4726801dcafdf7
         'StellaMaris\\Clock\\' => 
         array (
             0 => __DIR__ . '/..' . '/stella-maris/clock/src',
+        ),
+        'Rogerio\\Atelieconecta\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Rize\\' => 
         array (
