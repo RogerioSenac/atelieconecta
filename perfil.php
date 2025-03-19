@@ -23,7 +23,7 @@
             </div>
 
             <div class="tipo-perfil">
-                <a href="./Profissional/loginProf.php">
+                <a href="./profissional/loginProf.php">
                     <img src="./assets/img/ic_profissional_rosa.png" class="btn-perfil">
                 </a>
                 <p class="texto">Profissional</p>
