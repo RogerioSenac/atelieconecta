@@ -1,15 +1,17 @@
 {
-    "name": "rogerio/atelieconecta",
+    "name": "wagne/atelieconecta",
     "autoload": {
         "psr-4": {
-            "Rogerio\\Atelieconecta\\": "src/"
+            "Wagne\\Atelieconecta\\": "src/"
         }
     },
     "authors": [
         {
-            "name": "rogeriosenac",
-            "email": "roge.pupo.toledo@gmail.com"
+            "name": "profWagnerToth",
+            "email": "wagnertoth@outlook.com"
         }
     ],
-    "require": {}
+    "require": {
+        "kreait/firebase-php": "^5.26"
+    }
 }

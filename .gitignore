@@ -1,5 +1,5 @@
 # Ignora o arquivo de configuração do Firebase
-/config/chave.json
+/assets/config/chave.json
 
 # Ignora a pasta de dependências do Composer
 /vendor/

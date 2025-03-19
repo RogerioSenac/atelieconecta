@@ -6,11 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Wagne\\Atelieconecta\\' => array($baseDir . '/src'),
     'Symfony\\Polyfill\\Php81\\' => array($vendorDir . '/symfony/polyfill-php81'),
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'StellaMaris\\Clock\\' => array($vendorDir . '/stella-maris/clock/src'),
-    'Rogerio\\Atelieconecta\\' => array($baseDir . '/src'),
     'Rize\\' => array($vendorDir . '/rize/uri-template/src/Rize'),
     'Riverline\\MultiPartParser\\' => array($vendorDir . '/riverline/multipart-parser/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
