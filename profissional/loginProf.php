@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="interface">
         <form class="acesso" method="post" action="loginProf.php" onsubmit="return validateForm()">
             <h2>Login de Acesso</h2>
-            <img src="../assets/img/testeUsuario-removebg.png" class="iconeUsuario">
+            <!-- <img src="../assets/img/testeUsuario-removebg.png" class="iconeUsuario"> -->
             <div id="error-box" class="error-message">
                 <i class="fas fa-exclamation-circle"></i> <span id="error-text"></span>
             </div>

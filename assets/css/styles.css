@@ -154,7 +154,6 @@ nav ul li a {
     /* Fundo branco com 20% de opacidade */
     color: #e0e7f2;
     border-radius: 20px 20px;
-    /* border: solid red; */
 }
 
 .services .service-item:hover {
@@ -540,7 +539,6 @@ p.texto {
     background-color: black;
     border: none;
     min-height: 78svh;
-    border: solid #4CAF50;
     justify-items: center;
     align-items: center;
 }
@@ -678,8 +676,6 @@ form a {
     /* padding: 10px; */
     border: none;
     border-radius: 5px;
-    /* font-size: 16px; */
-    /* border: solid rebeccapurple; */
 }
 .password-container {  
     position: relative;  
@@ -930,7 +926,6 @@ form a {
         box-shadow: none;
         border: none;
         margin: 0;
-        border: solid black;
         justify-items: center;
 
     }
