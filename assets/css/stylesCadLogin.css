@@ -15,7 +15,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url(../img/perfil_Cinza10.jpeg);
+    background: url('../img/fundo_teste.jpeg') no-repeat center center/cover;
+    /* background: url(../img/perfil_Cinza10.jpeg); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -35,8 +36,9 @@ h2 {
     width: 850px;
     backdrop-filter: blur(20px);
     border-radius: 10px;
-    background: rgba(139, 139, 139, 0.932);
+    /* background: rgba(139, 139, 139, 0.932); */
     border: 2px solid rgba(255, 255, 255, 0.5);
+    border: solid red;
 }
 .inputbox {
     flex: 1;
