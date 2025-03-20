@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $auth = $factory->createAuth();
         $signInResult = $auth->signInWithEmailAndPassword($email, $senha);
 
-        // Armazena o e-mail na sessão
+        // Armazena o e-mail e o status de logado na sessão
         $_SESSION['logado'] = true;
         $_SESSION['email'] = $email;
 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="interface">
-        <form class="acesso" method="post" action="validaLoginProf.php" onsubmit="return validateForm()">
+        <form class="acesso" method="post" action="loginProf.php" onsubmit="return validateForm()">
             <h2>Login de Acesso</h2>
 
             <!-- Mensagem de erro -->
