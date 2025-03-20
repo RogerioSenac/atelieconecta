@@ -13,7 +13,7 @@ if (!isset($_SESSION['logado'])) {
 $email = htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8');
 
 $factory = (new Factory())
-->withServiceAccount('../config/chave.json')
+    ->withServiceAccount('../chave.json')
     ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
 $database = $factory->createDatabase();
