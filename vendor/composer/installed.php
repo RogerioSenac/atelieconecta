@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'rogerio/atelieconecta',
+        'name' => 'rogerio.ptoledo/atelieconecta',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '3bee0a88e2097d522868f15835fac0de4b7e543f',
+        'reference' => '7c585ef9cca845d81d5421835825c729665dbfb6',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'google/auth' => array(
-            'pretty_version' => 'v1.45.3',
-            'version' => '1.45.3.0',
-            'reference' => '000d9439f430c6e56cba105c5ab750f5f7d69ea8',
+            'pretty_version' => 'v1.46.0',
+            'version' => '1.46.0.0',
+            'reference' => '7fafae99a41984cbfb92508174263cf7bf3049b9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/auth',
             'aliases' => array(),
@@ -65,9 +65,9 @@
             'dev_requirement' => false,
         ),
         'google/common-protos' => array(
-            'pretty_version' => '4.10.0',
-            'version' => '4.10.0.0',
-            'reference' => '88bb76504910ddfe8fec457b622145c5731ab8ea',
+            'pretty_version' => '4.11.0',
+            'version' => '4.11.0.0',
+            'reference' => '2554ed1f09aa20faae7b71b590e7063df97ff670',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/common-protos',
             'aliases' => array(),
@@ -346,10 +346,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'rogerio/atelieconecta' => array(
+        'rogerio.ptoledo/atelieconecta' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '3bee0a88e2097d522868f15835fac0de4b7e543f',
+            'reference' => '7c585ef9cca845d81d5421835825c729665dbfb6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

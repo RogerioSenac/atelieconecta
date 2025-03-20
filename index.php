@@ -19,7 +19,8 @@
 <body>
     <header>
         <div class="container">
-            <img src="../atelieconecta/assets/img/new_logo3.png" alt="Logotipo" class="logo">
+            margin-top: 10px;
+
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

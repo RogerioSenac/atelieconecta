@@ -48,16 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="interface">
         <form class="acesso" method="post" action="loginProf.php" onsubmit="return validateForm()">
             <h2>Login de Acesso</h2>
-
-            <!-- Mensagem de erro -->
+            <img src="../assets/img/testeUsuario-removebg.png" class="iconeUsuario">
             <div id="error-box" class="error-message">
                 <i class="fas fa-exclamation-circle"></i> <span id="error-text"></span>
             </div>
 
-            <label for="email">Email:</label>
+            <!-- <label for="email">Email:</label> -->
             <input type="email" name="email" id="email" placeholder="Seu Email" required>
-            
-            <label for="senha">Senha:</label>
+
+            <!-- <label for="senha">Senha:</label> -->
             <input type="password" name="senha" id="senha" placeholder="Senha Acesso" required>
 
             <div class="btn-enviar">
@@ -75,27 +74,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script>
-        // Verifica se há mensagem de erro na URL
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("erro")) {
-            const errorMessage = decodeURIComponent(params.get("erro"));
-            document.getElementById("error-text").textContent = errorMessage;
+    // Verifica se há mensagem de erro na URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("erro")) {
+        const errorMessage = decodeURIComponent(params.get("erro"));
+        document.getElementById("error-text").textContent = errorMessage;
+        document.getElementById("error-box").style.display = "block";
+    }
+
+    // Validação do formulário
+    function validateForm() {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
+
+        if (!email || !senha) {
+            document.getElementById("error-text").textContent = "Por favor, preencha todos os campos.";
             document.getElementById("error-box").style.display = "block";
+            return false;
         }
 
-        // Validação do formulário
-        function validateForm() {
-            const email = document.getElementById("email").value;
-            const senha = document.getElementById("senha").value;
-
-            if (!email || !senha) {
-                document.getElementById("error-text").textContent = "Por favor, preencha todos os campos.";
-                document.getElementById("error-box").style.display = "block";
-                return false;
-            }
-
-            return true;
-        }
+        return true;
+    }
     </script>
 </body>
 

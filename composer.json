@@ -1,13 +1,13 @@
 {
-    "name": "rogerio/atelieconecta",
+    "name": "rogerio.ptoledo/atelieconecta",
     "autoload": {
         "psr-4": {
-            "Rogerio\\Atelieconecta\\": "src/"
+            "RogerioPtoledo\\Atelieconecta\\": "src/"
         }
     },
     "authors": [
         {
-            "name": "rogeriosenac",
+            "name": "RogerioSenac",
             "email": "roge.pupo.toledo@gmail.com"
         }
     ],
