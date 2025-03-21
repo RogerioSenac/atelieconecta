@@ -32,10 +32,9 @@ h2 {
 .box {
     text-align: center;
     padding: 20px 30px;
-    width: 850px;
+    width: 650px;
     backdrop-filter: blur(20px);
     border-radius: 10px;
-    color: white;
     background: rgba(139, 139, 139, 0.932);
     /* border: 2px solid rgba(255, 255, 255, 0.5); */
 }
