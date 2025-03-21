@@ -35,9 +35,12 @@ h2 {
     width: 850px;
     backdrop-filter: blur(20px);
     border-radius: 10px;
-    /* background: rgba(139, 139, 139, 0.932); */
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border: solid red;
+    color: white;
+    background: rgba(139, 139, 139, 0.932);
+    /* border: 2px solid rgba(255, 255, 255, 0.5); */
+}
+.interface .box h2{
+    color: white;
 }
 .inputbox {
     flex: 1;
@@ -55,6 +58,7 @@ h2 {
 }
 .sub {
     padding: 12px;
+    width: 100px;
     background: #4CAF50;
     color: white;
     border: none;
@@ -69,10 +73,13 @@ h2 {
 }
 .back {
     padding: 12px;
+    width: 100px;
     background: #919090;
     color: white;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+    /* font-size: 16px; */
     text-decoration: none;
 }
 .back:hover {
