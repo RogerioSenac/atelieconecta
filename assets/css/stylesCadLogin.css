@@ -15,8 +15,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url('../img/fundo_teste.jpeg') no-repeat center center/cover;
-    /* background: url(../img/perfil_Cinza10.jpeg); */
+    background: url('../img/perfil_Cinza10.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -313,7 +312,7 @@ h2 {
     justify-content: center;
     align-items: center;
     /* min-height: 100vh; */
-    /* background: url(../img/perfil_1Cinza.png); */
+    background: url('../img/perfil_1Cinza.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;  
@@ -350,7 +349,7 @@ h2 {
     text-align: left; 
 }  
 .data-section p {  
-    font-weight: bold;  
+    font-weight: normal;  
     margin-bottom: 5px;  
 } 
 .user-data {  
@@ -381,17 +380,18 @@ h2 {
 .info-row-complEnd {  
     display: flex;  
     justify-content: flex-start;  
-    font-size: 15px; 
+    font-size: 20px;
+    gap: 10px; 
 } 
 .info-row-contato {  
     display: flex;  
     justify-content: flex-start;  
     margin-top: 10px; 
-    font-size: 10px; 
+    font-size: 15px; 
 } 
-.info-item {  
+/* .info-item {  
     margin-right: 20px;  
-}  
+}   */
 .info-item i {  
     margin-right: 5px;  
     color: #007bff; /* Cor do ícone */  
@@ -400,6 +400,7 @@ h2 {
     padding: 10px;
     text-align: center;
     font-weight: normal;
+    font-size: 30px;
 }
 .services-container {
     display: grid;
