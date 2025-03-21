@@ -40,6 +40,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,6 +50,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body class="dash">
     <div class="container mt-5">
         <div class="profile-container">
@@ -67,34 +69,32 @@ try {
                         </div>
                         <div class="info-row-end">
                             <div class="info-item"><i class="fas fa-house"></i>
-                            <?php echo htmlspecialchars($user['endereco']['rua'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo htmlspecialchars($user['endereco']['rua'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
                         </div>
                         <div class="info-row-complEnd">
                             <div class="info-item">
-                                
                                 <?php echo htmlspecialchars($user['endereco']['bairro'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                             <div class="info-item">
-                                
                                 <?php echo htmlspecialchars($user['endereco']['cidade'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                             <div class="info-item">
-                                
                                 <?php echo htmlspecialchars($user['endereco']['estado'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                             <?php echo htmlspecialchars($user['endereco']['cep'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
                         </div>
                         <div class="info-row-contato">
                             <div class="info-item"><i class="fas fa-mobile-alt"></i>
                                 <?php echo htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8'); ?>
                             </div>
+                        </div>
+                        <div class="info-row-contato">
                             <div class="info-item"><i class="fas fa-envelope"></i>
-                                
                                 <?php echo htmlspecialchars($user['acesso']['email'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
                         </div>
                     </div>
-
                     <div class="col-md-6 dadosSociais text-start">
                         <p class="tagService mt-3">Redes Sociais:</p>
                         <div class="info-item"><i class="fab fa-whatsapp"></i>
@@ -137,4 +137,5 @@ try {
         </div>
     </div>
 </body>
+
 </html>
