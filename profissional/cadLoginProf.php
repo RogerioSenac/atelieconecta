@@ -121,6 +121,7 @@ function validarForcaSenha($senha)
 
                 <input type="submit" value="Enviar" class="sub">
                 <button class="back">Voltar</button>
+
             </form>
         </div>
     </div>
