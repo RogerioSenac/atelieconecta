@@ -132,7 +132,7 @@ try {
             </div>
 
             <div class="logout text-center mt-3">
-                <a href="logout.php" class="btn btn-danger">Sair</a>
+                <a href="../logout.php" class="btn btn-danger">Sair</a>
             </div>
         </div>
     </div>
