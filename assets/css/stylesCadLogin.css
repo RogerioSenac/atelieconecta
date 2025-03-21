@@ -458,13 +458,12 @@ h2 {
     }
 
     .inputbox {
-        width: 100%;rede
+        width: 100%;
     }
 
     .box .formulario h2 {
         font-size: 20pt;
     }
-}
 
 @media (max-width: 480px) {
     .box {
