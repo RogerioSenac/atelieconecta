@@ -799,8 +799,8 @@ form a {
         max-width: 100%;
     }
 
-     /*contato*/
-     .contato video {
+    /*contato*/
+    .contato video {
         display: none;
         /* Mantém a proporção do vídeo */
     }
