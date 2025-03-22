@@ -212,7 +212,7 @@
 
                 <div class="btn-social">
                     <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA=="
-                        target="_blank"><button><i class="fa-brands fa-instagram"></i></button></a>
+                        target="_blank"><button><i class="rede fa-brands fa-instagram"></i></button></a>
 
                     <a href="https://www.linkedin.com/in/developers-rgt-862402309/" target="_blank"><button><i
                                 class="fa-brands fa-linkedin"></i></button></a>

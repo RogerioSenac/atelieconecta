@@ -1086,7 +1086,7 @@ form a {
     }
 
     .row .service-item p {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     /*comentario*/
@@ -1221,4 +1221,572 @@ form a {
         font-size: 1rem;
         color: black;
     }
+}
+
+@media (max-width: 768px) {
+
+    /*banner*/
+    section.banner {
+        max-width: 100%;
+    }
+
+    .banner h1 {
+        font-size: 2em;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .banner p {
+        font-size: 1.3em;
+        color: white;
+    }
+
+    /*serviços*/
+    section.services {
+        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
+    }
+
+    section.services .container {
+        padding: 0px;
+        margin: 0px;
+        justify-content: center;
+    }
+
+    section.services .container .row .service-item {
+        margin: 0 5px;
+        padding: 0 5px;
+        flex: 1 1 30%;
+        /*ajuste do tamanho do card*/
+    }
+
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        border-radius: none;
+    }
+
+    .row .service-item p {
+        font-size: 25px;
+    }
+
+    /*comentario*/
+    section.comentario {
+        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
+        margin: 0px 5px;
+    }
+
+    section.comentario.conatiner.row {
+        display: flex;
+        justify-self: center;
+    }
+
+    .comentario h2 {
+        font-size: 25px;
+    }
+
+    /*quem somos*/
+
+    section.container-quem-somos {
+        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
+        margin: 5px 5px;
+    }
+
+    #sobre {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container-quem {
+        width: 100%;
+    }
+
+    .row-q {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+        width: 100%;
+    }
+
+    .container-quem .col-12 {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+    }
+
+    .container-quem .icones {
+        height: 200px;
+        width: 400px;
+    }
+
+    .container-quem .p1 {
+        max-width: 90%;
+        margin: 5px;
+        font-size: 1rem;
+    }
+
+    .container-quem p {
+        max-width: 95%;
+        margin: 5px;
+        font-size: 1rem;
+    }
+
+    .container-quem .row {
+        margin: 5px 0px;
+    }
+
+    /*contato*/
+    .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    section.contato .txt-contato {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .contato .img-contato img {
+        height: 300px;
+        width: 300px;
+        margin-top: 0px;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 15px;
+        line-height: 40px;
+        margin-bottom: 30px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 15px;
+        display: block;
+    }
+
+    .txt-contato p {
+        justify-self: center;
+        max-width: 90%;
+        font-size: 1rem;
+    }
+
+    section.contato .btn-social button {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 50%;
+        margin-bottom: 5px;
+
+    }
+
+    section.contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+    /*rodape*/
+    footer {
+        margin: 5px;
+
+    }
+
+    footer .rodape p {
+        margin: 5px 5px;
+        font-size: 1rem;
+        color: black;
+    }
+
+}
+
+@media (max-width: 1024px) {
+
+    /*banner*/
+    section.banner {
+        max-width: 100%;
+    }
+
+    .banner h1 {
+        font-size: 2em;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .banner p {
+        font-size: 1.3em;
+        color: white;
+    }
+
+    /*serviços*/
+    section.services {
+        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
+    }
+
+    section.services .container {
+        padding: 0px;
+        margin: 0px;
+        justify-content: center;
+    }
+
+    section.services .container .row .service-item {
+        margin: 0 5px;
+        padding: 0 5px;
+        flex: 1 1 30%;
+        /*ajuste do tamanho do card*/
+    }
+
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        border-radius: none;
+    }
+
+    .row .service-item p {
+        font-size: 25px;
+    }
+
+
+    /*comentario*/
+    section.comentario {
+        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
+        margin: 0px 5px;
+    }
+
+    section.comentario.conatiner.row {
+        display: flex;
+        justify-self: center;
+    }
+
+    .comentario h2 {
+        font-size: 25px;
+    }
+
+    /*quem somos*/
+    section.container-quem-somos {
+        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
+        margin: 5px 5px;
+    }
+
+    #sobre {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container-quem {
+        width: 100%;
+    }
+
+    .row-q {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+        width: 100%;
+    }
+
+    .container-quem .col-12 {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+    }
+
+    .container-quem .icones {
+        height: 300px;
+        width: 400px;
+    }
+
+    .container-quem .p1 {
+        max-width: 90%;
+        margin: 5px;
+        font-size: 1rem;
+    }
+
+    .container-quem p {
+        max-width: 80%;
+        margin: 5px;
+        font-size: 1rem;
+    }
+
+    .container-quem .row {
+        padding: 0px;
+        margin: 5px 0px;
+        width: 80%;
+    }
+
+    /*contato*/
+    .contato video {
+        /* display: none; */
+        /* Mantém a proporção do vídeo */
+    }
+
+    section.contato .txt-contato {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .contato .img-contato img {
+        height: 300px;
+        width: 300px;
+        margin-top: 0px;
+        margin-left: 400px;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 15px;
+        line-height: 40px;
+        margin-bottom: 30px;
+        margin-left: 400px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 15px;
+        display: block;
+    }
+
+    .txt-contato p {
+        margin-right: 10px;
+        justify-self: right;
+        max-width: 60%;
+        font-size: 1rem;
+    }
+
+    .btn-social {
+        width: 300px;
+        justify-self: center;
+    }
+
+    section.contato .btn-social button {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 50%;
+        margin-bottom: 5px;
+    }
+
+    section.contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+    /*rodape*/
+    footer {
+        margin: 5px;
+
+    }
+
+    footer .rodape p {
+        margin: 5px 5px;
+        font-size: 1rem;
+        color: black;
+    }
+
+}
+
+@media (min-width: 1025px) {
+
+    /*banner*/
+    section.banner {
+        max-width: 100%;
+    }
+
+    .banner h1 {
+        font-size: 2em;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .banner p {
+        font-size: 1.3em;
+        color: white;
+    }
+
+    /*serviços*/
+    section.services {
+        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
+    }
+
+    section.services .container {
+        padding: 0px;
+        margin: 0px;
+        justify-content: center;
+    }
+
+    section.services .container .row .service-item {
+        margin: 0 5px;
+        padding: 0 5px;
+        flex: 1 1 30%;
+        /*ajuste do tamanho do card*/
+    }
+
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        border-radius: none;
+    }
+
+    .row .service-item p {
+        font-size: 25px;
+    }
+
+
+    /*comentario*/
+    section.comentario {
+        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
+        margin: 0px 5px;
+    }
+
+    section.comentario.conatiner.row {
+        display: flex;
+        justify-self: center;
+    }
+
+    .comentario h2 {
+        font-size: 25px;
+    }
+
+    /*quem somos*/
+    section.container-quem-somos {
+        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
+        margin: 5px 5px;
+    }
+
+    #sobre {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container-quem {
+        width: 100%;
+    }
+
+    .row-q {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+        width: 100%;
+    }
+
+    .container-quem .col-12 {
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+    }
+
+    .container-quem .icones {
+        height: 400px;
+        width: 600px;
+    }
+
+    .container-quem .p1 {
+        max-width: 90%;
+        margin: 5px;
+        font-size: 2rem;
+    }
+
+    .container-quem p {
+        max-width: 80%;
+        margin: 5px;
+        font-size: 1.3rem;
+    }
+
+    .container-quem .row {
+        padding: 0px;
+        margin: 5px 0px;
+        width: 80%;
+    }
+
+    /*contato*/
+    .contato video {
+        /* display: none; */
+        /* Mantém a proporção do vídeo */
+    }
+
+    section.contato .txt-contato {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .contato .img-contato img {
+        height: 300px;
+        width: 300px;
+        margin-top: 0px;
+        margin-left: 400px;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 40px;
+        line-height: 40px;
+        margin-bottom: 30px;
+        margin-left: 400px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 45px;
+        display: block;
+    }
+
+    .txt-contato p {
+        margin-right: 10px;
+        justify-self: right;
+        max-width: 60%;
+        font-size: 1.5rem;
+    }
+
+    .btn-social {
+        width: 800px;
+        justify-self: center;
+    }
+
+    section.contato .btn-social button {
+        width: 80px;
+        height: 80px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 50%;
+        margin-bottom: 5px;
+    }
+
+    .btn-social i {
+        width: 50px;
+        height: 50px;
+        align-content: center;
+    }
+
+    .btn-social {
+        color: white;
+        width: center;
+        height: center;
+        align-items: center;
+        justify-self: center;
+
+        margin: 0;
+    }
+
+    /*rodape*/
+    footer {
+        margin: 5px;
+
+    }
+
+    footer .rodape p {
+        margin: 5px 5px;
+        font-size: 1rem;
+        color: black;
+    }
+
 }
