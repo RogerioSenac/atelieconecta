@@ -153,7 +153,7 @@
                         <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
-                <p class="">
+                <p class="p1">
                     Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
                 </p>
                 <div class="row">
@@ -235,7 +235,7 @@
             <div>
                 <img class="logo_dev" src="./assets/img/logo_devergt10.jpeg" alt="logo astronauta">
             </div>
-            <p>&copy; 2025 Plataforma de Corte e Costura. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Plataforma de Corte e Costura. <br>Todos os direitos reservados.</p>
             <div class="txt_logo">
                 <p class="p_footer">Design By <span>DevelopersRGT</span></p>
             </div>
