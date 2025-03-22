@@ -19,8 +19,6 @@
 <body>
     <header>
         <div class="container">
-            margin-top: 10px;
-
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +27,6 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="#banner">Home</a></li>
-                        <!-- <li class="nav-item"><a class="nav-link" href="#">Profissionais</a></li> -->
                         <li class="nav-item"><a class="nav-link" href="#services">Serviços</a></li>
                         <li class="nav-item"><a class="nav-link" href="#comentario">Comentarios</a></li>
                         <li class="nav-item"><a class="nav-link" href="#sobre">Sobre Nós</a></li>
@@ -45,8 +42,6 @@
         <section class="banner" id="banner">
             <h1>Bem-vindo à Plataforma do Atelie Connect</h1></br>
             <p>Conectando você aos talentos da moda.</p>
-            <div class="container">
-            </div>
         </section>
 
         <section class="services" id="services">
@@ -158,7 +153,7 @@
                         <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
-                <p>
+                <p class="">
                     Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
                 </p>
                 <div class="row">
