@@ -316,10 +316,8 @@ nav ul li a {
 }
 
 .container-quem p {
-
     align-self: center;
     text-align: justify;
-
 }
 
 .container-quem-somos p {
@@ -365,9 +363,10 @@ nav ul li a {
     z-index: -1;
 }
 
+/* 
 .contato .imagem {
     z-index: 1000;
-}
+} */
 
 /* Ajuste da imagem */
 .contato .img-contato img {
@@ -476,7 +475,7 @@ footer {
     padding: 100px 0;
     min-height: 77vh;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
 }
 
 .perfil .tipo-perfil {
@@ -552,7 +551,7 @@ form {
     /* background-color: rgba(255, 255, 255, 0.623); */
 }
 
-.iconeUsuario{
+.iconeUsuario {
     width: 100px;
     height: 100px;
 }
@@ -606,7 +605,6 @@ form a {
 .acesso h2 {
     margin-top: -50px;
     color: white;
-    ba
 }
 
 .cadContainer {
@@ -646,6 +644,7 @@ form a {
 .interface .boxAcesso {
     padding: 20px;
 }
+
 .box .boxAcesso h2 {
     text-align: center;
     color: white;
@@ -654,44 +653,51 @@ form a {
     text-shadow: 2px 2px 2px black;
     margin-bottom: 20px;
 }
+
 .box .boxAcesso form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-.error-message {  
-    color: red;  
-    font-weight: bold;  
-    text-align: center;  
-    margin-bottom: 10px;  
-}  
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
 .inputbox {
     flex: 1;
     min-width: 300px;
     margin-bottom: 15px;
     text-align: left;
 }
+
 .inputbox input {
     width: 100%;
     /* padding: 10px; */
     border: none;
     border-radius: 5px;
 }
-.password-container {  
-    position: relative;  
-    width: 100%;  
-}  
-.password-container input {  
-    width: 100%;  
-    padding-right: 40px;  
-}  
-.toggle-password {  
-    position: absolute;  
-    right: 10px;  
-    top: 50%;  
-    transform: translateY(-50%);  
-    cursor: pointer;  
-}  
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 
 
 
@@ -700,6 +706,148 @@ form a {
 /*************************************************/
 
 /* Mobile */
+@media (max-width: 320px) {
+
+    /*comentario*/
+    .row {
+        display: flex;
+        justify-self: center;
+    }
+
+    /*quem somos*/
+    #sobre {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container-quem p {
+        max-width: 100%;
+    }
+
+    /*contato*/
+    .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    .contato .img-contato img {
+        height: 200px;
+        width: 200px;
+        margin: 0;
+    }
+
+    .contato .txt-contato h2 span {
+        font-size: 15px;
+        display: block;
+    }
+
+    .txt-contato p {
+        justify-self: center;
+        max-width: 90%;
+    }
+
+    .btn-social button {
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 100%;
+    }
+
+    .contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+    .rodape p {
+        font-size: 18px;
+    }
+}
+
+@media(max-width: 375px) {
+
+    /*serviços*/
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 100%;
+        border-radius: none;
+    }
+
+    .row .service-item p {
+        font-size: 15px;
+    }
+
+    /*comentario*/
+    .row {
+        display: flex;
+        justify-self: center;
+    }
+
+    /*quem somos*/
+    #sobre {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container-quem p {
+        max-width: 100%;
+    }
+
+     /*contato*/
+     .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    .contato .img-contato img {
+        height: 250px;
+        width: 250px;
+        margin: 0;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 25px;
+        line-height: 40px;
+        margin-bottom: 30px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 25px;
+        display: block;
+    }
+
+    .txt-contato p {
+        justify-self: center;
+        max-width: 90%;
+    }
+
+    .btn-social button {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 100%;
+    }
+
+    .contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+}
+
+
 @media (max-width: 480px) {
 
     /* Estilos para smartphones */

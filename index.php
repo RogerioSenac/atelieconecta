@@ -87,7 +87,6 @@
         <section id="comentario" class="comentario d-flex flex-column align-items-center">
             <h2>Depoimentos Recentes</h2>
             <div class="container">
-
                 <div class="row">
                     <!-- Card de Depoimentos -->
                     <div class="col-md-6">
@@ -156,7 +155,7 @@
             <div class="container-quem">
                 <div class="row-q">
                     <div class="col-12 text-center">
-                        <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto triatlo">
+                        <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
                 <p>
