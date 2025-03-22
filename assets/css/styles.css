@@ -68,7 +68,6 @@ nav ul li a {
     text-decoration: none;
     font-size: 14pt;
     font-weight: normal;
-    /* text-shadow: 2px 2px 2px black; */
 }
 
 .login-btn {
@@ -300,7 +299,6 @@ nav ul li a {
 
 .container-quem {
     width: 80%;
-
     align-items: center;
     justify-items: center;
 }
@@ -708,6 +706,31 @@ form a {
 /* Mobile */
 @media (max-width: 320px) {
 
+    /*banner*/
+    .banner h1 {
+        font-size: 1.5em;
+        color: white;
+        margin-top: 20px;
+    }
+
+    .banner p {
+        font-size: 1em;
+        color: white;
+    }
+
+    /*serviços*/
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 100%;
+        border-radius: none;
+    }
+
+    .row .service-item p {
+        font-size: 10px;
+    }
+
     /*comentario*/
     .row {
         display: flex;
@@ -736,7 +759,14 @@ form a {
         margin: 0;
     }
 
-    .contato .txt-contato h2 span {
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 15px;
+        line-height: 40px;
+        margin-bottom: 30px;
+    }
+
+    section.contato .txt-contato h2 span {
         font-size: 15px;
         display: block;
     }
@@ -746,15 +776,15 @@ form a {
         max-width: 90%;
     }
 
-    .btn-social button {
-        width: 40px;
-        height: 40px;
+    section.contato .btn-social button {
+        width: 50px;
+        height: 50px;
         text-align: center;
         margin: 0px 0px;
-        max-width: 100%;
+        max-width: 50%;
     }
 
-    .contato .btn-social .fa-brands {
+    section.contato .btn-social .fa-brands {
         color: white;
         width: 30px;
         height: 30px;
@@ -763,19 +793,36 @@ form a {
         margin: 0;
     }
 
-    .rodape p {
-        font-size: 18px;
+    footer .rodape p {
+        font-size: 16px;
+        color: black;
     }
 }
 
 @media(max-width: 375px) {
 
+    /*Banner*/
+    .banner h1 {
+        font-size: 2em;
+        color: white;
+        margin-top: 20px;
+    }
+
+    .banner p {
+        font-size: 1.em;
+        color: white;
+    }
+
     /*serviços*/
+    section.services .service-item {
+        width: 500px;
+    }
+
     .row .service-item img {
         margin-top: 10px;
         height: 60%;
         /* Ajuste a altura das imagens para telas menores */
-        width: 100%;
+        width: 150%;
         border-radius: none;
     }
 
@@ -784,6 +831,11 @@ form a {
     }
 
     /*comentario*/
+    section.comentario h2 {
+        font-size: 25px;
+        margin: 30px;
+    }
+
     .row {
         display: flex;
         justify-self: center;
@@ -844,356 +896,329 @@ form a {
         justify-self: center;
         margin: 0;
     }
+    .rodape p {
+        font-size: 19px;
+        color: black;
+    }
 
 }
 
+@media (max-width: 425px) {
 
-@media (max-width: 480px) {
-
-    /* Estilos para smartphones */
-    /* Menu */
-    .logo {
-        height: 40px;
-        width: 65px;
-    }
-
-    /*banner - OK sem ajuste*/
-
-    /*services*/
-    .services {
-        padding: 100px 0;
-        /* Ajuste o padding para telas menores */
-        background-size: cover;
-    }
-
-    .services .container {
-        justify-content: center;
-    }
-
-    .row {
-        flex: 0 0 100%;
-        width: 300px;
-        justify-content: center;
-
-    }
-
-    .row .service-item {
-        flex: 0 0 50%;
-        /* Ajuste para ocupar 100% da largura em telas pequenas */
-        margin: 3%;
-        /* Espaçamento entre os itens */
-        margin-bottom: 5px;
-        /* Espaçamento de 2px entre os itens */
-    }
-
-    .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        width: 100%;
-        border-radius: none;
-    }
-
-    /*comentario - ok aguardando implementação bg*/
-
-    /*quem somos*/
-    .container-quem-somos {
-        padding: 20px 0;
-    }
-
-    .container-quem-somos .icones {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .container-quem-somos .row img {
-        min-height: 50px;
-        width: 100%;
-    }
-
-    .container-quem-somos .row p {
-        text-align: justify;
-        font-size: 1rem;
-        padding: 2px;
-    }
-
-    .container-quem-somos .col-12 {
-        padding: 2px;
-    }
-
-    /*contato*/
-    .contato video {
-        position: absolute;
-        width: 100%;
-        /* Ajusta a largura do vídeo */
-        height: 100%;
-        display: none;
-        /* Mantém a proporção do vídeo */
-    }
-
-    section.contato .txt-contato {
+    /*Banner*/
+    .banner h1 {
+        font-size: 2em;
+        color: white;
         margin-top: 20px;
-        width: 50%;
-        margin-left: 0px;
-        padding: 5px;
-        width: 100%;
-
     }
-
-    /*footer OK sem ajuste*/
-
-    /*Menu de perfil*/
-    /*perfil*/
-    .perfil {
-        padding: 100px 0;
-        /* Ajuste o padding para telas menores */
-        background: none;
-        background-color: #996566;
-
-    }
-
-    .perfil .tipo-perfil {
-        margin-top: 30px;
-        width: 250px;
-        height: 250px;
-        padding: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-        color: #070707;
-        margin-left: 75px;
-    }
-
-
-
-}
-
-/* Tablets */
-@media (min-width: 481px) and (max-width: 768px) {
-    /* Estilos para tablets */
-
-    /* Menu OK sem ajuste*/
-
-    /*banner OK sem ajuste*/
-
-    /*services*/
-    .services {
-        padding: 100px 0;
-        /* Ajuste o padding para telas menores */
-        background-size: cover;
-    }
-
-    .services .container {
-        justify-content: center;
-    }
-
-    .service-item {
-        flex: 0 0 50%;
-        /* Ajuste para ocupar 100% da largura em telas pequenas */
-        margin: 3%;
-        /* Espaçamento entre os itens */
-        margin-bottom: 5px;
-        /* Espaçamento de 2px entre os itens */
-    }
-
-    .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        width: 100%;
-        border-radius: none;
-    }
-
-    /*comentario */
-
-    .comentario {
-        padding: 100px;
-        margin: 3px;
-    }
-
-    /*quem somos*/
-    .container-quem-somos {
-        padding: 100px;
-        margin: 3px;
-    }
-
-    .container-quem {
-        width: 100%;
-    }
-
-
-    .container-quem-somos .icones {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .container-quem-somos .row img {
-        min-height: 50px;
-        width: 100%;
-    }
-
-    .container-quem-somos .row p {
-        text-align: justify;
-        font-size: 1rem;
-        padding: 2px;
-    }
-
-    .container-quem-somos .col-12 {
-        padding: 2px;
-    }
-
-    /*contato*/
-    .contato video {
-        display: none;
-        /* Mantém a proporção do vídeo */
-    }
-
-    section.contato .txt-contato {
-        margin-top: 20px;
-        width: 50%;
-        margin-left: 0px;
-        padding: 15px;
-        width: 100%;
-
-    }
-
-    /*footer ok sem ajuste*/
-    .rodape {
-
-        margin: 3px;
-    }
-
-    /*Menu de perfil*/
-    body {
-        background-color: #975d5e;
-    }
-
-    .perfil {
-        display: block;
-        padding: 100px 0;
-        background: none;
-        box-shadow: none;
-        border: none;
-        margin: 0;
-        justify-items: center;
-
-    }
-
-    .perfil .tipo-perfil {
-        width: 200px;
-        height: 200px;
-        justify-items: center;
-        margin: 25px;
-    }
-
-    .perfil img {
-        width: 200px;
-        /* Ajusta a largura para 100% do contêiner */
-        height: 200px;
-        /* Define uma altura fixa para as imagens */
-    }
-
-    .perfil .texto {
-        margin: 0;
-        justify-items: center;
-    }
-
-
-
-}
-
-/* Desktop */
-@media (min-width: 769px) {
-    /* Estilos para desktops */
-
-    /* Menu */
-
-    /*banner*/
-
-    /*services*/
-    .services {
-        padding: 100px 0;
-        /* Ajuste o padding para telas menores */
-        background-size: cover;
-    }
-
-    .services .container {
-        display: flex;
-        justify-content: center;
-
-        /* width: auto; */
-
-    }
-
-    .row {
-        flex: 0 0 100%;
-        width: 300px;
-        justify-content: center;
-
-    }
-
-    .services .service-item {
-        flex: 0 0 25%;
-        /* Ajustado para 30% de largura para 3 cards por linha */
-        margin: 2%;
-        /* Espaçamento entre os itens */
-        margin-bottom: 5px;
-        /* Espaçamento de 15px entre as linhas */
-        /* Ajuste da altura e largura para ser mais proporcional */
-        height: auto;
-        /* Altura automática para ajustar conforme o conteúdo */
-        min-height: 60px;
-        /* Define uma altura mínima para os cards, ajustando conforme o conteúdo */
-        background-color: rgba(255, 255, 255, 0.8);
-        /* Leve opacidade para manter o contraste com o fundo */
-        color: #000;
-    }
-
-    .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajusta a altura das imagens para telas maiores */
-        width: 100%;
-        object-fit: cover;
-        /* Garante que a imagem cubra completamente o espaço */
-        border-radius: none;
-    }
-
-    .services h2 {
-        text-align: center;
+    .banner p {
+        font-size: 1.em;
         color: white;
     }
 
-    .services p {
-        color: #000;
+    /*serviços*/
+    section.services .service-item {
+        width: 500px;
+    }
+    .row .service-item img {
+        margin-top: 10px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 150%;
+        border-radius: none;
+    }
+    .row .service-item p {
+        font-size: 18px;
     }
 
     /*comentario*/
-    .comentario {
-        padding: 100px;
-        margin: 3px;
+    section.comentario {
+        padding: 20px;
     }
-
-    .comentario .row {
-        width: auto;
+    section.comentario h2 {
+        font-size: 30px;
+        margin: 20px;
+    }
+    .row {
+        display: flex;
+        justify-self: center;
     }
 
     /*quem somos*/
-    .container-quem-somos {
+    #sobre {
+        display: flex;
+        padding: 20px 0;
         justify-content: center;
     }
-
-    .container-quem-somos .row {
-        width: inherit;
-        justify-content: space-between;
+    .container-quem .p-1 {
+        width: 90%;
+        text-align: justify;
+        font-size: 1rem;
+        padding: 2px;
     }
 
-    .container-quem-somos .p-2 p {
+    .container-quem-somos p {
+        margin-top: 15px;
+        font-size: 1.2rem;
+        color: white;
+        text-align: justify;
+        /* Alinha o texto pelo modo Justificado */
+        line-height: 1.6;
+        /* Opicional: melhora a legibilidade */
+        font-weight: normal;
+        max-width: 100%;
+        align-content: center;
+    }
+
+    .container-quem-somos {
+        padding: 0;
+        margin: 0;
+    }
+
+    .container-quem {
         width: auto;
-        gap: 5px;
     }
 
+    .container-quem .row {
+        width: 90%;
+    }
+
+    .container-quem .row .p-2 p {
+        font-size: 1.2rem;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .container-quem-somos .icones {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container-quem-somos .row-q img {
+        min-height: 50px;
+        width: 100%;
+    }
+
+    .container-quem-somos .col-12 {
+        padding: 2px;
+        max-width: 100%;
+    }
 
     /*contato*/
+    .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
 
-    /*footer*/
+    .contato .img-contato img {
+        height: 250px;
+        width: 250px;
+        margin: 0;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 25px;
+        line-height: 40px;
+        margin-bottom: 30px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 25px;
+        display: block;
+    }
+
+    .txt-contato p {
+        justify-self: center;
+        max-width: 90%;
+    }
+
+    .btn-social button {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 100%;
+    }
+
+    .contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+    /*rodape*/
+    .rodape p {
+        font-size: 22px;
+        color: black;
+    }
 }
+
+
+/* Tablets */
+@media (max-width: 768px) {
+
+    /*Banner*/
+    .banner{
+        margin: 5px;
+        padding: 50px;
+    }
+    .banner h1 {
+        font-size: 3.2em;
+        color: white;
+        margin-top: 100px;
+    }
+    .banner p {
+        font-size: 1.5em;
+        color: white;
+    }
+
+    /*serviços*/
+    section.services{
+        margin: 0;
+        padding: 0;
+    }
+    section.services .service-item {
+        width: 500px;
+    }
+    .row .service-item img {
+        margin-top: 0px;
+        height: 60%;
+        /* Ajuste a altura das imagens para telas menores */
+        width: 150%;
+        border-radius: none;
+    }
+    .row .service-item p {
+        font-size: 18px;
+    }
+
+    /*comentario*/
+    section.comentario {
+        padding: 20px;
+    }
+    section.comentario h2 {
+        font-size: 30px;
+        margin: 20px;
+    }
+    .row {
+        display: flex;
+        justify-self: center;
+    }
+
+    /*quem somos*/
+    #sobre {
+        display: flex;
+        padding: 20px 0;
+        justify-content: center;
+    }
+    .container-quem .p-1 {
+        width: 90%;
+        text-align: justify;
+        font-size: 1rem;
+        padding: 2px;
+    }
+
+    .container-quem-somos p {
+        margin-top: 15px;
+        font-size: 1.2rem;
+        color: white;
+        text-align: justify;
+        /* Alinha o texto pelo modo Justificado */
+        line-height: 1.6;
+        /* Opicional: melhora a legibilidade */
+        font-weight: normal;
+        max-width: 100%;
+        align-content: center;
+    }
+
+    .container-quem-somos {
+        padding: 0;
+        margin: 0;
+    }
+
+    .container-quem {
+        width: auto;
+    }
+
+    .container-quem .row {
+        width: 90%;
+    }
+
+    .container-quem .row .p-2 p {
+        font-size: 1.2rem;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .container-quem-somos .icones {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .container-quem-somos .row-q img {
+        min-height: 50px;
+        width: 100%;
+    }
+
+    .container-quem-somos .col-12 {
+        padding: 2px;
+        max-width: 100%;
+    }
+
+    /*contato*/
+    .contato video {
+        display: none;
+        /* Mantém a proporção do vídeo */
+    }
+
+    .contato .img-contato img {
+        height: 250px;
+        width: 250px;
+        margin: 0;
+    }
+
+    section.contato .txt-contato h2 {
+        text-align: center;
+        font-size: 25px;
+        line-height: 40px;
+        margin-bottom: 30px;
+    }
+
+    section.contato .txt-contato h2 span {
+        font-size: 25px;
+        display: block;
+    }
+
+    .txt-contato p {
+        justify-self: center;
+        max-width: 90%;
+    }
+
+    .btn-social button {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        margin: 0px 0px;
+        max-width: 100%;
+    }
+
+    .contato .btn-social .fa-brands {
+        color: white;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-self: center;
+        margin: 0;
+    }
+
+    /*rodape*/
+    .rodape p {
+        font-size: 22px;
+        color: black;
+    }
+
+}
+
