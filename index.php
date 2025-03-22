@@ -79,7 +79,7 @@
             </div>
         </section>
 
-        <section id="comentario" class="comentario d-flex flex-column align-items-center">
+        <section class="comentario" id="comentario" class="comentario d-flex flex-column align-items-center">
             <h2>Depoimentos Recentes</h2>
             <div class="container">
                 <div class="row">
@@ -157,7 +157,7 @@
                     Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
                 </p>
                 <div class="row">
-                    <div class="col-12 col-md-6 p-2">
+                    <div class="p-2 col-12 col-md-6">
                         <p>
                             O Ateliê Connect é uma plataforma inovadora que conecta pessoas a profissionais
                             especializados em moda, como estilistas, consultores de imagem e personal shoppers. Nosso
@@ -176,7 +176,6 @@
                 </div>
         </section>
 
-
         <section class="contato" id="contato">
             <video autoplay loop muted playsinline>
                 <source src="./assets/video/video_Developers2.mov" type="video/mp4">
@@ -185,7 +184,7 @@
 
             <div class="txt-contato">
                 <div class="img-contato">
-                    <img src="./ASSETS/IMG/developersRGTsemfundo2.png">
+                    <img src="./assets/img/developersRGTsemfundo2.png">
                 </div>
                 <h2>MUITO PRAZER, <span>SOMOS A DEVELOPER RGT</span></h2>
                 <p>
