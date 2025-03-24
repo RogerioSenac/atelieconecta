@@ -739,21 +739,22 @@ form a {
         flex: 1 1 30%;
         /*ajuste do tamanho do card*/
     }
-    
+
     .row .service-item img {
         margin-top: 10px;
         height: 30%;
         /* Ajuste a altura das imagens para telas menores */
         border-radius: none;
     }
-    
+
     section.services p.tesoura {
         color: white;
         font-size: 9pt;
         font-weight: normal;
         /* border: solid red; */
     }
-/* 
+
+    /* 
   
     /*comentario*/
     section.comentario {
@@ -791,12 +792,14 @@ form a {
         gap: 0px;
         width: 100%;
     }
-    section.container-quem-somos .container-quem{
+
+    section.container-quem-somos .container-quem {
         padding: 0px 0px;
         margin: 0px 0px;
 
     }
-    section.container-quem-somos .container-quem .row{
+
+    section.container-quem-somos .container-quem .row {
         margin: 0px;
         padding: 0px;
         width: auto;
@@ -813,10 +816,10 @@ form a {
         width: 100%;
     }
 
-    .container-quem .row .p-2 p{
+    .container-quem .row .p-2 p {
         margin: 0px 0px;
         padding: 0px 0px;
-        width: auto ;
+        width: auto;
         margin: 0px;
         font-size: 1rem;
         text-align: justify;
@@ -832,34 +835,42 @@ form a {
         /* Mantém a proporção do vídeo */
     }
 
-    section.contato .txt-contato {
-        margin: 0;
-        padding: 0;
-        width: 100%;
+    section.contato {
+        border: solid red;
     }
 
-    .contato .img-contato img {
+    section.contato .txt-contato .img-contato img {
         height: 200px;
         width: 200px;
         margin-top: 0px;
+        margin-left: 0px;
+        margin: 0px;
+    }
+
+    section.contato .txt-contato p {
+        /* margin: 0px; */
+        margin-left: 0px;
+        margin-top: 0px;
+        justify-self: center;
+        align-self: auto;
+        width: 100%;
+        font-size: 1rem;
+        border: solid green;
     }
 
     section.contato .txt-contato h2 {
+        margin-left: 1000px;
+        margin-top: 0px;
+        justify-self: center;
         text-align: center;
-        font-size: 15px;
-        line-height: 40px;
-        margin-bottom: 30px;
+        font-size: 5pt;
+        /* line-height: 40px;
+        margin-bottom: 30px; */
     }
 
     section.contato .txt-contato h2 span {
-        font-size: 15px;
+        font-size: 5pt;
         display: block;
-    }
-
-    .txt-contato p {
-        justify-self: center;
-        max-width: 90%;
-        font-size: 1rem;
     }
 
     section.contato .btn-social button {
