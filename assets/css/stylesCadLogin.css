@@ -331,28 +331,102 @@ h2 {
     border-radius: 10px;  
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
     position: relative;  
-} 
+}
+
+/* Container do banner com posição relativa */
+.banner-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 300px;
+}
+
+/* Banner principal */
 .profile-container .banner {  
-    background: url(../img/loginUsuario10.jpeg);  
     background-size: cover;  
-    height: 300px;  
+    height: 100%;
+    width: 100%;
     border-radius: 10px 10px 0 0;  
     z-index: 0;  
 }
+
+/* Ícone da câmera para o banner - rodapé direito */
+.camera-icon-banner {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border: 2px solid white;
+}
+
+.camera-icon-banner:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
 .profile-header {  
     text-align: left;  
     margin-top: -5px;  
-}  
-.profile-img {  
-    width: 120px;  
-    height: 120px;  
-    border-radius: 50%;  
-    object-fit: cover;  
-    border: 3px solid #ffffff;  
-    margin-top: -150px;  
-}  
-.data-setion {  
+}
+
+/* Container da foto de perfil */
+.profile-img-container {
+    position: relative;
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    margin-left: 20px;
+    z-index: 1;
+}
+
+/* Foto de perfil */
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ícone da câmera para a foto de perfil */
+.camera-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border: 2px solid white;
+}
+
+.camera-icon:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+.data-section {  
     text-align: left; 
+    padding: 20px;
 }  
 .data-section p {  
     font-weight: normal;  
@@ -395,12 +469,9 @@ h2 {
     margin-top: 10px; 
     font-size: 15px; 
 } 
-/* .info-item {  
-    margin-right: 20px;  
-}   */
 .info-item i {  
     margin-right: 5px;  
-    color: #007bff; /* Cor do ícone */  
+    color: #007bff;
 }  
 .tagService{
     padding: 10px;
@@ -414,13 +485,6 @@ h2 {
     gap: 15px;
     justify-items: center;
     margin-top: 10px;
-}
-.services-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    justify-items: center;
-    margin-top: 15px;
 }
 .service-card {
     display: flex;
@@ -446,7 +510,95 @@ h2 {
 .dadosSociais p{
     text-align: left;
 }
+/* **** Adicionado por Wagner ***** */
+.edit-icon {
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 10px;
+}
 
+.edit-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Modal Customizado */
+.custom-modal {
+    background: linear-gradient(135deg, #f8f9fa, #e3e7ea);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.custom-modal .modal-header {
+    background: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 15px;
+}
+
+.custom-modal .modal-title {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.custom-modal .modal-body {
+    padding: 20px;
+    font-size: 1rem;
+}
+
+.custom-modal .modal-footer {
+    background: #f1f1f1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 15px;
+}
+
+.section-title {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+
+
+    /* ** Fim Inserção Wagner **  */
 /* Responsividade */
 @media screen and (max-width: 768px) {
     .box {
@@ -465,6 +617,28 @@ h2 {
         font-size: 20pt;
     }
 
+    .profile-img-container {
+        width: 100px;
+        height: 100px;
+        margin-top: -50px;
+    }
+
+    .profile-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .camera-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .camera-icon-banner {
+        width: 30px;
+        height: 30px;
+    }
+}
+
 @media (max-width: 480px) {
     .box {
         width: 90%;
@@ -479,5 +653,18 @@ h2 {
     .botoes-container .back {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    .info-row-nome {
+        font-size: 24px;
+    }
+
+    .info-row-end,
+    .info-row-complEnd {
+        font-size: 16px;
+    }
+
+    .tagService {
+        font-size: 24px;
     }
 }
