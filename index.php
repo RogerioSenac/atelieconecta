@@ -153,7 +153,7 @@
                         <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
-                <p class="p1">
+                <p>
                     Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
                 </p>
                 <div class="row">
@@ -186,7 +186,7 @@
                 <div class="img-contato">
                     <img src="./assets/img/developersRGTsemfundo2.png">
                 </div>
-                <h2>MUITO PRAZER, <span>SOMOS A DEVELOPER RGT</span></h2>
+                <p class="somosadev">MUITO PRAZER,<br> <span>SOMOS A DEVELOPER RGT</span></p>
                 <p>
                     A <span>Developer RGT</span> é formada por talentosos alunos do curso técnico de
                     Informática para Internet do <span>SENAC REGISTRO</span>, unidos pela paixão por tecnologia e
