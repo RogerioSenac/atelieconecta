@@ -791,6 +791,16 @@ form a {
         gap: 0px;
         width: 100%;
     }
+    section.container-quem-somos .container-quem{
+        padding: 0px 0px;
+        margin: 0px 0px;
+
+    }
+    section.container-quem-somos .container-quem .row{
+        margin: 0px;
+        padding: 0px;
+        width: auto;
+    }
 
     .container-quem .col-12 {
         margin: 0px;
@@ -803,10 +813,13 @@ form a {
         width: 100%;
     }
 
-    .container-quem p {
-        max-width: 100%;
-        margin: 5px;
+    .container-quem .row .p-2 p{
+        margin: 0px 0px;
+        padding: 0px 0px;
+        width: auto ;
+        margin: 0px;
         font-size: 1rem;
+        text-align: justify;
     }
 
     .container-quem .row {

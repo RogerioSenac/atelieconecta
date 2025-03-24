@@ -165,7 +165,7 @@
                             e sugestões de looks que atendem às necessidades e estilos de cada indivíduo.
                         </p>
                     </div>
-                    <div class="col-12 col-md-6 p-2">
+                    <div class="p-2 col-12 col-md-6 ">
                         <p>
                             Com uma interface prática e intuitiva, o Ateliê Connect oferece uma experiência única,
                             permitindo agendar consultas, explorar portfólios e receber dicas de profissionais
