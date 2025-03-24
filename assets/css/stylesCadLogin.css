@@ -510,7 +510,95 @@ h2 {
 .dadosSociais p{
     text-align: left;
 }
+/* **** Adicionado por Wagner ***** */
+.edit-icon {
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 10px;
+}
 
+.edit-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Modal Customizado */
+.custom-modal {
+    background: linear-gradient(135deg, #f8f9fa, #e3e7ea);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.custom-modal .modal-header {
+    background: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 15px;
+}
+
+.custom-modal .modal-title {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.custom-modal .modal-body {
+    padding: 20px;
+    font-size: 1rem;
+}
+
+.custom-modal .modal-footer {
+    background: #f1f1f1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 15px;
+}
+
+.section-title {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+
+
+    /* ** Fim Inserção Wagner **  */
 /* Responsividade */
 @media screen and (max-width: 768px) {
     .box {
