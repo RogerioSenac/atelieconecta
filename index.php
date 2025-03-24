@@ -50,29 +50,29 @@
                 <div class="row">
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-1.jpeg" alt="Serviço 1">
-                        <p>Customização</p>
+                        <p class="tesoura">Customização</p>
                     </div>
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-2.jpeg" alt="Serviço 2">
-                        <p>Ateliê sob Medida</p>
+                        <p class="tesoura">Ateliê sob Medida</p>
                     </div>
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-3.jpeg" alt="Serviço 3">
-                        <p>Consertos e Ajuste</p>
+                        <p class="tesoura">Consertos e Ajuste</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-4.jpeg" alt="Serviço 4">
-                        <p>Estilista</p>
+                        <p class="tesoura">Estilista</p>
                     </div>
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-6.jpeg" alt="Serviço 5">
-                        <p>Roupas Personalizadas</p>
+                        <p class="tesoura">Roupas Personalizadas</p>
                     </div>
                     <div class="col-6 col-md-4 service-item">
                         <img src="./assets/img/servico-5.jpeg" alt="Serviço 6">
-                        <p>Modelagem</p>
+                        <p class="tesoura">Modelagem</p>
                     </div>
                 </div>
             </div>
