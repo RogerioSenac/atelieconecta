@@ -124,16 +124,27 @@ function formatSocialLink($value, $type) {
 function getSocialLink($value, $type) {
     if (empty($value)) return '#';
     
-    $value = (string)$value; // Garante que é string
+    $value = (string)$value;
+    $value = trim($value); // Remove espaços extras
     
     switch ($type) {
         case 'whatsapp':
             $numero = preg_replace('/[^0-9]/', '', $value);
             return 'https://wa.me/55' . $numero;
+            
         case 'instagram':
-            return 'https://instagram.com/' . str_replace('@', '', $value);
+            $usuario = str_replace(['@', 'https://instagram.com/', 'https://www.instagram.com/'], '', $value);
+            return 'https://instagram.com/' . $usuario;
+            
         case 'facebook':
-            return 'https://facebook.com/' . $value;
+            // Remove todos os prefixos possíveis
+            $perfil = str_replace(
+                ['https://facebook.com/', 'https://www.facebook.com/', 'facebook.com/'], 
+                '', 
+                $value
+            );
+            return 'https://www.facebook.com/' . $perfil;
+            
         default:
             return '#';
     }
@@ -435,104 +446,105 @@ unset($_SESSION['alert']);
                             </a>
                             <?php endif; ?>
                         </div>
-                </div>
-
-                <p class="tagService">Serviços Principais:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
-                            alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
                     </div>
-                    <?php endforeach; ?>
-                </div>
 
-                <p class="tagService mt-3">Outros Serviços:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                    <p class="tagService">Serviços Principais:</p>
+                    <div class="services-container">
+                        <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
+                                alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
 
-            <div class="logout text-center mt-3">
-                <a href="logout.php" class="btn btn-danger">Sair</a>
-            </div>
-        </div>
-    </div>
-    <!-- Modal de Edição de Dados Pessoais -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content custom-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <p class="tagService mt-3">Outros Serviços:</p>
+                    <div class="services-container">
+                        <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editNome" class="form-label">Nome</label>
-                                <input type="text" class="form-control" id="editNome" name="editNome" required>
-                                <div class="invalid-feedback">Por favor, insira seu nome.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editCel" class="form-label">Celular</label>
-                                <input type="text" class="form-control" id="editCel" name="editCel" required>
-                                <div class="invalid-feedback">Por favor, insira um celular válido.</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editEmail" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" id="editEmail" name="editEmail" required>
-                                <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editCep" class="form-label">CEP</label>
-                                <input type="text" class="form-control" id="editCep" name="editCep" required>
-                                <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
-                            </div>
-                        </div>
-                        <h6 class="section-title">Endereço</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editRua" class="form-label">Rua</label>
-                                <input type="text" class="form-control" id="editRua" name="editRua" required>
-                                <div class="invalid-feedback">Por favor, insira a rua.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editBairro" class="form-label">Bairro</label>
-                                <input type="text" class="form-control" id="editBairro" name="editBairro" required>
-                                <div class="invalid-feedback">Por favor, insira o bairro.</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editCidade" class="form-label">Cidade</label>
-                                <input type="text" class="form-control" id="editCidade" name="editCidade" required>
-                                <div class="invalid-feedback">Por favor, insira a cidade.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editEstado" class="form-label">Estado</label>
-                                <input type="text" class="form-control" id="editEstado" name="editEstado" required>
-                                <div class="invalid-feedback">Por favor, insira o estado.</div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                        </div>
-                    </form>
+
+                <div class="logout text-center mt-3">
+                    <a href="logout.php" class="btn btn-danger">Sair</a>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Modal de Edição de Dados Pessoais -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editNome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="editNome" name="editNome" required>
+                                    <div class="invalid-feedback">Por favor, insira seu nome.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCel" class="form-label">Celular</label>
+                                    <input type="text" class="form-control" id="editCel" name="editCel" required>
+                                    <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editEmail" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="editEmail" name="editEmail" required>
+                                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCep" class="form-label">CEP</label>
+                                    <input type="text" class="form-control" id="editCep" name="editCep" required>
+                                    <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                                </div>
+                            </div>
+                            <h6 class="section-title">Endereço</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editRua" class="form-label">Rua</label>
+                                    <input type="text" class="form-control" id="editRua" name="editRua" required>
+                                    <div class="invalid-feedback">Por favor, insira a rua.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editBairro" class="form-label">Bairro</label>
+                                    <input type="text" class="form-control" id="editBairro" name="editBairro" required>
+                                    <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCidade" class="form-label">Cidade</label>
+                                    <input type="text" class="form-control" id="editCidade" name="editCidade" required>
+                                    <div class="invalid-feedback">Por favor, insira a cidade.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editEstado" class="form-label">Estado</label>
+                                    <input type="text" class="form-control" id="editEstado" name="editEstado" required>
+                                    <div class="invalid-feedback">Por favor, insira o estado.</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Redes Sociais -->
