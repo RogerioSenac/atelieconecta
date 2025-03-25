@@ -24,6 +24,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Exception\FirebaseException;
 
 // Verifica se a extensão GD está habilitada
 if (!extension_loaded('gd')) {
@@ -78,9 +79,9 @@ function processarImagem($arquivo, $pastaDestino, $largura, $altura) {
     global $manager;
     
     // Verifica tipo de arquivo
-    $permitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    $permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!in_array($arquivo['type'], $permitidos)) {
-        throw new Exception("Tipo de arquivo não permitido. Use JPEG, PNG ou GIF.");
+        throw new Exception("Tipo de arquivo não permitido. Use JPEG, PNG, GIF ou WEBP.");
     }
     
     // Verifica tamanho do arquivo (máximo 5MB)
@@ -110,12 +111,41 @@ function formatSocialLink($value, $type) {
     
     switch ($type) {
         case 'whatsapp':
+            // Remove tudo que não é número
             $numero = preg_replace('/[^0-9]/', '', $value);
-            return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $numero);
+            
+            // Verifica se tem código do país (padrão: 55 para Brasil)
+            if (strlen($numero) > 11) {
+                $codigoPais = substr($numero, 0, 2);
+                $restante = substr($numero, 2);
+            } else {
+                $codigoPais = '55'; // Assume Brasil se não tiver código
+                $restante = $numero;
+            }
+            
+            // Formata o número (XX) XXXXX-XXXX
+            if (strlen($restante) === 11) {
+                return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $restante);
+            }
+            return $restante; // Retorna sem formatação se não tiver tamanho esperado
+            
         case 'instagram':
-            return '@' . str_replace('@', '', $value);
+            $perfil = str_replace(
+                ['https://instagram.com/', 'https://www.instagram.com/', '@'], 
+                '', 
+                $value
+            );
+            return '@' . $perfil;
+            
         case 'facebook':
-            return $value;
+            // Extrai apenas o nome do perfil (remove URLs)
+            $perfil = str_replace(
+                ['https://facebook.com/', 'https://www.facebook.com/', 'facebook.com/'], 
+                '', 
+                $value
+            );
+            return $perfil; // Mostra apenas o nome sem o domínio
+            
         default:
             return $value;
     }
@@ -125,12 +155,18 @@ function getSocialLink($value, $type) {
     if (empty($value)) return '#';
     
     $value = (string)$value;
-    $value = trim($value); // Remove espaços extras
+    $value = trim($value);
     
     switch ($type) {
         case 'whatsapp':
+            // Remove tudo que não é número
             $numero = preg_replace('/[^0-9]/', '', $value);
-            return 'https://wa.me/55' . $numero;
+            
+            // Verifica se já tem código do país
+            if (strlen($numero) <= 11) {
+                $numero = '55' . $numero; // Adiciona código do Brasil se não tiver
+            }
+            return 'https://wa.me/' . $numero;
             
         case 'instagram':
             $usuario = str_replace(['@', 'https://instagram.com/', 'https://www.instagram.com/'], '', $value);
@@ -292,11 +328,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
     exit();
 }
 
+// Processa alteração de senha
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    $currentPassword = $_POST['currentPassword'];
+    $newPassword = $_POST['newPassword'];
+    $confirmPassword = $_POST['confirmPassword'];
+
+    // Verifica se a senha atual está correta
+    if (!password_verify($currentPassword, $user['acesso']['senha'])) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Senha atual incorreta!'];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    // Verifica se as novas senhas coincidem
+    if ($newPassword !== $confirmPassword) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'As novas senhas não coincidem!'];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    // Verifica força da senha (opcional)
+    if (strlen($newPassword) < 8) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'A senha deve ter pelo menos 8 caracteres!'];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    try {
+        // Atualiza a senha
+        $newHashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        $database->getReference('userProf/' . $userKey . '/acesso/senha')->set($newHashedPassword);
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Senha alterada com sucesso!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar senha: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
+}
+
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -322,6 +407,46 @@ unset($_SESSION['alert']);
     .was-validated .form-control:invalid~.invalid-feedback {
         display: block;
     }
+
+    .password-strength {
+        height: 5px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        background: #eee;
+    }
+
+    .password-strength span {
+        display: block;
+        height: 100%;
+        transition: all 0.3s;
+    }
+
+    .password-weak span {
+        background: #ff4d4d;
+        width: 30%;
+    }
+
+    .password-medium span {
+        background: #ffcc00;
+        width: 60%;
+    }
+
+    .password-strong span {
+        background: #00cc66;
+        width: 100%;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .logout-confirm {
+        display: none;
+        margin-top: 10px;
+    }
     </style>
 </head>
 
@@ -329,7 +454,7 @@ unset($_SESSION['alert']);
     <?php if ($alert): ?>
     <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show" role="alert"
         style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-        <?= $alert['message'] ?>
+        <?= htmlspecialchars($alert['message'], ENT_QUOTES, 'UTF-8') ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <script>
@@ -351,6 +476,7 @@ unset($_SESSION['alert']);
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                     <input type="file" id="uploadBanner" name="fotoBanner" accept="image/*">
                 </form>
+                <img id="bannerPreview" class="preview-image" alt="Pré-visualização do banner">
             </div>
 
             <!-- Foto de perfil com ícone de câmera para upload -->
@@ -366,6 +492,7 @@ unset($_SESSION['alert']);
                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                         <input type="file" id="uploadImage" name="fotoPerfil" accept="image/*">
                     </form>
+                    <img id="profilePreview" class="preview-image" alt="Pré-visualização da foto de perfil">
                 </div>
             </div>
 
@@ -471,7 +598,12 @@ unset($_SESSION['alert']);
                 </div>
 
                 <div class="logout text-center mt-3">
-                    <a href="logout.php" class="btn btn-danger">Sair</a>
+                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
+                    <div class="logout-confirm" id="logoutConfirm">
+                        <p>Tem certeza que deseja sair?</p>
+                        <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
+                        <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -545,46 +677,90 @@ unset($_SESSION['alert']);
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal Redes Sociais -->
-    <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content custom-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="redesForm" method="POST" action="dashAcessoProf.php">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+        <!-- Modal Redes Sociais -->
+        <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="redesForm" method="POST" action="dashAcessoProf.php">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
-                            <input type="text" class="form-control" name="whatsapp"
-                                value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
-                            <div class="input-group">
-                                <span class="input-group-text">@</span>
-                                <input type="text" class="form-control" name="instagram"
-                                    value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
+                                <input type="text" class="form-control" name="whatsapp"
+                                    value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
-                            <input type="text" class="form-control" name="facebook"
-                                value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">@</span>
+                                    <input type="text" class="form-control" name="instagram"
+                                        value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                </div>
+                            </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </div>
-                    </form>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
+                                <input type="text" class="form-control" name="facebook"
+                                    value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Alterar Senha -->
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="passwordForm" method="POST" action="dashAcessoProf.php">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Senha Atual</label>
+                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Nova Senha</label>
+                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                <div class="invalid-feedback">Por favor, insira uma nova senha.</div>
+                                <div class="password-strength">
+                                    <span></span>
+                                </div>
+                                <small class="text-muted">A senha deve ter pelo menos 8 caracteres.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                <div class="invalid-feedback">As senhas não coincidem.</div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
