@@ -710,55 +710,56 @@ form a {
     /* --- Header --- */
     header {
         width: 100%;
-        margin: 0;
-        padding: 5px 0;
+        margin: 5px;
+        padding: 5px 0px;
     }
 
     header .container {
-        flex-direction: column;
+        flex-direction: row;
         padding: 5px;
         width: 100%;
     }
-
+    
     .logo {
-        height: 30px;
+        height: 90px;
         margin-bottom: 5px;
     }
-
+    
     nav ul {
         gap: 10px;
         flex-wrap: wrap;
         justify-content: center;
         padding: 0;
     }
-
+    
     nav ul li a {
         font-size: 12px;
     }
-
+    
     .login-btn {
         padding: 5px 10px;
         font-size: 12px;
         margin-top: 5px;
     }
-
+    
     /* --- Banner --- */
     .banner {
         padding: 40px 0;
         margin: 5px;
-        min-height: 50vh;
+        min-height: 90vh;
         background-size: cover;
     }
-
+    
     .banner h1 {
         font-size: 1em;
-        margin-top: 60px;
-        padding: 0 10px;
+        /* margin-top: 290px; */
+        padding: 50px 10px;
     }
 
     .banner p {
         font-size: 0.9em;
         padding: 0 10px;
+        margin-top: -50px;
     }
 
     /* --- Serviços --- */
