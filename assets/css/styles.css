@@ -693,15 +693,65 @@ form a {
     cursor: pointer;
 }
 
+/* Estilo base para os botões sociais */
+.btn-social button {
+    color: white;
+    border-radius: 50%;
+    border: none;
+    background-color: #ff8400;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Tamanhos responsivos */
+
+.btn-social button {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    margin: 0 5px;
+}
+
+@media (min-width: 375px) {
+    .btn-social button {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 425px) {
+    .btn-social button {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 768px) {
+    .btn-social button {
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .btn-social button {
+        width: 60px;
+        height: 60px;
+        font-size: 25px;
+    }
+}
+
 
 
 /*************************************************/
 /***            Responsividade                 ***/
 /*************************************************/
 
-/* Mobile */
 /* Reset Básico para 320px */
-@media (min-width: 320px) and (max-width: 425px) {
+@media (max-width: 320px) {
     body {
         overflow-x: hidden;
         font-size: 14px;
@@ -802,7 +852,7 @@ form a {
     /* --- Depoimentos --- */
     .comentario {
         padding: 30px 0;
-        margin: 0;
+        margin: 5px;
         min-height: auto;
     }
 
@@ -832,6 +882,7 @@ form a {
         padding: 20px 10px;
         min-height: auto;
         background-size: cover;
+        margin: 5px;
     }
 
     .container-quem-somos p {
@@ -841,7 +892,7 @@ form a {
     }
 
     .icones {
-        height: 150px;
+        height: 50px;
         margin-bottom: 15px;
     }
 
@@ -850,6 +901,7 @@ form a {
         flex-direction: column;
         padding: 20px 10px;
         min-height: auto;
+        margin: 5px;
     }
 
     .contato video {
@@ -877,16 +929,11 @@ form a {
         font-size: 1.2em;
     }
 
-    .btn-social button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-        margin: 0 5px;
-    }
 
     /* --- Rodapé --- */
     footer {
         padding: 10px 0;
+        margin: 5px;
     }
 
     .txt_logo {
@@ -1013,29 +1060,41 @@ form a {
         margin-top: -50px;
     }
 
-
-    /* --- Serviços --- */
-    .services {
-        padding: 50px 0;
-        background-size: cover;
-    }
-
-    .services .container {
-        flex-direction: column;
-        gap: 15px;
+    /* Ajustes específicos para a seção de serviços */
+    .services .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .service-item {
-        flex: 1 1 100%;
-        margin: 0 10px;
+        flex: 0 0 50% !important;
+        /* Força 2 colunas */
+        max-width: 50% !important;
+        padding: 5px;
+        box-sizing: border-box;
     }
 
     .services img {
-        height: 150px;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100px !important;
     }
 
-    .services p {
-        font-size: 14px;
+    .services .tesoura {
+        font-size: 12px !important;
+        padding: 5px;
+    }
+
+    /* Remove margens e padding conflitantes */
+    .services .container {
+        padding: 0 5px !important;
+        margin: 0 !important;
+    }
+
+    /* Garante que as linhas não tenham espaçamento extra */
+    .row {
+        margin: 0 !important;
     }
 
     /* --- Depoimentos --- */
@@ -1111,21 +1170,6 @@ form a {
     section.contato .txt-contato p {
         font-size: 14px;
         max-width: 100%;
-    }
-
-    .btn-social {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    section.contato .btn-social button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-
-    section.contato .btn-social i {
-        font-size: 30px;
     }
 
     /* --- Rodapé --- */
@@ -1293,20 +1337,6 @@ form a {
         max-width: 100%;
     }
 
-    .btn-social {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    section.contato .btn-social button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-
-    section.contato .btn-social i {
-        font-size: 30px;
-    }
 
     /* --- Rodapé --- */
     footer {
@@ -1445,7 +1475,7 @@ form a {
     }
 
 
-    .contato video{
+    .contato video {
         display: none;
     }
 
@@ -1478,19 +1508,174 @@ form a {
         max-width: 100%;
     }
 
-    .btn-social {
+    /* --- Rodapé --- */
+    footer {
+        padding: 15px 0;
+    }
+
+    .txt_logo {
+        width: 200px;
+    }
+
+    .logo_dev {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (max-width: 1024px) {
+
+    /* --- Reset Básico --- */
+    body {
+        overflow-x: hidden;
+        /* Evita rolagem horizontal */
+    }
+
+    /* --- Header --- */
+    header .container {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        gap: 15px;
         flex-wrap: wrap;
-        gap: 30px;
+        justify-content: center;
     }
 
-    section.contato .btn-social button {
-        width: 35px;
-        height: 35px;
-        font-size: 15px;
+    nav ul li a {
+        font-size: 12pt;
     }
 
-    section.contato .btn-social i {
+    .login-btn {
+        padding: 8px 15px;
+        margin-top: 10px;
+    }
+
+    /* --- Banner --- */
+    .banner {
+        padding: 60px 0;
+        background-size: cover;
+    }
+
+    .banner h1 {
+        font-size: 1.5em;
+        padding: 30px 10px;
+    }
+
+    .banner p {
+        font-size: 0.9em;
+        padding: 0 10px;
+        margin-top: -50px;
+    }
+
+
+    /* --- Serviços --- */
+    .services {
+        padding: 100px 0;
+        background-size: cover;
+    }
+
+    .services .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .service-item {
+        flex: 1 1 100%;
+        margin: 0 10px;
+    }
+
+    .services img {
+        height: 150px;
+    }
+
+    .services p {
+        font-size: 14px;
+    }
+
+    /* --- Depoimentos --- */
+    .comentario {
+        padding: 50px 0;
+    }
+
+    .depoimento-item {
+        width: 90%;
+        margin: 0 auto 15px;
+    }
+
+    .user-photo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .h5_depoimento {
+        font-size: 1rem;
+    }
+
+    .p_depoimento {
+        font-size: 0.9rem;
+    }
+
+    /* --- Quem Somos --- */
+    .container-quem-somos {
+        flex-direction: column;
+        padding: 30px 15px;
+    }
+
+    .container-quem-somos p {
+        font-size: 1rem;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .icones {
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    /* --- Contato --- */
+    section.contato {
+        flex-direction: column;
+        padding: 20px 20px;
+    }
+
+
+    .contato video {
+        display: none;
+    }
+
+    section.contato .txt-contato {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+    }
+
+    section.contato .img-contato img {
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+        margin-left: 0px;
+    }
+
+    section.contato .txt-contato .somosadev {
+        font-size: 18px;
+        line-height: 1.4;
+        text-align: center;
+        justify-self: center;
+    }
+
+    section.contato .txt-contato .somosadev p span {
         font-size: 20px;
+    }
+
+    section.contato .txt-contato p {
+        font-size: 14px;
+        max-width: 100%;
     }
 
     /* --- Rodapé --- */
@@ -1506,5 +1691,6 @@ form a {
         width: 70px;
         height: 70px;
     }
+
 
 }
