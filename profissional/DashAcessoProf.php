@@ -5,6 +5,11 @@ if (!isset($_SESSION['logado'])) {
     exit();
 }
 
+// Gera token CSRF se não existir
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Obtém o email da sessão
 $email = $_SESSION['email'];
 
@@ -38,7 +43,7 @@ $database = $factory->createDatabase();
 try {
     $userData = $database->getReference('userProf')
         ->orderByChild('acesso/email')
-        ->equalTo($email) // Certifique-se de que $email é uma string válida
+        ->equalTo($email)
         ->getValue();
 
     if (empty($userData)) {
@@ -52,89 +57,147 @@ try {
     die("Erro ao buscar dados do usuário: " . $e->getMessage());
 }
 
-// Função para redimensionar e salvar a imagem
+// Função para validar e redimensionar imagem
 function processarImagem($arquivo, $pastaDestino, $largura, $altura) {
     global $manager;
-
-    $nomeArquivo = uniqid() . '.' . pathinfo($arquivo['name'], PATHINFO_EXTENSION); // Gera um nome único para o arquivo
+    
+    // Verifica tipo de arquivo
+    $permitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($arquivo['type'], $permitidos)) {
+        throw new Exception("Tipo de arquivo não permitido. Use JPEG, PNG ou GIF.");
+    }
+    
+    // Verifica tamanho do arquivo (máximo 5MB)
+    if ($arquivo['size'] > 5 * 1024 * 1024) {
+        throw new Exception("O arquivo é muito grande. Tamanho máximo: 5MB.");
+    }
+    
+    $nomeArquivo = uniqid() . '.' . pathinfo($arquivo['name'], PATHINFO_EXTENSION);
     $caminhoCompleto = $pastaDestino . $nomeArquivo;
 
-    // Redimensiona e salva a imagem
-    $imagem = $manager->read($arquivo['tmp_name'])
-        ->resize($largura, $altura) // Redimensiona a imagem para o tamanho desejado
-        ->save($caminhoCompleto, 75); // Salva a imagem com 75% de qualidade (ajuste conforme necessário)
-
-    return $caminhoCompleto;
+    try {
+        $imagem = $manager->read($arquivo['tmp_name'])
+            ->resize($largura, $altura)
+            ->save($caminhoCompleto, 75);
+            
+        return $caminhoCompleto;
+    } catch (Exception $e) {
+        throw new Exception("Erro ao processar imagem: " . $e->getMessage());
+    }
 }
 
 // Processa o upload da nova foto de perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_FILES['fotoPerfil']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = '../assets/uploads/'; // Pasta onde as imagens serão salvas
-
-    // Redimensiona e salva a imagem do perfil (exemplo: 200x200 pixels)
+    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+    
+    $uploadDir = '../assets/uploads/';
+    
     try {
         $caminhoImagem = processarImagem($_FILES['fotoPerfil'], $uploadDir, 200, 200);
-
-        // Atualiza o banco de dados com o novo caminho da imagem
         $database->getReference('userProf/' . $userKey . '/fotoPerfil')->set($caminhoImagem);
-
-        // Atualiza a variável $user para refletir a nova foto
         $user['fotoPerfil'] = $caminhoImagem;
-
-        echo "<script>alert('Foto de perfil atualizada com sucesso!');</script>";
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Foto de perfil atualizada com sucesso!'];
     } catch (Exception $e) {
-        echo "<script>alert('Erro ao processar a imagem: " . $e->getMessage() . "');</script>";
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao processar a imagem: ' . $e->getMessage()];
     }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
 }
 
 // Processa o upload da nova foto do banner
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_FILES['fotoBanner']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = '../assets/uploads/'; // Pasta onde as imagens serão salvas
-
-    // Redimensiona e salva a imagem do banner (exemplo: 1200x300 pixels)
+    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+    
+    $uploadDir = '../assets/uploads/';
+    
     try {
         $caminhoImagem = processarImagem($_FILES['fotoBanner'], $uploadDir, 1200, 300);
-
-        // Atualiza o banco de dados com o novo caminho da imagem
         $database->getReference('userProf/' . $userKey . '/fotoBanner')->set($caminhoImagem);
-
-        // Atualiza a variável $user para refletir a nova foto
         $user['fotoBanner'] = $caminhoImagem;
-
-        echo "<script>alert('Foto do banner atualizada com sucesso!');</script>";
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Foto do banner atualizada com sucesso!'];
     } catch (Exception $e) {
-        echo "<script>alert('Erro ao processar a imagem: " . $e->getMessage() . "');</script>";
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao processar a imagem: ' . $e->getMessage()];
     }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
 }
 
-// Processa as alterações de dados do usuário (nome, celular, etc.)
+// Processa as alterações de dados do usuário
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset($_POST['editCel'])) {
-    // Captura os dados do formulário
-    $novoNome = $_POST['editNome'];
-    $novoCel = $_POST['editCel'];
-    $novoEmail = $_POST['editEmail'];
-    $novoCep = $_POST['editCep'];
-    $novoRua = $_POST['editRua'];
-    $novoBairro = $_POST['editBairro'];
-    $novoCidade = $_POST['editCidade'];
-    $novoEstado = $_POST['editEstado'];
-
-    // Atualiza os dados no banco de dados
-    try {
-        $database->getReference('userProf/' . $userKey . '/nome')->set($novoNome);
-        $database->getReference('userProf/' . $userKey . '/cel')->set($novoCel);
-        $database->getReference('userProf/' . $userKey . '/acesso/email')->set($novoEmail);
-        $database->getReference('userProf/' . $userKey . '/endereco/cep')->set($novoCep);
-        $database->getReference('userProf/' . $userKey . '/endereco/rua')->set($novoRua);
-        $database->getReference('userProf/' . $userKey . '/endereco/bairro')->set($novoBairro);
-        $database->getReference('userProf/' . $userKey . '/endereco/cidade')->set($novoCidade);
-        $database->getReference('userProf/' . $userKey . '/endereco/estado')->set($novoEstado);
-
-        echo "<script>alert('Dados atualizados com sucesso!');</script>";
-    } catch (Exception $e) {
-        echo "<script>alert('Erro ao atualizar dados: " . $e->getMessage() . "');</script>";
+    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
     }
+    
+    // Validação dos dados
+    $novoNome = filter_var($_POST['editNome'], FILTER_SANITIZE_STRING);
+    $novoCel = filter_var($_POST['editCel'], FILTER_SANITIZE_STRING);
+    $novoEmail = filter_var($_POST['editEmail'], FILTER_VALIDATE_EMAIL);
+    $novoCep = filter_var($_POST['editCep'], FILTER_SANITIZE_STRING);
+    $novoRua = filter_var($_POST['editRua'], FILTER_SANITIZE_STRING);
+    $novoBairro = filter_var($_POST['editBairro'], FILTER_SANITIZE_STRING);
+    $novoCidade = filter_var($_POST['editCidade'], FILTER_SANITIZE_STRING);
+    $novoEstado = filter_var($_POST['editEstado'], FILTER_SANITIZE_STRING);
+    
+    if (!$novoEmail) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'E-mail inválido!'];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+    
+    try {
+        $updates = [
+            'nome' => $novoNome,
+            'cel' => $novoCel,
+            'acesso/email' => $novoEmail,
+            'endereco/cep' => $novoCep,
+            'endereco/rua' => $novoRua,
+            'endereco/bairro' => $novoBairro,
+            'endereco/cidade' => $novoCidade,
+            'endereco/estado' => $novoEstado
+        ];
+        
+        $database->getReference('userProf/' . $userKey)->update($updates);
+        
+        // Atualiza a sessão
+        $_SESSION['email'] = $novoEmail;
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Dados atualizados com sucesso!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar dados: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
 }
+
+// Exibe alertas se existirem
+$alert = $_SESSION['alert'] ?? null;
+unset($_SESSION['alert']);
 ?>
 
 
@@ -149,10 +212,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
     <link rel="stylesheet" href="../assets/css/stylesCadLogin.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    .invalid-feedback {
+        display: none;
+        color: red;
+    }
+
+    .is-invalid~.invalid-feedback {
+        display: block;
+    }
+
+    .was-validated .form-control:invalid~.invalid-feedback {
+        display: block;
+    }
+    </style>
 </head>
 
 <body class="dash">
-<div class="container mt-5">
+    <?php if ($alert): ?>
+    <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show" role="alert"
+        style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <?= $alert['message'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <script>
+    setTimeout(() => document.querySelector('.alert').remove(), 5000);
+    </script>
+    <?php endif; ?>
+    <div class="container mt-5">
         <div class="profile-container">
             <!-- Banner com ícone de câmera para upload -->
             <div class="banner-container">
@@ -164,6 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
                 </label>
                 <form id="uploadBannerForm" action="dashAcessoProf.php" method="POST" enctype="multipart/form-data"
                     style="display: none;">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                     <input type="file" id="uploadBanner" name="fotoBanner" accept="image/*">
                 </form>
             </div>
@@ -178,6 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
                     </label>
                     <form id="uploadForm" action="dashAcessoProf.php" method="POST" enctype="multipart/form-data"
                         style="display: none;">
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                         <input type="file" id="uploadImage" name="fotoPerfil" accept="image/*">
                     </form>
                 </div>
@@ -185,10 +274,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
 
             <div class="data-section">
                 <div class="row">
-                    <div class="col-md-6 dadosPessoais">                    
-                        <h4>Dados Pessoais <!-- Ícone para editar os dados pessoais -->
-<i class="fas fa-edit" id="editIcon" style="cursor: pointer;"></i>
-</h4>
+                    <div class="col-md-6 dadosPessoais">
+                        <h4>Dados Pessoais
+                            <!-- Ícone para editar os dados pessoais -->
+                            <i class="fas fa-edit" id="editIcon" style="cursor: pointer;"></i>
+                        </h4>
                         <div class="info-row-nome">
                             <div class="info-item"><i class="fas fa-user"></i>
                                 <?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
@@ -264,123 +354,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
         </div>
     </div>
     <!-- Modal de Edição de Dados Pessoais -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content custom-modal">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="editNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="editNome">
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content custom-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editNome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="editNome" name="editNome" required>
+                                <div class="invalid-feedback">Por favor, insira seu nome.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editCel" class="form-label">Celular</label>
+                                <input type="text" class="form-control" id="editCel" name="editCel" required>
+                                <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="editCel" class="form-label">Celular</label>
-                            <input type="text" class="form-control" id="editCel">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editEmail" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="editEmail" name="editEmail" required>
+                                <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editCep" class="form-label">CEP</label>
+                                <input type="text" class="form-control" id="editCep" name="editCep" required>
+                                <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="editEmail" class="form-label">E-mail</label>
-                            <input type="email" class="form-control" id="editEmail">
+                        <h6 class="section-title">Endereço</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editRua" class="form-label">Rua</label>
+                                <input type="text" class="form-control" id="editRua" name="editRua" required>
+                                <div class="invalid-feedback">Por favor, insira a rua.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editBairro" class="form-label">Bairro</label>
+                                <input type="text" class="form-control" id="editBairro" name="editBairro" required>
+                                <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="editCep" class="form-label">CEP</label>
-                            <input type="text" class="form-control" id="editCep">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editCidade" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="editCidade" name="editCidade" required>
+                                <div class="invalid-feedback">Por favor, insira a cidade.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editEstado" class="form-label">Estado</label>
+                                <input type="text" class="form-control" id="editEstado" name="editEstado" required>
+                                <div class="invalid-feedback">Por favor, insira o estado.</div>
+                            </div>
                         </div>
-                    </div>
-
-                    <h6 class="section-title">Endereço</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="editRua" class="form-label">Rua</label>
-                            <input type="text" class="form-control" id="editRua">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                         </div>
-                        <div class="col-md-6">
-                            <label for="editBairro" class="form-label">Bairro</label>
-                            <input type="text" class="form-control" id="editBairro">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="editCidade" class="form-label">Cidade</label>
-                            <input type="text" class="form-control" id="editCidade">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editEstado" class="form-label">Estado</label>
-                            <input type="text" class="form-control" id="editEstado">
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-  // Esse código deve ser executado quando o modal for aberto
-  $('#modalID').on('shown.bs.modal', function () {
-      // Reaplica as máscaras aos campos do modal
-      $('#campoCPF').mask('000.000.000-00');
-      $('#campoTelefone').mask('(00) 00000-0000');
-  });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+    // Máscaras para os campos
+    $(document).ready(function() {
+        $('#editCel').mask('(00) 00000-0000');
+        $('#editCep').mask('00000-000');
 
-<script>
-   document.getElementById("editIcon").addEventListener("click", function() {
-    // Abre o modal com os dados preenchidos
-    let modal = new bootstrap.Modal(document.getElementById("editModal"));
-    
-    // Preenche os campos do modal com os dados atuais
-    document.getElementById("editNome").value = "<?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editCel").value = "<?php echo htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editEmail").value = "<?php echo htmlspecialchars($user['acesso']['email'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editCep").value = "<?php echo htmlspecialchars($user['endereco']['cep'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editRua").value = "<?php echo htmlspecialchars($user['endereco']['rua'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editBairro").value = "<?php echo htmlspecialchars($user['endereco']['bairro'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editCidade").value = "<?php echo htmlspecialchars($user['endereco']['cidade'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    document.getElementById("editEstado").value = "<?php echo htmlspecialchars($user['endereco']['estado'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>";
-    
-    // Exibe o modal
-    modal.show();
-});
-
-    // Evento de submissão do formulário de edição
-    document.getElementById("editForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Evita o recarregamento da página
-        
-        // Captura os valores editados
-        let formData = new FormData(this);
-        
-        fetch("backend/atualizar_dados.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Dados atualizados com sucesso!");
-                location.reload(); // Atualiza a página para mostrar os dados atualizados
-            } else {
-                alert("Erro ao atualizar: " + data.message);
+        // Validação do formulário
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
             }
-        })
-        .catch(error => console.error("Erro na requisição:", error));
+        });
+
+        // Preenche o modal com os dados atuais
+        document.getElementById("editIcon").addEventListener("click", function() {
+            const modal = new bootstrap.Modal(document.getElementById("editModal"));
+
+            document.getElementById("editNome").value =
+                "<?= htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editCel").value =
+                "<?= htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editEmail").value =
+                "<?= htmlspecialchars($user['acesso']['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editCep").value =
+                "<?= htmlspecialchars($user['endereco']['cep'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editRua").value =
+                "<?= htmlspecialchars($user['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editBairro").value =
+                "<?= htmlspecialchars($user['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editCidade").value =
+                "<?= htmlspecialchars($user['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+            document.getElementById("editEstado").value =
+                "<?= htmlspecialchars($user['endereco']['estado'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+
+            modal.show();
+        });
+
+        // Upload de imagens
+        document.getElementById('uploadImage').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                document.getElementById('uploadForm').submit();
+            }
+        });
+
+        document.getElementById('uploadBanner').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                document.getElementById('uploadBannerForm').submit();
+            }
+        });
     });
-</script>
-
-
+    </script>
 </body>
 
 </html>
