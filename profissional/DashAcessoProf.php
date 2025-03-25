@@ -198,6 +198,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
+
+// Processa edição das redes sociais
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Token CSRF inválido.");
+    }
+
+    try {
+        $redesSociais = [
+            'whatsapp' => filter_var($_POST['whatsapp'], FILTER_SANITIZE_STRING),
+            'instagram' => '@' . filter_var($_POST['instagram'], FILTER_SANITIZE_STRING),
+            'facebook' => filter_var($_POST['facebook'], FILTER_SANITIZE_STRING)
+        ];
+
+        $database->getReference('userProf/' . $userKey . '/redes_sociais')->set($redesSociais);
+        
+        // Atualiza localmente para não precisar recarregar
+        $user['redes_sociais'] = $redesSociais;
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Redes sociais atualizadas!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
+}
+
 ?>
 
 
@@ -313,7 +341,9 @@ unset($_SESSION['alert']);
                     </div>
 
                     <div class="col-md-6 dadosSociais text-start">
-                        <p class="tagService mt-3">Redes Sociais:</p>
+                        <p class="tagService mt-3">Redes Sociais:
+                            <i class="fas fa-edit ms-2" id="editRedesIcon" style="cursor: pointer;"></i>
+                        </p>
                         <div class="info-item"><i class="fab fa-whatsapp"></i>
                             <?php echo htmlspecialchars($user['redes_sociais']['whatsapp'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
                         </div>
@@ -423,6 +453,50 @@ unset($_SESSION['alert']);
         </div>
     </div>
     </div>
+
+    <!-- Modal Redes Sociais -->
+    <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content custom-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="redesForm" method="POST" action="dashAcessoProf.php">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
+                            <input type="text" class="form-control" name="whatsapp"
+                                value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control" name="instagram"
+                                    value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
+                            <input type="text" class="form-control" name="facebook"
+                                value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -480,6 +554,34 @@ unset($_SESSION['alert']);
         });
     });
     </script>
+
+    <script>
+    // Abrir modal de redes sociais
+    document.getElementById("editRedesIcon").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById("redesModal")).show();
+    });
+
+    // Atualização em tempo real após salvar
+    document.getElementById("redesForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("dashAcessoProf.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Ou atualize apenas as redes sociais via JS
+                } else {
+                    alert("Erro ao salvar");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+    </script>
+
 </body>
 
 </html>
