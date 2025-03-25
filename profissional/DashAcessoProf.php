@@ -53,6 +53,22 @@ try {
     $userKey = array_key_first($userData);
     $user = $userData[$userKey];
 
+    // Garante que redes_sociais é um array e está com a estrutura correta
+    if (!isset($user['redes_sociais']) || !is_array($user['redes_sociais'])) {
+        $user['redes_sociais'] = [
+            'whatsapp' => '',
+            'instagram' => '',
+            'facebook' => ''
+        ];
+    } else {
+        // Garante que todos os campos existem
+        $user['redes_sociais'] = array_merge([
+            'whatsapp' => '',
+            'instagram' => '',
+            'facebook' => ''
+        ], $user['redes_sociais']);
+    }
+
 } catch (Exception $e) {
     die("Erro ao buscar dados do usuário: " . $e->getMessage());
 }
@@ -86,9 +102,45 @@ function processarImagem($arquivo, $pastaDestino, $largura, $altura) {
     }
 }
 
+// Funções para tratamento de redes sociais
+function formatSocialLink($value, $type) {
+    if (empty($value)) return 'Não disponível';
+    
+    $value = (string)$value; // Garante que é string
+    
+    switch ($type) {
+        case 'whatsapp':
+            $numero = preg_replace('/[^0-9]/', '', $value);
+            return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $numero);
+        case 'instagram':
+            return '@' . str_replace('@', '', $value);
+        case 'facebook':
+            return $value;
+        default:
+            return $value;
+    }
+}
+
+function getSocialLink($value, $type) {
+    if (empty($value)) return '#';
+    
+    $value = (string)$value; // Garante que é string
+    
+    switch ($type) {
+        case 'whatsapp':
+            $numero = preg_replace('/[^0-9]/', '', $value);
+            return 'https://wa.me/55' . $numero;
+        case 'instagram':
+            return 'https://instagram.com/' . str_replace('@', '', $value);
+        case 'facebook':
+            return 'https://facebook.com/' . $value;
+        default:
+            return '#';
+    }
+}
+
 // Processa o upload da nova foto de perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_FILES['fotoPerfil']['error'] === UPLOAD_ERR_OK) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -116,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_F
 
 // Processa o upload da nova foto do banner
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_FILES['fotoBanner']['error'] === UPLOAD_ERR_OK) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -144,7 +195,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_F
 
 // Processa as alterações de dados do usuário
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset($_POST['editCel'])) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -195,21 +245,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
     exit();
 }
 
-// Exibe alertas se existirem
-$alert = $_SESSION['alert'] ?? null;
-unset($_SESSION['alert']);
-
 // Processa edição das redes sociais
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Token CSRF inválido.");
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
     }
 
     try {
+        // Formata os dados antes de salvar
+        $whatsapp = preg_replace('/[^0-9]/', '', $_POST['whatsapp']);
+        $instagram = str_replace('@', '', $_POST['instagram']);
+        
         $redesSociais = [
-            'whatsapp' => filter_var($_POST['whatsapp'], FILTER_SANITIZE_STRING),
-            'instagram' => '@' . filter_var($_POST['instagram'], FILTER_SANITIZE_STRING),
-            'facebook' => filter_var($_POST['facebook'], FILTER_SANITIZE_STRING)
+            'whatsapp' => $whatsapp,
+            'instagram' => $instagram,
+            'facebook' => $_POST['facebook']
         ];
 
         $database->getReference('userProf/' . $userKey . '/redes_sociais')->set($redesSociais);
@@ -217,15 +272,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
         // Atualiza localmente para não precisar recarregar
         $user['redes_sociais'] = $redesSociais;
         
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Redes sociais atualizadas!'];
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Redes sociais atualizadas com sucesso!'];
     } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar: ' . $e->getMessage()];
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar redes sociais: ' . $e->getMessage()];
     }
     
     header("Location: dashAcessoProf.php");
     exit();
 }
 
+// Exibe alertas se existirem
+$alert = $_SESSION['alert'] ?? null;
+unset($_SESSION['alert']);
 ?>
 
 
@@ -344,16 +402,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
                         <p class="tagService mt-3">Redes Sociais:
                             <i class="fas fa-edit ms-2" id="editRedesIcon" style="cursor: pointer;"></i>
                         </p>
-                        <div class="info-item"><i class="fab fa-whatsapp"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['whatsapp'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+
+                        <div class="info-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['whatsapp'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                        <div class="info-item"><i class="fab fa-instagram"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['instagram'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+
+                        <div class="info-item">
+                            <i class="fab fa-instagram"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['instagram'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                        <div class="info-item"><i class="fab fa-facebook"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['facebook'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+
+                        <div class="info-item">
+                            <i class="fab fa-facebook"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['facebook'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                    </div>
                 </div>
 
                 <p class="tagService">Serviços Principais:</p>
