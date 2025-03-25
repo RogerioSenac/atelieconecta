@@ -1144,6 +1144,7 @@ form a {
 }
 
 @media (max-width: 425px) {
+
     /* --- Reset Básico --- */
     body {
         overflow-x: hidden;
@@ -1320,4 +1321,190 @@ form a {
         width: 70px;
         height: 70px;
     }
+}
+
+@media (max-width: 768px) {
+
+    /* --- Reset Básico --- */
+    body {
+        overflow-x: hidden;
+        /* Evita rolagem horizontal */
+    }
+
+    /* --- Header --- */
+    header .container {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav ul li a {
+        font-size: 12pt;
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        margin-top: 10px;
+    }
+
+    /* --- Banner --- */
+    .banner {
+        padding: 60px 0;
+        background-size: cover;
+    }
+
+    .banner h1 {
+        font-size: 1.5em;
+        padding: 30px 10px;
+    }
+
+    .banner p {
+        font-size: 0.9em;
+        padding: 0 10px;
+        margin-top: -50px;
+    }
+
+
+    /* --- Serviços --- */
+    .services {
+        padding: 100px 0;
+        background-size: cover;
+    }
+
+    .services .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .service-item {
+        flex: 1 1 100%;
+        margin: 0 10px;
+    }
+
+    .services img {
+        height: 150px;
+    }
+
+    .services p {
+        font-size: 14px;
+    }
+
+    /* --- Depoimentos --- */
+    .comentario {
+        padding: 50px 0;
+    }
+
+    .depoimento-item {
+        width: 90%;
+        margin: 0 auto 15px;
+    }
+
+    .user-photo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .h5_depoimento {
+        font-size: 1rem;
+    }
+
+    .p_depoimento {
+        font-size: 0.9rem;
+    }
+
+    /* --- Quem Somos --- */
+    .container-quem-somos {
+        flex-direction: column;
+        padding: 30px 15px;
+    }
+
+    .container-quem-somos p {
+        font-size: 1rem;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .icones {
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    /* --- Contato --- */
+    section.contato {
+        flex-direction: column;
+        padding: 20px 20px;
+    }
+
+
+    .contato video{
+        display: none;
+    }
+
+    section.contato .txt-contato {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+    }
+
+    section.contato .img-contato img {
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+        margin-left: 0px;
+    }
+
+    section.contato .txt-contato .somosadev {
+        font-size: 18px;
+        line-height: 1.4;
+        text-align: center;
+        justify-self: center;
+    }
+
+    section.contato .txt-contato .somosadev p span {
+        font-size: 20px;
+    }
+
+    section.contato .txt-contato p {
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .btn-social {
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    section.contato .btn-social button {
+        width: 35px;
+        height: 35px;
+        font-size: 15px;
+    }
+
+    section.contato .btn-social i {
+        font-size: 20px;
+    }
+
+    /* --- Rodapé --- */
+    footer {
+        padding: 15px 0;
+    }
+
+    .txt_logo {
+        width: 200px;
+    }
+
+    .logo_dev {
+        width: 70px;
+        height: 70px;
+    }
+
 }
