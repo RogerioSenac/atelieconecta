@@ -48,34 +48,33 @@
             <div class="container">
                 <h2>Serviços Oferecidos</h2>
                 <div class="row">
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="service-item col-6 col-lg-4">
                         <img src="./assets/img/servico-1.jpeg" alt="Serviço 1">
                         <p class="tesoura">Customização</p>
                     </div>
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="col-6 col-lg-4 service-item">
                         <img src="./assets/img/servico-2.jpeg" alt="Serviço 2">
                         <p class="tesoura">Ateliê sob Medida</p>
                     </div>
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="col-6 col-lg-4 service-item">
                         <img src="./assets/img/servico-3.jpeg" alt="Serviço 3">
                         <p class="tesoura">Consertos e Ajuste</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="col-6 col-lg-4 service-item">
                         <img src="./assets/img/servico-4.jpeg" alt="Serviço 4">
                         <p class="tesoura">Estilista</p>
                     </div>
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="col-6 col-lg-4 service-item">
                         <img src="./assets/img/servico-6.jpeg" alt="Serviço 5">
                         <p class="tesoura">Roupas Personalizadas</p>
                     </div>
-                    <div class="col-6 col-md-4 service-item">
+                    <div class="col-6 col-lg-4 service-item">
                         <img src="./assets/img/servico-5.jpeg" alt="Serviço 6">
                         <p class="tesoura">Modelagem</p>
                     </div>
                 </div>
-            </div>
             </div>
         </section>
 
@@ -246,24 +245,24 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    // Alternar o menu sanduíche ao clicar no ícone
-    $(document).ready(function() {
-        $('.navbar-toggler').on('click', function() {
-            $('.navbar-collapse').toggleClass('show');
-        });
+        // Alternar o menu sanduíche ao clicar no ícone
+        $(document).ready(function() {
+            $('.navbar-toggler').on('click', function() {
+                $('.navbar-collapse').toggleClass('show');
+            });
 
-        // Fechar o menu sanduíche ao clicar fora dele
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.navbar').length) {
+            // Fechar o menu sanduíche ao clicar fora dele
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('.navbar').length) {
+                    $('.navbar-collapse').removeClass('show');
+                }
+            });
+
+            // Fechar o menu sanduíche ao clicar em um item
+            $('.navbar-nav>li>a').on('click', function() {
                 $('.navbar-collapse').removeClass('show');
-            }
+            });
         });
-
-        // Fechar o menu sanduíche ao clicar em um item
-        $('.navbar-nav>li>a').on('click', function() {
-            $('.navbar-collapse').removeClass('show');
-        });
-    });
     </script>
 
 </body>
