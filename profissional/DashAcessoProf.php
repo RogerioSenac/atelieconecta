@@ -53,6 +53,22 @@ try {
     $userKey = array_key_first($userData);
     $user = $userData[$userKey];
 
+    // Garante que redes_sociais é um array e está com a estrutura correta
+    if (!isset($user['redes_sociais']) || !is_array($user['redes_sociais'])) {
+        $user['redes_sociais'] = [
+            'whatsapp' => '',
+            'instagram' => '',
+            'facebook' => ''
+        ];
+    } else {
+        // Garante que todos os campos existem
+        $user['redes_sociais'] = array_merge([
+            'whatsapp' => '',
+            'instagram' => '',
+            'facebook' => ''
+        ], $user['redes_sociais']);
+    }
+
 } catch (Exception $e) {
     die("Erro ao buscar dados do usuário: " . $e->getMessage());
 }
@@ -86,9 +102,56 @@ function processarImagem($arquivo, $pastaDestino, $largura, $altura) {
     }
 }
 
+// Funções para tratamento de redes sociais
+function formatSocialLink($value, $type) {
+    if (empty($value)) return 'Não disponível';
+    
+    $value = (string)$value; // Garante que é string
+    
+    switch ($type) {
+        case 'whatsapp':
+            $numero = preg_replace('/[^0-9]/', '', $value);
+            return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $numero);
+        case 'instagram':
+            return '@' . str_replace('@', '', $value);
+        case 'facebook':
+            return $value;
+        default:
+            return $value;
+    }
+}
+
+function getSocialLink($value, $type) {
+    if (empty($value)) return '#';
+    
+    $value = (string)$value;
+    $value = trim($value); // Remove espaços extras
+    
+    switch ($type) {
+        case 'whatsapp':
+            $numero = preg_replace('/[^0-9]/', '', $value);
+            return 'https://wa.me/55' . $numero;
+            
+        case 'instagram':
+            $usuario = str_replace(['@', 'https://instagram.com/', 'https://www.instagram.com/'], '', $value);
+            return 'https://instagram.com/' . $usuario;
+            
+        case 'facebook':
+            // Remove todos os prefixos possíveis
+            $perfil = str_replace(
+                ['https://facebook.com/', 'https://www.facebook.com/', 'facebook.com/'], 
+                '', 
+                $value
+            );
+            return 'https://www.facebook.com/' . $perfil;
+            
+        default:
+            return '#';
+    }
+}
+
 // Processa o upload da nova foto de perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_FILES['fotoPerfil']['error'] === UPLOAD_ERR_OK) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -116,7 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_F
 
 // Processa o upload da nova foto do banner
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_FILES['fotoBanner']['error'] === UPLOAD_ERR_OK) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -144,7 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_F
 
 // Processa as alterações de dados do usuário
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset($_POST['editCel'])) {
-    // --- ADICIONE ESTA VERIFICAÇÃO NO INÍCIO ---
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -189,6 +250,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset(
         $_SESSION['alert'] = ['type' => 'success', 'message' => 'Dados atualizados com sucesso!'];
     } catch (Exception $e) {
         $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar dados: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
+}
+
+// Processa edição das redes sociais
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    try {
+        // Formata os dados antes de salvar
+        $whatsapp = preg_replace('/[^0-9]/', '', $_POST['whatsapp']);
+        $instagram = str_replace('@', '', $_POST['instagram']);
+        
+        $redesSociais = [
+            'whatsapp' => $whatsapp,
+            'instagram' => $instagram,
+            'facebook' => $_POST['facebook']
+        ];
+
+        $database->getReference('userProf/' . $userKey . '/redes_sociais')->set($redesSociais);
+        
+        // Atualiza localmente para não precisar recarregar
+        $user['redes_sociais'] = $redesSociais;
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Redes sociais atualizadas com sucesso!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar redes sociais: ' . $e->getMessage()];
     }
     
     header("Location: dashAcessoProf.php");
@@ -313,116 +410,186 @@ unset($_SESSION['alert']);
                     </div>
 
                     <div class="col-md-6 dadosSociais text-start">
-                        <p class="tagService mt-3">Redes Sociais:</p>
-                        <div class="info-item"><i class="fab fa-whatsapp"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['whatsapp'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+                        <p class="tagService mt-3">Redes Sociais:
+                            <i class="fas fa-edit ms-2" id="editRedesIcon" style="cursor: pointer;"></i>
+                        </p>
+
+                        <div class="info-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['whatsapp'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                        <div class="info-item"><i class="fab fa-instagram"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['instagram'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+
+                        <div class="info-item">
+                            <i class="fab fa-instagram"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['instagram'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                        <div class="info-item"><i class="fab fa-facebook"></i>
-                            <?php echo htmlspecialchars($user['redes_sociais']['facebook'] ?? 'Não disponível', ENT_QUOTES, 'UTF-8'); ?>
+
+                        <div class="info-item">
+                            <i class="fab fa-facebook"></i>
+                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php if (!empty($user['redes_sociais']['facebook'])): ?>
+                            <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank">
+                                <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
+                    </div>
+
+                    <p class="tagService">Serviços Principais:</p>
+                    <div class="services-container">
+                        <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
+                                alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <p class="tagService mt-3">Outros Serviços:</p>
+                    <div class="services-container">
+                        <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <p class="tagService">Serviços Principais:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
-                            alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <p class="tagService mt-3">Outros Serviços:</p>
-                <div class="services-container">
-                    <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
-                    <div class="service-card">
-                        <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
-                        <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                    </div>
-                    <?php endforeach; ?>
+                <div class="logout text-center mt-3">
+                    <a href="logout.php" class="btn btn-danger">Sair</a>
                 </div>
             </div>
-
-            <div class="logout text-center mt-3">
-                <a href="logout.php" class="btn btn-danger">Sair</a>
+        </div>
+        <!-- Modal de Edição de Dados Pessoais -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editNome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="editNome" name="editNome" required>
+                                    <div class="invalid-feedback">Por favor, insira seu nome.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCel" class="form-label">Celular</label>
+                                    <input type="text" class="form-control" id="editCel" name="editCel" required>
+                                    <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editEmail" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="editEmail" name="editEmail" required>
+                                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCep" class="form-label">CEP</label>
+                                    <input type="text" class="form-control" id="editCep" name="editCep" required>
+                                    <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                                </div>
+                            </div>
+                            <h6 class="section-title">Endereço</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editRua" class="form-label">Rua</label>
+                                    <input type="text" class="form-control" id="editRua" name="editRua" required>
+                                    <div class="invalid-feedback">Por favor, insira a rua.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editBairro" class="form-label">Bairro</label>
+                                    <input type="text" class="form-control" id="editBairro" name="editBairro" required>
+                                    <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editCidade" class="form-label">Cidade</label>
+                                    <input type="text" class="form-control" id="editCidade" name="editCidade" required>
+                                    <div class="invalid-feedback">Por favor, insira a cidade.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editEstado" class="form-label">Estado</label>
+                                    <input type="text" class="form-control" id="editEstado" name="editEstado" required>
+                                    <div class="invalid-feedback">Por favor, insira o estado.</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!-- Modal de Edição de Dados Pessoais -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+
+    <!-- Modal Redes Sociais -->
+    <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content custom-modal">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
+                    <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
+                    <form id="redesForm" method="POST" action="dashAcessoProf.php">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editNome" class="form-label">Nome</label>
-                                <input type="text" class="form-control" id="editNome" name="editNome" required>
-                                <div class="invalid-feedback">Por favor, insira seu nome.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editCel" class="form-label">Celular</label>
-                                <input type="text" class="form-control" id="editCel" name="editCel" required>
-                                <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
+                            <input type="text" class="form-control" name="whatsapp"
+                                value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control" name="instagram"
+                                    value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editEmail" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" id="editEmail" name="editEmail" required>
-                                <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editCep" class="form-label">CEP</label>
-                                <input type="text" class="form-control" id="editCep" name="editCep" required>
-                                <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
-                            </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
+                            <input type="text" class="form-control" name="facebook"
+                                value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         </div>
-                        <h6 class="section-title">Endereço</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editRua" class="form-label">Rua</label>
-                                <input type="text" class="form-control" id="editRua" name="editRua" required>
-                                <div class="invalid-feedback">Por favor, insira a rua.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editBairro" class="form-label">Bairro</label>
-                                <input type="text" class="form-control" id="editBairro" name="editBairro" required>
-                                <div class="invalid-feedback">Por favor, insira o bairro.</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editCidade" class="form-label">Cidade</label>
-                                <input type="text" class="form-control" id="editCidade" name="editCidade" required>
-                                <div class="invalid-feedback">Por favor, insira a cidade.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editEstado" class="form-label">Estado</label>
-                                <input type="text" class="form-control" id="editEstado" name="editEstado" required>
-                                <div class="invalid-feedback">Por favor, insira o estado.</div>
-                            </div>
-                        </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -480,6 +647,34 @@ unset($_SESSION['alert']);
         });
     });
     </script>
+
+    <script>
+    // Abrir modal de redes sociais
+    document.getElementById("editRedesIcon").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById("redesModal")).show();
+    });
+
+    // Atualização em tempo real após salvar
+    document.getElementById("redesForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("dashAcessoProf.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Ou atualize apenas as redes sociais via JS
+                } else {
+                    alert("Erro ao salvar");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+    </script>
+
 </body>
 
 </html>
