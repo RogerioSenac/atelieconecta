@@ -706,119 +706,126 @@ form a {
         overflow-x: hidden;
         font-size: 14px;
     }
-    
+
     /* --- Header --- */
     header {
         width: 100%;
         margin: 0;
         padding: 5px 0;
     }
-    
+
     header .container {
         flex-direction: column;
         padding: 5px;
         width: 100%;
     }
-    
+
     .logo {
         height: 30px;
         margin-bottom: 5px;
     }
-    
+
     nav ul {
         gap: 10px;
         flex-wrap: wrap;
         justify-content: center;
         padding: 0;
     }
-    
+
     nav ul li a {
         font-size: 12px;
     }
-    
+
     .login-btn {
         padding: 5px 10px;
         font-size: 12px;
         margin-top: 5px;
     }
-    
+
     /* --- Banner --- */
     .banner {
         padding: 40px 0;
-        margin: 0;
+        margin: 5px;
         min-height: 50vh;
         background-size: cover;
     }
-    
+
     .banner h1 {
-        font-size: 1.5em;
+        font-size: 1em;
         margin-top: 60px;
         padding: 0 10px;
     }
-    
+
     .banner p {
         font-size: 0.9em;
         padding: 0 10px;
     }
-    
+
     /* --- Serviços --- */
-    .services {
-        padding: 30px 0;
-        margin: 5px;
-        min-height: auto;
-        background-size: cover;
-    }
-    
-    .services .container {
-        flex-direction: column;
-        gap: 15px;
-        padding: 0 10px;
-    }
-    
-    .service-item {
-        flex: 1 1 100%;
-        margin: 0;
-    }
-    
-    .services img {
-        height: 120px;
-    }
-    
-    .services h2 {
-        font-size: 1.3em;
-    }
-    
-    .services .tesoura {
-        font-size: 12px;
-    }
-    
+           /* Ajustes específicos para a seção de serviços */
+        .services .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .service-item {
+            flex: 0 0 50% !important;
+            /* Força 2 colunas */
+            max-width: 50% !important;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .services img {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 100px !important;
+        }
+
+        .services .tesoura {
+            font-size: 12px !important;
+            padding: 5px;
+        }
+
+        /* Remove margens e padding conflitantes */
+        .services .container {
+            padding: 0 5px !important;
+            margin: 0 !important;
+        }
+
+        /* Garante que as linhas não tenham espaçamento extra */
+        .row {
+            margin: 0 !important;
+        }
+   
     /* --- Depoimentos --- */
     .comentario {
         padding: 30px 0;
         margin: 0;
         min-height: auto;
     }
-    
+
     .depoimento-item {
         width: 90%;
         margin: 0 auto 15px;
         padding: 10px;
     }
-    
+
     .user-photo {
         width: 50px;
         height: 50px;
     }
-    
+
     .h5_depoimento {
         font-size: 0.9rem;
     }
-    
+
     .p_depoimento {
         font-size: 0.8rem;
         padding: 8px;
     }
-    
+
     /* --- Quem Somos --- */
     .container-quem-somos {
         flex-direction: column;
@@ -826,127 +833,129 @@ form a {
         min-height: auto;
         background-size: cover;
     }
-    
+
     .container-quem-somos p {
         font-size: 0.9rem;
         max-width: 100%;
         padding: 0 5px;
     }
-    
+
     .icones {
         height: 150px;
         margin-bottom: 15px;
     }
-    
+
     /* --- Contato --- */
     .contato {
         flex-direction: column;
         padding: 20px 10px;
         min-height: auto;
     }
-    
+
     .contato video {
         display: none;
     }
-    
+
     .img-contato img {
         width: 120px;
         height: 120px;
         margin-bottom: 15px;
     }
-    
+
     .txt-contato {
         width: 100%;
         margin: 0;
         padding: 0 10px;
     }
-    
+
     .somosadev p {
         font-size: 1.2em;
         line-height: 1.3;
     }
-    
+
     .somosadev p span {
         font-size: 1.2em;
     }
-    
+
     .btn-social button {
         width: 40px;
         height: 40px;
         font-size: 18px;
         margin: 0 5px;
     }
-    
+
     /* --- Rodapé --- */
     footer {
         padding: 10px 0;
     }
-    
+
     .txt_logo {
         width: 150px;
     }
-    
+
     .logo_dev {
         width: 50px;
         height: 50px;
     }
-    
+
     /* --- Área de Login/Perfil --- */
-    .perfil, .interface {
+    .perfil,
+    .interface {
         padding: 40px 0;
         min-height: auto;
     }
-    
+
     .perfil .tipo-perfil {
         width: 120px;
         height: 120px;
     }
-    
+
     .perfil img {
         width: 120px;
         height: 120px;
     }
-    
+
     p.texto {
         font-size: 12px;
         margin-left: 35px;
     }
-    
+
     form {
         width: 90%;
         padding: 10px;
     }
-    
-    form input, form textarea {
+
+    form input,
+    form textarea {
         padding: 12px 5px;
         font-size: 14px;
     }
-    
+
     .iconeUsuario {
         width: 60px;
         height: 60px;
     }
-    
+
     .acesso h2 {
         font-size: 1.2em;
         margin-top: -20px;
     }
-    
+
     /* --- Formulários --- */
     .inputbox {
         min-width: 100%;
     }
-    
+
     .cadContainer {
         margin-top: 30px;
         padding: 10px;
     }
-    
+
     .row .btn-secondary {
         width: 80px;
         padding: 5px;
     }
-    
+
     /* Mensagens de erro */
     .error-message {
         font-size: 12px;
