@@ -701,7 +701,7 @@ form a {
 
 /* Mobile */
 /* Reset Básico para 320px */
-@media (max-width: 320px) {
+@media (min-width: 320px) and (max-width: 425px) {
     body {
         overflow-x: hidden;
         font-size: 14px;
@@ -1145,762 +1145,366 @@ form a {
 
 @media (max-width: 425px) {
 
-    /*banner*/
-    section.banner {
-        max-width: 100%;
+    /* --- Reset Básico --- */
+    body {
+        overflow-x: hidden;
+        /* Evita rolagem horizontal */
+    }
+
+    /* --- Header --- */
+    header .container {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav ul li a {
+        font-size: 12pt;
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        margin-top: 10px;
+    }
+
+    /* --- Banner --- */
+    .banner {
+        padding: 60px 0;
+        background-size: cover;
     }
 
     .banner h1 {
-        font-size: 1.5em;
-        color: white;
-        margin-top: 10px;
+        font-size: 1em;
+        padding: 50px 10px;
     }
 
     .banner p {
-        font-size: 1em;
-        color: white;
+        font-size: 0.9em;
+        padding: 0 10px;
+        margin-top: -50px;
     }
 
-    /*serviços*/
-    section.services {
-        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
+
+    /* --- Serviços --- */
+    .services {
+        padding: 50px 0;
+        background-size: cover;
     }
 
     .services .container {
-        padding: 0px;
-        margin: 0px;
-        justify-content: center;
+        flex-direction: column;
+        gap: 15px;
     }
 
-    .row .service-item {
-        margin: 0 5px;
-        padding: 0 5px;
-        width: 110px;
-        /*ajuste do tamanho do card*/
+    .service-item {
+        flex: 1 1 100%;
+        margin: 0 10px;
     }
 
-    .row .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        border-radius: none;
+    .services img {
+        height: 150px;
     }
 
-    .row .service-item .tesoura {
-        font-size: 10px;
+    .services p {
+        font-size: 14px;
     }
 
-    /*comentario*/
-    section.comentario {
-        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
-        margin: 0px 5px;
+    /* --- Depoimentos --- */
+    .comentario {
+        padding: 50px 0;
     }
 
-    .row {
-        display: flex;
-        justify-self: center;
+    .depoimento-item {
+        width: 90%;
+        margin: 0 auto 15px;
     }
 
-    .comentario h2 {
-        font-size: 25px;
+    .user-photo {
+        width: 60px;
+        height: 60px;
     }
 
-    /*quem somos*/
-
-    section.container-quem-somos {
-        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
-        margin: 5px 5px;
-    }
-
-    #sobre {
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-quem {
-        width: 100%;
-    }
-
-    .row-q {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-        width: 100%;
-    }
-
-    .container-quem .col-12 {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-    }
-
-    .container-quem-somos .icones {
-        height: 200px;
-        width: 100%;
-        margin: 0px 0px;
-        padding: 0px 0px;
-    }
-
-    section.container-quem-somos {
-        margin: 0px 0px;
-        padding: 0px 0px;
-    }
-
-    section.container-quem-somos .container-quem {
-        margin: 0px 0px;
-        padding: 0px 0px;
-        width: inherit;
-    }
-
-    section.container-quem-somos .container-quem .para1 {
-        margin: 0px 0px;
-        padding: 0px 0px;
-        width: 350px;
-        /* margin: 15px; */
-        font-size: 1.2rem;
-    }
-
-    .container-quem .para2 {
-        margin: 0px 0px;
-        padding: 0px 0px;
-        width: 500px;
-        /* margin: 5px; */
+    .h5_depoimento {
         font-size: 1rem;
     }
 
+    .p_depoimento {
+        font-size: 0.9rem;
+    }
 
-    /*contato*/
-    .contato video {
-        display: none;
-        /* Mantém a proporção do vídeo */
+    /* --- Quem Somos --- */
+    .container-quem-somos {
+        flex-direction: column;
+        padding: 30px 15px;
+    }
+
+    .container-quem-somos p {
+        font-size: 1rem;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .icones {
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    /* --- Contato --- */
+    section.contato {
+        flex-direction: column;
+        padding: 20px 20px;
     }
 
     section.contato .txt-contato {
-        margin: 0;
-        padding: 0;
         width: 100%;
+        margin: 0;
+        padding: 15px;
     }
 
-    .contato .img-contato img {
-        height: 200px;
-        width: 200px;
-        margin-top: 0px;
+    section.contato .img-contato img {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 20px;
+        margin-left: 0px;
     }
 
-    section.contato .txt-contato h2 {
+    section.contato .txt-contato .somosadev {
+        font-size: 18px;
+        line-height: 1.4;
         text-align: center;
-        font-size: 15px;
-        line-height: 40px;
-        margin-bottom: 30px;
-    }
-
-    section.contato .txt-contato h2 span {
-        font-size: 15px;
-        display: block;
-    }
-
-    .txt-contato p {
         justify-self: center;
-        max-width: 90%;
-        font-size: 1rem;
+    }
+
+    section.contato .txt-contato .somosadev p span {
+        font-size: 20px;
+    }
+
+    section.contato .txt-contato p {
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .btn-social {
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     section.contato .btn-social button {
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        margin: 0px 0px;
-        max-width: 50%;
-        margin-bottom: 5px;
-
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
     }
 
-    section.contato .btn-social .fa-brands {
-        color: white;
-        width: 30px;
-        height: 30px;
-        align-items: center;
-        justify-self: center;
-        margin: 0;
+    section.contato .btn-social i {
+        font-size: 30px;
     }
 
-    /*rodape*/
+    /* --- Rodapé --- */
     footer {
-        margin: 5px;
-
+        padding: 15px 0;
     }
 
-    footer .rodape p {
-        margin: 5px 5px;
-        font-size: 1rem;
-        color: black;
+    .txt_logo {
+        width: 200px;
+    }
+
+    .logo_dev {
+        width: 70px;
+        height: 70px;
     }
 }
 
 @media (max-width: 768px) {
 
-    /*banner*/
-    section.banner {
-        max-width: 100%;
+    /* --- Reset Básico --- */
+    body {
+        overflow-x: hidden;
+        /* Evita rolagem horizontal */
+    }
+
+    /* --- Header --- */
+    header .container {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav ul li a {
+        font-size: 12pt;
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        margin-top: 10px;
+    }
+
+    /* --- Banner --- */
+    .banner {
+        padding: 60px 0;
+        background-size: cover;
     }
 
     .banner h1 {
-        font-size: 2em;
-        color: white;
-        margin-top: 10px;
+        font-size: 1.5em;
+        padding: 30px 10px;
     }
 
     .banner p {
-        font-size: 1.3em;
-        color: white;
+        font-size: 0.9em;
+        padding: 0 10px;
+        margin-top: -50px;
     }
 
-    /*serviços*/
-    section.services {
-        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
+
+    /* --- Serviços --- */
+    .services {
+        padding: 100px 0;
+        background-size: cover;
     }
 
-    section.services .container {
-        padding: 0px;
-        margin: 0px;
-        justify-content: center;
+    .services .container {
+        flex-direction: column;
+        gap: 15px;
     }
 
-    section.services .container .row .service-item {
-        margin: 0 5px;
-        padding: 0 5px;
-        flex: 1 1 30%;
-        /*ajuste do tamanho do card*/
+    .service-item {
+        flex: 1 1 100%;
+        margin: 0 10px;
     }
 
-    .row .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        border-radius: none;
+    .services img {
+        height: 150px;
     }
 
-    .row .service-item p {
-        font-size: 25px;
+    .services p {
+        font-size: 14px;
     }
 
-    /*comentario*/
-    section.comentario {
-        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
-        margin: 0px 5px;
+    /* --- Depoimentos --- */
+    .comentario {
+        padding: 50px 0;
     }
 
-    section.comentario.conatiner.row {
-        display: flex;
-        justify-self: center;
+    .depoimento-item {
+        width: 90%;
+        margin: 0 auto 15px;
     }
 
-    .comentario h2 {
-        font-size: 25px;
+    .user-photo {
+        width: 60px;
+        height: 60px;
     }
 
-    /*quem somos*/
-
-    section.container-quem-somos {
-        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
-        margin: 5px 5px;
+    .h5_depoimento {
+        font-size: 1rem;
     }
 
-    #sobre {
-        display: flex;
-        justify-content: center;
+    .p_depoimento {
+        font-size: 0.9rem;
     }
 
-    .container-quem {
-        width: 100%;
+    /* --- Quem Somos --- */
+    .container-quem-somos {
+        flex-direction: column;
+        padding: 30px 15px;
     }
 
-    .row-q {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-        width: 100%;
+    .container-quem-somos p {
+        font-size: 1rem;
+        max-width: 100%;
+        padding: 0 10px;
     }
 
-    .container-quem .col-12 {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-    }
-
-    .container-quem .icones {
+    .icones {
         height: 200px;
-        width: 400px;
+        margin-bottom: 20px;
     }
 
-    .container-quem .p1 {
-        max-width: 90%;
-        margin: 5px;
-        font-size: 1rem;
+    /* --- Contato --- */
+    section.contato {
+        flex-direction: column;
+        padding: 20px 20px;
     }
 
-    .container-quem p {
-        max-width: 95%;
-        margin: 5px;
-        font-size: 1rem;
-    }
 
-    .container-quem .row {
-        margin: 5px 0px;
-    }
-
-    /*contato*/
-    .contato video {
+    .contato video{
         display: none;
-        /* Mantém a proporção do vídeo */
     }
 
     section.contato .txt-contato {
-        margin: 0;
-        padding: 0;
         width: 100%;
-    }
-
-    .contato .img-contato img {
-        height: 300px;
-        width: 300px;
-        margin-top: 0px;
-    }
-
-    section.contato .txt-contato h2 {
-        text-align: center;
-        font-size: 15px;
-        line-height: 40px;
-        margin-bottom: 30px;
-    }
-
-    section.contato .txt-contato h2 span {
-        font-size: 15px;
-        display: block;
-    }
-
-    .txt-contato p {
-        justify-self: center;
-        max-width: 90%;
-        font-size: 1rem;
-    }
-
-    section.contato .btn-social button {
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        margin: 0px 0px;
-        max-width: 50%;
-        margin-bottom: 5px;
-
-    }
-
-    section.contato .btn-social .fa-brands {
-        color: white;
-        width: 30px;
-        height: 30px;
-        align-items: center;
-        justify-self: center;
         margin: 0;
+        padding: 15px;
     }
 
-    /*rodape*/
-    footer {
-        margin: 5px;
-
+    section.contato .img-contato img {
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+        margin-left: 0px;
     }
 
-    footer .rodape p {
-        margin: 5px 5px;
-        font-size: 1rem;
-        color: black;
+    section.contato .txt-contato .somosadev {
+        font-size: 18px;
+        line-height: 1.4;
+        text-align: center;
+        justify-self: center;
     }
 
-}
+    section.contato .txt-contato .somosadev p span {
+        font-size: 20px;
+    }
 
-@media (max-width: 1024px) {
-
-    /*banner*/
-    section.banner {
+    section.contato .txt-contato p {
+        font-size: 14px;
         max-width: 100%;
     }
 
-    .banner h1 {
-        font-size: 2em;
-        color: white;
-        margin-top: 10px;
-    }
-
-    .banner p {
-        font-size: 1.3em;
-        color: white;
-    }
-
-    /*serviços*/
-    section.services {
-        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
-    }
-
-    section.services .container {
-        padding: 0px;
-        margin: 0px;
-        justify-content: center;
-    }
-
-    section.services .container .row .service-item {
-        margin: 0 5px;
-        padding: 0 5px;
-        flex: 1 1 30%;
-        /*ajuste do tamanho do card*/
-    }
-
-    .row .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        border-radius: none;
-    }
-
-    .row .service-item p {
-        font-size: 25px;
-    }
-
-
-    /*comentario*/
-    section.comentario {
-        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
-        margin: 0px 5px;
-    }
-
-    section.comentario.conatiner.row {
-        display: flex;
-        justify-self: center;
-    }
-
-    .comentario h2 {
-        font-size: 25px;
-    }
-
-    /*quem somos*/
-    section.container-quem-somos {
-        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
-        margin: 5px 5px;
-    }
-
-    #sobre {
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-quem {
-        width: 100%;
-    }
-
-    .row-q {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-        width: 100%;
-    }
-
-    .container-quem .col-12 {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-    }
-
-    .container-quem .icones {
-        height: 300px;
-        width: 400px;
-    }
-
-    .container-quem .p1 {
-        max-width: 90%;
-        margin: 5px;
-        font-size: 1rem;
-    }
-
-    .container-quem p {
-        max-width: 80%;
-        margin: 5px;
-        font-size: 1rem;
-    }
-
-    .container-quem .row {
-        padding: 0px;
-        margin: 5px 0px;
-        width: 80%;
-    }
-
-    /*contato*/
-    .contato video {
-        /* display: none; */
-        /* Mantém a proporção do vídeo */
-    }
-
-    section.contato .txt-contato {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    .contato .img-contato img {
-        height: 300px;
-        width: 300px;
-        margin-top: 0px;
-        margin-left: 400px;
-    }
-
-    section.contato .txt-contato h2 {
-        text-align: center;
-        font-size: 15px;
-        line-height: 40px;
-        margin-bottom: 30px;
-        margin-left: 400px;
-    }
-
-    section.contato .txt-contato h2 span {
-        font-size: 15px;
-        display: block;
-    }
-
-    .txt-contato p {
-        margin-right: 10px;
-        justify-self: right;
-        max-width: 60%;
-        font-size: 1rem;
-    }
-
     .btn-social {
-        width: 300px;
-        justify-self: center;
+        flex-wrap: wrap;
+        gap: 30px;
     }
 
     section.contato .btn-social button {
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        margin: 0px 0px;
-        max-width: 50%;
-        margin-bottom: 5px;
+        width: 35px;
+        height: 35px;
+        font-size: 15px;
     }
 
-    section.contato .btn-social .fa-brands {
-        color: white;
-        width: 30px;
-        height: 30px;
-        align-items: center;
-        justify-self: center;
-        margin: 0;
+    section.contato .btn-social i {
+        font-size: 20px;
     }
 
-    /*rodape*/
+    /* --- Rodapé --- */
     footer {
-        margin: 5px;
-
+        padding: 15px 0;
     }
 
-    footer .rodape p {
-        margin: 5px 5px;
-        font-size: 1rem;
-        color: black;
+    .txt_logo {
+        width: 200px;
     }
 
-}
-
-@media (min-width: 1025px) {
-
-    /*banner*/
-    section.banner {
-        max-width: 100%;
-    }
-
-    .banner h1 {
-        font-size: 2em;
-        color: white;
-        margin-top: 10px;
-    }
-
-    .banner p {
-        font-size: 1.3em;
-        color: white;
-    }
-
-    /*serviços*/
-    section.services {
-        background: url('../img/servico_fundo_escuro10.png') no-repeat center center/cover;
-    }
-
-    section.services .container {
-        padding: 0px;
-        margin: 0px;
-        justify-content: center;
-    }
-
-    section.services .container .row .service-item {
-        margin: 0 5px;
-        padding: 0 5px;
-        flex: 1 1 30%;
-        /*ajuste do tamanho do card*/
-    }
-
-    .row .service-item img {
-        margin-top: 10px;
-        height: 60%;
-        /* Ajuste a altura das imagens para telas menores */
-        border-radius: none;
-    }
-
-    .row .service-item p {
-        font-size: 25px;
-    }
-
-
-    /*comentario*/
-    section.comentario {
-        background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
-        margin: 0px 5px;
-    }
-
-    section.comentario.conatiner.row {
-        display: flex;
-        justify-self: center;
-    }
-
-    .comentario h2 {
-        font-size: 25px;
-    }
-
-    /*quem somos*/
-    section.container-quem-somos {
-        background: url('../img/sobreFundo10.png') no-repeat center center/cover;
-        margin: 5px 5px;
-    }
-
-    #sobre {
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-quem {
-        width: 100%;
-    }
-
-    .row-q {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-        width: 100%;
-    }
-
-    .container-quem .col-12 {
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-    }
-
-    .container-quem .icones {
-        height: 400px;
-        width: 600px;
-    }
-
-    .container-quem .p1 {
-        max-width: 90%;
-        margin: 5px;
-        font-size: 2rem;
-    }
-
-    .container-quem p {
-        max-width: 80%;
-        margin: 5px;
-        font-size: 1.3rem;
-    }
-
-    .container-quem .row {
-        padding: 0px;
-        margin: 5px 0px;
-        width: 80%;
-    }
-
-    /*contato*/
-    .contato video {
-        /* display: none; */
-        /* Mantém a proporção do vídeo */
-    }
-
-    section.contato .txt-contato {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    .contato .img-contato img {
-        height: 300px;
-        width: 300px;
-        margin-top: 0px;
-        margin-left: 400px;
-    }
-
-    section.contato .txt-contato h2 {
-        text-align: center;
-        font-size: 40px;
-        line-height: 40px;
-        margin-bottom: 30px;
-        margin-left: 400px;
-    }
-
-    section.contato .txt-contato h2 span {
-        font-size: 45px;
-        display: block;
-    }
-
-    .txt-contato p {
-        margin-right: 10px;
-        justify-self: right;
-        max-width: 60%;
-        font-size: 1.5rem;
-    }
-
-    .btn-social {
-        width: 800px;
-        justify-self: center;
-    }
-
-    section.contato .btn-social button {
-        width: 80px;
-        height: 80px;
-        text-align: center;
-        margin: 0px 0px;
-        max-width: 50%;
-        margin-bottom: 5px;
-    }
-
-    .btn-social i {
-        width: 50px;
-        height: 50px;
-        align-content: center;
-    }
-
-    .btn-social {
-        color: white;
-        width: center;
-        height: center;
-        align-items: center;
-        justify-self: center;
-
-        margin: 0;
-    }
-
-    /*rodape*/
-    footer {
-        margin: 5px;
-
-    }
-
-    footer .rodape p {
-        margin: 5px 5px;
-        font-size: 1rem;
-        color: black;
+    .logo_dev {
+        width: 70px;
+        height: 70px;
     }
 
 }
