@@ -1137,7 +1137,7 @@ form a {
         padding: 0 10px;
     }
 
-    .icones {
+    .img-fluid {
         height: 200px;
         margin-bottom: 20px;
     }
@@ -1154,11 +1154,12 @@ form a {
         padding: 15px;
     }
 
-    section.contato .img-contato img {
-        width: 150px;
-        height: 150px;
-        margin-bottom: 20px;
-        margin-left: 0px;
+    .img-contat {
+        display: flex;
+        margin: 0px 0px;
+        width: 250px;
+        height: 250px;
+        margin-bottom: 15px;        
     }
 
     section.contato .txt-contato .somosadev {
