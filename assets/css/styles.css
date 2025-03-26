@@ -903,20 +903,20 @@ form a {
         flex-direction: column;
         /* padding: 10px 10px; */
         min-height: auto;
-        
+
     }
-    
+
     .contato video {
         margin: 0px 0px;
         display: none;
     }
-    
+
     .img-contat {
         display: flex;
         margin: 0px 0px;
         width: 250px;
         height: 250px;
-        margin-bottom: 15px;        
+        margin-bottom: 15px;
     }
 
     .txt-contato {
@@ -1159,7 +1159,7 @@ form a {
         margin: 0px 0px;
         width: 250px;
         height: 250px;
-        margin-bottom: 15px;        
+        margin-bottom: 15px;
     }
 
     section.contato .txt-contato .somosadev {
@@ -1245,27 +1245,40 @@ form a {
 
 
     /* --- Serviços --- */
-    .services {
-        padding: 50px 0;
-        background-size: cover;
-    }
-
-    .services .container {
-        flex-direction: column;
-        gap: 15px;
+    .services .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .service-item {
-        flex: 1 1 100%;
-        margin: 0 10px;
+        flex: 0 0 50% !important;
+        /* Força 2 colunas */
+        max-width: 50% !important;
+        padding: 5px;
+        box-sizing: border-box;
     }
 
     .services img {
-        height: 150px;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100px !important;
     }
 
-    .services p {
-        font-size: 14px;
+    .services .tesoura {
+        font-size: 12px !important;
+        padding: 5px;
+    }
+
+    /* Remove margens e padding conflitantes */
+    .services .container {
+        padding: 0 5px !important;
+        margin: 0 !important;
+    }
+
+    /* Garante que as linhas não tenham espaçamento extra */
+    .row {
+        margin: 0 !important;
     }
 
     /* --- Depoimentos --- */
@@ -1411,27 +1424,40 @@ form a {
 
 
     /* --- Serviços --- */
-    .services {
-        padding: 100px 0;
-        background-size: cover;
-    }
-
-    .services .container {
-        flex-direction: column;
-        gap: 15px;
+    .services .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .service-item {
-        flex: 1 1 100%;
-        margin: 0 10px;
+        flex: 1 1 33,33% !important;
+        /* Força 2 colunas */
+        max-width: auto !important;
+        padding: 5px;
+        box-sizing: border-box;
     }
 
     .services img {
-        height: 150px;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100px !important;
     }
 
-    .services p {
-        font-size: 14px;
+    .services .tesoura {
+        font-size: 12px !important;
+        padding: 5px;
+    }
+
+    /* Remove margens e padding conflitantes */
+    .services .container {
+        padding: 0 5px !important;
+        margin: 0 !important;
+    }
+
+    /* Garante que as linhas não tenham espaçamento extra */
+    .row {
+        margin: 0 !important;
     }
 
     /* --- Depoimentos --- */
@@ -1588,16 +1614,17 @@ form a {
 
     .services .container {
         flex-direction: column;
-        gap: 15px;
+        gap: 0px;
     }
-
+    
     .service-item {
         flex: 1 1 100%;
         margin: 0 10px;
     }
-
+    
     .services img {
         height: 150px;
+        margin: 5px;
     }
 
     .services p {

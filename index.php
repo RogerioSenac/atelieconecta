@@ -49,29 +49,29 @@
                 <h2>Serviços Oferecidos</h2>
                 <div class="row">
                     <div class="service-item col-6 col-lg-4">
-                        <img src="./assets/img/servico-1.jpeg" alt="Serviço 1">
+                        <img class="imagem" src="./assets/img/servico-1.jpeg" alt="Serviço 1">
                         <p class="tesoura">Customização</p>
                     </div>
                     <div class="col-6 col-lg-4 service-item">
-                        <img src="./assets/img/servico-2.jpeg" alt="Serviço 2">
+                        <img class="imagem" src="./assets/img/servico-2.jpeg" alt="Serviço 2">
                         <p class="tesoura">Ateliê sob Medida</p>
                     </div>
                     <div class="col-6 col-lg-4 service-item">
-                        <img src="./assets/img/servico-3.jpeg" alt="Serviço 3">
+                        <img class="imagem" src="./assets/img/servico-3.jpeg" alt="Serviço 3">
                         <p class="tesoura">Consertos e Ajuste</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6 col-lg-4 service-item">
-                        <img src="./assets/img/servico-4.jpeg" alt="Serviço 4">
+                        <img class="imagem" src="./assets/img/servico-4.jpeg" alt="Serviço 4">
                         <p class="tesoura">Estilista</p>
                     </div>
                     <div class="col-6 col-lg-4 service-item">
-                        <img src="./assets/img/servico-6.jpeg" alt="Serviço 5">
+                        <img class="imagem" src="./assets/img/servico-6.jpeg" alt="Serviço 5">
                         <p class="tesoura">Roupas Personalizadas</p>
                     </div>
                     <div class="col-6 col-lg-4 service-item">
-                        <img src="./assets/img/servico-5.jpeg" alt="Serviço 6">
+                        <img class="imagem" src="./assets/img/servico-5.jpeg" alt="Serviço 6">
                         <p class="tesoura">Modelagem</p>
                     </div>
                 </div>
