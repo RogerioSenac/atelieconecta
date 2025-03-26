@@ -149,7 +149,7 @@
             <div class="container-quem">
                 <div class="row-q">
                     <div class="col-12 text-center">
-                        <img class="icones img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
+                        <img class="img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
                 <p>
@@ -182,7 +182,7 @@
             </video>
 
             <div class="txt-contato">
-                <div class="img-contato">
+                <div class="img-contat">
                     <img src="./assets/img/developersRGTsemfundo2.png">
                 </div>
                 <p class="somosadev">MUITO PRAZER,<br> <span>SOMOS A DEVELOPER RGT</span></p>

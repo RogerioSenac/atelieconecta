@@ -891,27 +891,32 @@ form a {
         padding: 0 5px;
     }
 
-    .icones {
-        height: 50px;
+    .img-fluid {
+        width: 250px;
+        height: 220px;
         margin-bottom: 15px;
     }
 
     /* --- Contato --- */
-    .contato {
+    section.contato {
+        margin: 0px 0px;
         flex-direction: column;
-        padding: 20px 10px;
+        /* padding: 10px 10px; */
         min-height: auto;
-        margin: 5px;
+        
     }
-
+    
     .contato video {
+        margin: 0px 0px;
         display: none;
     }
-
-    .img-contato img {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 15px;
+    
+    .img-contat {
+        display: flex;
+        margin: 0px 0px;
+        width: 250px;
+        height: 250px;
+        margin-bottom: 15px;        
     }
 
     .txt-contato {
