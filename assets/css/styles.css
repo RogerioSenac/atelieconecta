@@ -854,15 +854,15 @@ form a {
     }
 
 
-/* Seção Rodapé */
+    /* Seção Rodapé */
 
-.rodape P{
-    font-size: 13px;
-}
+    .rodape P {
+        font-size: 13px;
+    }
 
-.logo_dev {
-    width: 50px;
-    height: 50px;
-}
+    .logo_dev {
+        width: 50px;
+        height: 50px;
+    }
 
 }
