@@ -378,6 +378,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
     exit();
 }
 
+// Processa alteração de serviços principais
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    try {
+        $servicosPrincipais = $_POST['servicosPrincipais'];
+        
+        // Remove valores vazios e duplicados
+        $servicosPrincipais = array_filter($servicosPrincipais, function($value) {
+            return trim($value) !== '';
+        });
+        $servicosPrincipais = array_unique($servicosPrincipais);
+        
+        // Atualiza no Firebase
+        $database->getReference('userProf/' . $userKey . '/servicos/principais')->set($servicosPrincipais);
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços atualizados com sucesso!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar serviços: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
+}
+
+// Busca os serviços disponíveis no Firebase
+try {
+    $servicosRef = $database->getReference('servicos');
+    $servicosDisponiveis = $servicosRef->getValue();
+    
+    // Verifica se é array e não está vazio
+    if (!is_array($servicosDisponiveis)) {
+        $servicosDisponiveis = [];
+    }
+    
+} catch (Exception $e) {
+    $servicosDisponiveis = [];
+    // Você pode adicionar um log de erro se necessário
+}
+
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
@@ -394,60 +441,6 @@ unset($_SESSION['alert']);
     <link rel="stylesheet" href="../assets/css/stylesCadLogin.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-    .invalid-feedback {
-        display: none;
-        color: red;
-    }
-
-    .is-invalid~.invalid-feedback {
-        display: block;
-    }
-
-    .was-validated .form-control:invalid~.invalid-feedback {
-        display: block;
-    }
-
-    .password-strength {
-        height: 5px;
-        margin-top: 5px;
-        margin-bottom: 15px;
-        background: #eee;
-    }
-
-    .password-strength span {
-        display: block;
-        height: 100%;
-        transition: all 0.3s;
-    }
-
-    .password-weak span {
-        background: #ff4d4d;
-        width: 30%;
-    }
-
-    .password-medium span {
-        background: #ffcc00;
-        width: 60%;
-    }
-
-    .password-strong span {
-        background: #00cc66;
-        width: 100%;
-    }
-
-    .preview-image {
-        max-width: 100%;
-        max-height: 200px;
-        margin-top: 10px;
-        display: none;
-    }
-
-    .logout-confirm {
-        display: none;
-        margin-top: 10px;
-    }
-    </style>
 </head>
 
 <body class="dash">
@@ -575,7 +568,9 @@ unset($_SESSION['alert']);
                         </div>
                     </div>
 
-                    <p class="tagService">Serviços Principais:</p>
+                    <p class="tagService">Serviços Principais:
+                        <i class="fas fa-edit ms-2" id="editServicosIcon" style="cursor: pointer;"></i>
+                    </p>
                     <div class="services-container">
                         <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
                         <div class="service-card">
@@ -712,7 +707,8 @@ unset($_SESSION['alert']);
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Salvar</button>
                             </div>
                         </form>
@@ -722,7 +718,8 @@ unset($_SESSION['alert']);
         </div>
 
         <!-- Modal Alterar Senha -->
-        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content custom-modal">
                     <div class="modal-header">
@@ -735,13 +732,15 @@ unset($_SESSION['alert']);
 
                             <div class="mb-3">
                                 <label for="currentPassword" class="form-label">Senha Atual</label>
-                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                <input type="password" class="form-control" id="currentPassword" name="currentPassword"
+                                    required>
                                 <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="newPassword" class="form-label">Nova Senha</label>
-                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                <input type="password" class="form-control" id="newPassword" name="newPassword"
+                                    required>
                                 <div class="invalid-feedback">Por favor, insira uma nova senha.</div>
                                 <div class="password-strength">
                                     <span></span>
@@ -751,13 +750,66 @@ unset($_SESSION['alert']);
 
                             <div class="mb-3">
                                 <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                                    required>
                                 <div class="invalid-feedback">As senhas não coincidem.</div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Editar Serviços -->
+        <div class="modal fade" id="servicosModal" tabindex="-1" aria-labelledby="servicosModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="servicosModalLabel">Selecionar Serviços Principais</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="servicosForm" method="POST" action="dashAcessoProf.php">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                            <div class="mb-3">
+                                <p class="mb-3">Marque os serviços que você oferece:</p>
+                                <div class="row" id="servicosDisponiveis">
+                                    <?php
+                            // Serviços do usuário atual
+                            $servicosUsuario = $user['servicos']['principais'] ?? [];
+                            
+                            if (!empty($servicosDisponiveis)) {
+                                foreach ($servicosDisponiveis as $servicoId => $servicoData) {
+                                    $nomeServico = $servicoData['nome'] ?? $servicoId;
+                                    $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
+                                    echo '<div class="col-md-4 mb-3">';
+                                    echo '<div class="form-check">';
+                                    echo '<input class="form-check-input" type="checkbox" name="servicosPrincipais[]" ';
+                                    echo 'value="'.htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8').'" id="servico_'.$servicoId.'" '.$checked.'>';
+                                    echo '<label class="form-check-label" for="servico_'.$servicoId.'">';
+                                    echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
+                                    echo '</label>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                }
+                            } else {
+                                echo '<div class="alert alert-warning">Nenhum serviço disponível encontrado</div>';
+                            }
+                            ?>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar Seleção</button>
                             </div>
                         </form>
                     </div>
@@ -845,6 +897,55 @@ unset($_SESSION['alert']);
                     location.reload(); // Ou atualize apenas as redes sociais via JS
                 } else {
                     alert("Erro ao salvar");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    // Adiciona evento para abrir o modal de serviços
+    document.getElementById("editServicosIcon").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById("servicosModal")).show();
+    });
+
+    // Adiciona novo campo de serviço
+    document.getElementById("adicionarServico").addEventListener("click", function() {
+        const container = document.getElementById("servicosContainer");
+        const novoInput = document.createElement("div");
+        novoInput.className = "input-group mb-2 servico-input";
+        novoInput.innerHTML = `
+        <input type="text" class="form-control" name="servicosPrincipais[]">
+        <button type="button" class="btn btn-danger remover-servico">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+        container.appendChild(novoInput);
+    });
+
+    // Remove campo de serviço
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("remover-servico") || e.target.closest(".remover-servico")) {
+            const inputGroup = e.target.closest(".servico-input");
+            if (inputGroup) {
+                inputGroup.remove();
+            }
+        }
+    });
+
+    // Envio do formulário de serviços
+    document.getElementById("servicosForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("dashAcessoProf.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert("Erro ao salvar serviços");
                 }
             })
             .catch(error => console.error("Error:", error));

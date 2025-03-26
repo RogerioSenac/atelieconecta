@@ -596,7 +596,73 @@ h2 {
     background: #545b62;
 }
 
+    .invalid-feedback {
+        display: none;
+        color: red;
+    }
 
+    .is-invalid~.invalid-feedback {
+        display: block;
+    }
+
+    .was-validated .form-control:invalid~.invalid-feedback {
+        display: block;
+    }
+
+    .password-strength {
+        height: 5px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        background: #eee;
+    }
+
+    .password-strength span {
+        display: block;
+        height: 100%;
+        transition: all 0.3s;
+    }
+
+    .password-weak span {
+        background: #ff4d4d;
+        width: 30%;
+    }
+
+    .password-medium span {
+        background: #ffcc00;
+        width: 60%;
+    }
+
+    .password-strong span {
+        background: #00cc66;
+        width: 100%;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .logout-confirm {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .service-edit-icon {
+        cursor: pointer;
+        margin-left: 10px;
+        color: #6c757d;
+    }
+
+    .service-edit-icon:hover {
+        color: #0d6efd;
+    }
+
+    .service-checkbox {
+        margin-right: 10px;
+    }
+  
 
     /* ** Fim Inserção Wagner **  */
 /* Responsividade */
