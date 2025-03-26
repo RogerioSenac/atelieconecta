@@ -176,56 +176,56 @@
         </section>
 
         <section class="contato" id="contato">
-            <video autoplay loop muted playsinline>
+            <!-- <video autoplay loop muted playsinline>
                 <source src="./assets/video/video_Developers2.mov" type="video/mp4">
                 Seu navegador não suporta o elemento de vídeo.
-            </video>
+            </video> -->
 
-            <div class="txt-contato">
-                <div class="img-contat">
-                    <img src="./assets/img/developersRGTsemfundo2.png">
-                </div>
-                <p class="somosadev">MUITO PRAZER,<br> <span>SOMOS A DEVELOPER RGT</span></p>
-                <p>
-                    A <span>Developer RGT</span> é formada por talentosos alunos do curso técnico de
-                    Informática para Internet do <span>SENAC REGISTRO</span>, unidos pela paixão por tecnologia e
-                    inovação.
-                </p>
+            <!-- <div class="txt-contato"> -->
+            <div class="img-contato">
+                <img src="./assets/img/developersRGTsemfundo2.png">
+            </div>
+            <p class="somosadev">MUITO PRAZER,<br> <span>SOMOS A DEVELOPER RGT</span></p>
+            <p class="txtApres">
+                A <span>Developer RGT</span> é formada por talentosos alunos do curso técnico de
+                Informática para Internet do <span>SENAC REGISTRO</span>, unidos pela paixão por tecnologia e
+                inovação.
+            </p>
 
-                <p>
-                    Especializados em <span>DESENVOLVIMENTO WEB</span>, estamos no mercado desde
-                    <span>Janeiro/2024</span>,
-                    criando soluções digitais sob medida para empresas e empreendedores. Nossa equipe aplica as mais
-                    avançadas
-                    técnicas e <span>BOAS PRÁTICAS</span> do setor para desenvolver aplicações web
-                    <span>CRIATIVAS</span>,
-                    <span>INOVADORAS</span> e altamente funcionais.
-                </p>
+            <p class="txtApres">
+                Especializados em <span>DESENVOLVIMENTO WEB</span>, estamos no mercado desde
+                <span>Janeiro/2024</span>,
+                criando soluções digitais sob medida para empresas e empreendedores. Nossa equipe aplica as mais
+                avançadas
+                técnicas e <span>BOAS PRÁTICAS</span> do setor para desenvolver aplicações web
+                <span>CRIATIVAS</span>,
+                <span>INOVADORAS</span> e altamente funcionais.
+            </p>
 
-                <p>
-                    Se você busca um site profissional, moderno e totalmente personalizado, a <span>Developer RGT</span>
-                    está pronta
-                    para transformar sua ideia em realidade. <strong>Entre em contato e leve sua presença digital para o
-                        próximo nível!</strong>
-                </p>
+            <p class="txtApres">
+                Se você busca um site profissional, moderno e totalmente personalizado, a <span>Developer RGT</span>
+                está pronta
+                para transformar sua ideia em realidade. <strong>Entre em contato e leve sua presença digital para o
+                    próximo nível!</strong>
+            </p>
 
-                <div class="btn-social">
-                    <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA=="
-                        target="_blank"><button><i class="rede fa-brands fa-instagram"></i></button></a>
+            <div class="btn-social">
+                <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA=="
+                    target="_blank"><button><i class="rede fa-brands fa-instagram"></i></button></a>
 
-                    <a href="https://www.linkedin.com/in/developers-rgt-862402309/" target="_blank"><button><i
-                                class="fa-brands fa-linkedin"></i></button></a>
+                <a href="https://www.linkedin.com/in/developers-rgt-862402309/" target="_blank"><button><i
+                            class="fa-brands fa-linkedin"></i></button></a>
 
-                    <a href="https://www.youtube.com/@developers_rgt?si=oQlWOmaRf2SRPzlD&fbclid=PAZXh0bgNhZW0CMTEAAaYqnLMgVcRIadkyQ5bQ6MNxTCTzn54hLfiPhnE_JIKYDPlky-PEubYzu0g_aem_AZ5WecxAIc8cxdrGFj8cjiGjndHYazGJ6A-xIEf5Gyn1Et8ZO3SSA65_nPesYYSksfh2gltMmyF2FESUFtbq0KQ2"
-                        target="_blank"><button><i class="fa-brands fa-youtube"></i></button></a>
+                <a href="https://www.youtube.com/@developers_rgt?si=oQlWOmaRf2SRPzlD&fbclid=PAZXh0bgNhZW0CMTEAAaYqnLMgVcRIadkyQ5bQ6MNxTCTzn54hLfiPhnE_JIKYDPlky-PEubYzu0g_aem_AZ5WecxAIc8cxdrGFj8cjiGjndHYazGJ6A-xIEf5Gyn1Et8ZO3SSA65_nPesYYSksfh2gltMmyF2FESUFtbq0KQ2"
+                    target="_blank"><button><i class="fa-brands fa-youtube"></i></button></a>
 
-                    <a href="https://github.com/DevelopersRGT" target="_blank"><button><i
-                                class="fa-brands fa-github"></i></button></a>
+                <a href="https://github.com/DevelopersRGT" target="_blank"><button><i
+                            class="fa-brands fa-github"></i></button></a>
 
-                    <a href="falecomdevelopersrgt@gmail.com" target="_blank"><button><i
-                                class="fas fa-envelope"></i></button></a>
-                </div> <!-- Fim btn-social -->
-            </div><!-- Fim Texto contato -->
+                <a href="falecomdevelopersrgt@gmail.com" target="_blank"><button><i
+                            class="fas fa-envelope"></i></button></a>
+            </div> <!-- Fim btn-social -->
+
         </section>
     </main>
 
