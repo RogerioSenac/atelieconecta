@@ -748,10 +748,13 @@ form a {
 /****************************/
 
 @media (max-width: 320px) {
+
+    /*Seção Banner*/
     .banner h1 {
         margin: 0px;
     }
 
+    /*Seção Serviços*/
     .services {
         background-size: cover;
         display: flex;
@@ -834,7 +837,6 @@ form a {
         display: flex;
         flex-direction: column;
         margin: 0px 0px;
-        /* flex-direction: column; */
     }
 
     .somosadev p {
@@ -853,16 +855,118 @@ form a {
         font-size: 15px;
     }
 
+    /* Seção Rodapé */
 
-/* Seção Rodapé */
+    .rodape P {
+        font-size: 13px;
+    }
 
-.rodape P{
-    font-size: 13px;
+    .logo_dev {
+        width: 50px;
+        height: 50px;
+    }
+
 }
 
-.logo_dev {
-    width: 50px;
-    height: 50px;
-}
+@media (max-width: 375px) {
+
+    /*Seção Banner*/
+    .banner {
+        background-size: cover;
+    }
+
+    .banner h1 {
+        margin: 0px 0px;
+        font-size: 25px;
+    }
+
+    /*Seção Serviços*/
+    .services {
+        background-size: cover;
+        display: flex;
+        padding: 10px 10px;
+        margin: 5px 5px;
+    }
+
+    .services .container h2 {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .services .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .service-item {
+        flex: 0 0 80% !important;
+        max-width: 70% !important;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    /*Seção Deopimento*/
+    .comentario{
+        background-size: cover;
+        margin: 0px 5px;
+        padding: 0px 0px;
+    }
+
+    /*Seção Quem Somos*/
+    .container-quem-somos{
+        background-size: cover;
+        margin: 0px 5px;
+        flex-direction: column;
+        margin: 5px;
+    }
+
+    .img-fluid{
+        margin-top: 10px;
+    }
+
+    .container-quem{
+        width: 100%;
+    }
+
+    .container-quem p{
+        max-width: 90%;
+        font-size: 15px;
+    }
+
+    /*Seção Contato*/
+    .contato{
+        display: flex;
+        flex-direction: column;
+        margin: 0px 0px;
+    }
+
+    .somosadev p{
+        font-size: 15px;
+        line-height: 1.3;
+        text-align: justify;
+    }
+
+    .somosadev p span{
+        font-size: 15px;
+    }
+
+    .txtApres{
+        text-align: justify;
+        width: 90%;
+        font-size: 15px;
+    }
+
+    /*Seção Rodape*/
+    .rodape P{
+        font-size: 13px;
+        color: black;
+    }
+
+    .logo_dev{
+        width: 70px;
+        height: 70px;
+    }
+
 
 }
