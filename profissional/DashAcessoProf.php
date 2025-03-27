@@ -379,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
 }
 
 // Processa alteração de serviços principais
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -390,25 +390,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])
     }
 
     try {
-        $servicosPrincipais = $_POST['servicosPrincipais'];
-        
-        // Remove valores vazios e duplicados
-        $servicosPrincipais = array_filter($servicosPrincipais, function($value) {
-            return trim($value) !== '';
-        });
-        $servicosPrincipais = array_unique($servicosPrincipais);
-        
-        // Atualiza no Firebase
-        $database->getReference('userProf/' . $userKey . '/servicos/principais')->set($servicosPrincipais);
-        
+        $ref = $database->getReference('userProf/' . $userKey . '/servicos/principais');
+
+        // Verifica se o campo foi enviado e contém valores não vazios
+        if (!isset($_POST['servicosPrincipais']) || empty(array_filter($_POST['servicosPrincipais'], 'trim'))) {
+            // Remove completamente o nó se não houver serviços
+            $ref->remove();
+        } else {
+            // Remove valores vazios e duplicados antes de salvar
+            $servicosPrincipais = array_unique(array_filter(array_map('trim', $_POST['servicosPrincipais'])));
+
+            $ref->set($servicosPrincipais);
+        }
+
         $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços atualizados com sucesso!'];
     } catch (Exception $e) {
         $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar serviços: ' . $e->getMessage()];
     }
-    
+
     header("Location: dashAcessoProf.php");
     exit();
 }
+
 
 // Busca os serviços disponíveis no Firebase
 try {
@@ -427,26 +430,26 @@ try {
 
 
 // Processa alteração de outros serviços
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['outrosServicos'])) {
     try {
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             throw new Exception("Token inválido");
         }
 
         $ref = $database->getReference('userProf/'.$userKey.'/servicos/outros');
-
-        // Se o campo 'outrosServicos' não existir, significa que todos foram removidos
-        if (!isset($_POST['outrosServicos']) || empty(array_filter($_POST['outrosServicos'], 'trim'))) {
-            // Remove completamente o nó do banco de dados
-            $ref->remove();
-        } else {
-            // Caso contrário, adiciona os serviços filtrados
-            $servicos = array_filter(array_map('trim', $_POST['outrosServicos']));
-
-            $ref->remove(); // Limpa os serviços antigos
-
+        
+        // Limpa completamente os serviços existentes
+        $ref->remove();
+        
+        // Adiciona apenas os serviços não vazios
+        $servicos = isset($_POST['outrosServicos']) ? (array)$_POST['outrosServicos'] : [];
+        $servicos = array_filter(array_map('trim', $servicos));
+        
+        if (!empty($servicos)) {
             foreach ($servicos as $servico) {
-                $ref->push($servico);
+                if (!empty($servico)) {
+                    $ref->push($servico);
+                }
             }
         }
 
@@ -454,7 +457,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
-
+        
         $_SESSION['alert'] = [
             'type' => 'success',
             'message' => 'Serviços atualizados com sucesso!'
@@ -466,12 +469,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'message' => 'Erro: '.$e->getMessage()
         ];
     }
-
+    
     // Redirecionamento com cache-busting
     header("Location: dashAcessoProf.php?t=".time());
     exit();
 }
-
 
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
@@ -1147,7 +1149,6 @@ foreach (is_array($outrosServicos) ? $outrosServicos : (array)$outrosServicos as
         btn.innerHTML = 'Salvar Alterações';
     }
 });
-
 
     // Funções auxiliares (já existentes ou novas)
     function showAlert(type, message) {
