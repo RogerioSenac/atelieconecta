@@ -309,10 +309,6 @@ nav ul li a {
     justify-content: center;
 }
 
-/* .container-quem p {
-    align-self: center;
-    text-align: justify;
-} */
 
 .container-quem-somos p {
     /* font-family: 'Courier New', Courier, monospace; */
@@ -750,7 +746,7 @@ form a {
 @media (max-width: 320px) {
 
     /*Seção Banner*/
-    .banner{
+    .banner {
         background-size: cover;
     }
 
@@ -912,63 +908,63 @@ form a {
     }
 
     /*Seção Deopimento*/
-    .comentario{
+    .comentario {
         background-size: cover;
         margin: 0px 5px;
         padding: 0px 0px;
     }
 
     /*Seção Quem Somos*/
-    .container-quem-somos{
+    .container-quem-somos {
         background-size: cover;
         margin: 0px 5px;
         flex-direction: column;
         margin: 5px;
     }
 
-    .img-fluid{
+    .img-fluid {
         margin-top: 10px;
     }
 
-    .container-quem{
+    .container-quem {
         width: 100%;
     }
 
-    .container-quem p{
+    .container-quem p {
         max-width: 90%;
         font-size: 15px;
     }
 
     /*Seção Contato*/
-    .contato{
+    .contato {
         display: flex;
         flex-direction: column;
         margin: 0px 0px;
     }
 
-    .somosadev p{
+    .somosadev p {
         font-size: 15px;
         line-height: 1.3;
         text-align: justify;
     }
 
-    .somosadev p span{
+    .somosadev p span {
         font-size: 15px;
     }
 
-    .txtApres{
+    .txtApres {
         text-align: justify;
         width: 90%;
         font-size: 15px;
     }
 
     /*Seção Rodape*/
-    .rodape P{
+    .rodape P {
         font-size: 13px;
         color: black;
     }
 
-    .logo_dev{
+    .logo_dev {
         width: 70px;
         height: 70px;
     }
@@ -976,36 +972,37 @@ form a {
 }
 
 @media (max-width: 425px) {
+
     /*Seção Banner*/
-    .banner{
+    .banner {
         background-size: cover;
     }
 
-    .banner h1{
-        margin: 0px 0px;    
+    .banner h1 {
+        margin: 0px 0px;
         font-size: 30px;
     }
 
     /*Seção Serviços*/
-    .services{
+    .services {
         background-size: cover;
         display: flex;
         padding: 10px 10px;
         margin: 5px 5px;
     }
 
-    .services .container h2{
+    .services .container h2 {
         width: 100%;
         margin-top: 15px;
     }
 
-    .services .row{
+    .services .row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    .service-item{
+    .service-item {
         flex: 0 0 80% !important;
         max-width: 70% !important;
         padding: 5px;
@@ -1013,68 +1010,69 @@ form a {
     }
 
     /*Seçao Depoimento*/
-    .comentario{
+    .comentario {
         background-size: cover;
         margin: 0px 5px;
         padding: 0px 0px;
     }
 
     /*Seção Quem Somos*/
-    .container-quem-somos{
+    .container-quem-somos {
         background-size: cover;
         margin: 0px 5px;
         flex-direction: column;
         margin: 5px;
     }
 
-    .img-fluid{
+    .img-fluid {
         margin-top: 10px;
     }
 
-    .container-quem{
+    .container-quem {
         width: 100%;
     }
 
-    .container-quem p{
+    .container-quem p {
         max-width: 90%;
         font-size: 15px;
     }
-    
+
     /*Seção Contato*/
-    .contato{
+    .contato {
         display: flex;
         flex-direction: column;
         margin: 0px 0px;
     }
 
-    .somosadev p{
+    .somosadev p {
         font-size: 15px;
         line-height: 1.3;
         text-align: justify;
     }
 
-    .somosadev p span{
+    .somosadev p span {
         font-size: 15px;
     }
 
-    .txtApres{
+    .txtApres {
         text-align: justify;
         width: 90%;
         font-size: 15px;
     }
 
     /*Seção Rodape*/
-    footer{
+    footer {
         margin: 0px 0px;
         margin: 5px;
-        
+
     }
+
     .rodape p {
         font-size: 18px;
         color: black;
     }
 
-    .logo_dev{
+    .logo_dev {
         width: 90px;
         height: 90px;
     }
@@ -1082,36 +1080,37 @@ form a {
 }
 
 @media (max-width: 768px) {
+
     /*Seção Banner*/
-    .banner{
+    .banner {
         background-size: cover;
     }
 
-    .banner h1{
+    .banner h1 {
         margin: 0px 0px;
         font-size: 50px;
     }
 
     /*Seção Serviços*/
-    .services{
+    .services {
         background-size: cover;
         display: flex;
         padding: 10px 10px;
         margin: 5px 5px;
     }
 
-    .services .container h2{
+    .services .container h2 {
         width: 100%;
         margin-top: 15px;
     }
 
-    .services .row{
+    .services .row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    .service-item{
+    .service-item {
         flex: 0 0 70% !important;
         max-width: 60% !important;
         padding: 5px;
@@ -1119,52 +1118,57 @@ form a {
     }
 
     /*Seção Depoimento*/
-    .comentario{
+    .comentario {
         background-size: cover;
         margin: 0px 5px;
         padding: 0px 0px;
     }
 
     /*Seção Quem Somos*/
-    .container-quem-somos{
+    .container-quem-somos {
         background-size: cover;
         margin: 0px 5px;
         flex-direction: column;
         margin: 5px;
     }
 
-    .img-fluid{
+    .img-fluid {
         margin-top: 10px;
         width: 70%
     }
 
-    .container-quem{
+    .container-quem {
         width: 100%;
     }
 
-    .container-quem p{
-        max-width: 90%;
-        font-size: 15px;
+    .container-quem .apresentacao-quem {
+        width: 100%;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .container-quem .apresentacao-txtquem {
+        font-size: 20px;
     }
 
     /*Seção Contato*/
-    .contato{
+    .contato {
         display: flex;
         flex-direction: column;
         margin: 0px 0px;
     }
 
-    .somosadev p{
+    .somosadev p {
         font-size: 15px;
         line-height: 1.3;
         text-align: justify;
     }
 
-    .somosadev p span{
+    .somosadev p span {
         font-size: 15px;
     }
 
-    .txtApres{
+    .txtApres {
         text-align: justify;
         width: 90%;
         font-size: 15px;
@@ -1172,34 +1176,37 @@ form a {
 
     /*Seção Rodape*/
 
-    footer{
+    footer {
         margin: 0px 0px;
         margin: 5px;
     }
-    .rodape p{
+
+    .rodape p {
         font-size: 15px;
         color: #000;
     }
-    .logo_dev{
+
+    .logo_dev {
         width: 90px;
         height: 90px;
     }
-    
+
 }
 
 @media (max-width: 1024px) {
+
     /*Seção Banner*/
-    .banner{
+    .banner {
         background-size: cover;
     }
 
-    .banner h1{
+    .banner h1 {
         margin: 0px 0px;
         font-size: 35px;
     }
 
     /*Seção Serviços*/
-    .services{
+    .services {
         background-size: cover;
         display: flex;
         padding: 10px 10px;
@@ -1207,25 +1214,25 @@ form a {
         width: 100%;
     }
 
-    .services .container{
+    .services .container {
         width: 100%;
     }
 
-    .services .container h2{
+    .services .container h2 {
         width: 100%;
         margin-top: 15px;
     }
 
-    .services .row{
+    .services .row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         width: 100%;
-        
+
     }
-    
-    .service-item{
-        flex: 0 0 33,33% !important;
+
+    .service-item {
+        flex: 0 0 33, 33% !important;
         max-width: 80% !important;
         padding: 5px;
         box-sizing: border-box;
@@ -1233,71 +1240,303 @@ form a {
     }
 
     /*Seção Depoimentos*/
-    .comentario{
+    .comentario {
         background-size: cover;
         margin: 0px 5px;
         padding: 0px 0px;
     }
 
     /*Seção Quem Somos*/
-    .container-quem-somos{
+    .container-quem-somos {
         background-size: cover;
         margin: 0px 5px;
         flex-direction: column;
         margin: 5px;
     }
 
-    .img-fluid{
+    .img-fluid {
         margin-top: 10px;
         width: 70%;
     }
 
-    .container-quem{
+    .container-quem {
         width: 100%;
     }
 
-    .container-quem p{
+    .container-quem p {
         max-width: 90%;
         font-size: 15px;
     }
 
     /*Seção Contato*/
-    .contato{
+    .contato {
         display: flex;
         flex-direction: column;
         margin: 0px 0px;
     }
 
-    .somosadev p{
+    .somosadev p {
         font-size: 25px;
         line-height: 1.3;
         text-align: justify;
     }
 
-    .somosadev p span{
+    .somosadev p span {
         font-size: 25px;
     }
 
-    .txtApres{
+    .txtApres {
         text-align: justify;
         width: 90%;
         font-size: 20px;
     }
 
     /*Seçção Rodape*/
-    footer{
+    footer {
         margin: 0px 0px;
         margin: 5px;
     }
-    .rodape p{
+
+    .rodape p {
         font-size: 15px;
         color: #000;
     }
-    
 
-
-
-    
-    
 }
 
+@media (max-width: 1440px) {
+
+    .logo {
+        /* margin-left: -50px; */
+        height: 40px;
+        width: auto;
+    }
+
+    /*Seção Serviços*/
+    .services {
+        margin: 0px 0px;
+        margin: 5px;
+        background-size: cover;
+    }
+
+    .services .container {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .row .service-item {
+        margin: 10px 10px;
+    }
+
+    /*Seção Depoimentos*/
+    .comentario {
+        background-size: cover;
+        margin: 5px 5px;
+        padding: 10px 0px;
+    }
+
+    .comentario h2 {
+        margin-bottom: 30px;
+    }
+
+    /*Seção Contato*/
+    .contato {
+        display: flex;
+        flex-direction: column;
+        margin: 0px 0px;
+    }
+
+    .somosadev p {
+        font-size: 25px;
+        line-height: 1.3;
+        text-align: justify;
+    }
+
+    .somosadev p span {
+        font-size: 25px;
+    }
+
+    .txtApres {
+        text-align: justify;
+        width: 90%;
+        font-size: 20px;
+    }
+
+    /*Seçção Rodape*/
+    footer {
+        margin: 0px 0px;
+        margin: 5px;
+    }
+
+    .rodape p {
+        font-size: 15px;
+        color: #000;
+    }
+}
+
+@media (max-width: 2560px) {
+
+
+    .logo {
+        /* margin-left: -50px; */
+        height: 40px;
+        width: auto;
+    }
+
+
+    /*Seção Banner*/
+    .banner {
+        margin: 0px 0px;
+        padding: 0px 0px;
+        margin: 5px;
+        border: solid white;
+    }
+
+    .banner h1 {
+        font-size: 90px;
+
+    }
+
+    .banner p {
+        font-size: 70px;
+    }
+
+    /*Seção Serviços*/
+    .services {
+        margin: 0px 0px;
+        padding: 0px 0px;
+        display: flex;
+        background-size: cover;
+        display: flex;
+        /* padding: 10px 10px; */
+        /* margin: 5pc 5px; */
+        width: 100%;
+        justify-content: center;
+        border: solid white;
+
+    }
+
+    .services .container {
+        margin: 0px 0px;
+        padding: 0px 0px;
+        display: flex;
+        max-width: 95%;
+        /* border: solid green; */
+        justify-content: center;
+
+    }
+
+    .services .container h2 {
+        margin: 0px 0px;
+        padding: 0px 0px;
+        width: 100%;
+        margin-top: 5px;
+        font-size: 90px;
+    }
+
+    .services .row {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 30px;
+    }
+
+    .service-item {
+        flex: 0 0 30% !important;
+        max-width: 30% !important;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .imagem {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 80% !important;
+    }
+
+    .services .tesoura {
+        font-size: 45px !important;
+        padding: 5px;
+    }
+
+    /*Seção Depoimentos*/
+    .comentario {
+        margin: 0px 0px;
+        padding: 0px 0px;
+        background-size: cover;
+        margin: 5px 5px;
+        padding: 25px 0px;
+    }
+
+    .comentario h2 {
+        font-size: 3em;
+        margin-bottom: 25px;
+    }
+
+    /*Seção Quem Somos*/
+    .container-quem-somos {
+        background-size: cover;
+        margin: 0px 5px;
+        flex-direction: column;
+    }
+
+    .container-quem {
+        width: 100%;
+    }
+
+    .container-quem .apresentacao-quem {
+        width: 100%;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .container-quem .apresentacao-txtquem {
+        font-size: 25px;
+    }
+
+    /*Seção Contato*/
+
+    .contato {
+        display: flex;
+        flex-direction: column;
+        margin: 0px 0px;
+    }
+
+    .somosadev p {
+        font-size: 25px;
+        line-height: 1.3;
+        text-align: justify;
+    }
+
+    .somosadev p span {
+        font-size: 25px;
+    }
+
+    .txtApres {
+        text-align: justify;
+        width: 90%;
+        font-size: 25px;
+    }
+
+    /*Seção Rodape*/
+
+    footer {
+        margin: 0px 0px;
+        margin: 5px;
+    }
+
+    .rodape p {
+        font-size: 25px;
+        color: #000;
+    }
+
+    .logo_dev {
+        width: 90px;
+        height: 90px;
+    }
+
+
+
+
+
+}
