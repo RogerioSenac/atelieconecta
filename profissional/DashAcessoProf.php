@@ -425,6 +425,54 @@ try {
     // Você pode adicionar um log de erro se necessário
 }
 
+
+// Processa alteração de outros serviços
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            throw new Exception("Token inválido");
+        }
+
+        $ref = $database->getReference('userProf/'.$userKey.'/servicos/outros');
+
+        // Se o campo 'outrosServicos' não existir, significa que todos foram removidos
+        if (!isset($_POST['outrosServicos']) || empty(array_filter($_POST['outrosServicos'], 'trim'))) {
+            // Remove completamente o nó do banco de dados
+            $ref->remove();
+        } else {
+            // Caso contrário, adiciona os serviços filtrados
+            $servicos = array_filter(array_map('trim', $_POST['outrosServicos']));
+
+            $ref->remove(); // Limpa os serviços antigos
+
+            foreach ($servicos as $servico) {
+                $ref->push($servico);
+            }
+        }
+
+        // Força limpeza do cache
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        $_SESSION['alert'] = [
+            'type' => 'success',
+            'message' => 'Serviços atualizados com sucesso!'
+        ];
+        
+    } catch (Exception $e) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Erro: '.$e->getMessage()
+        ];
+    }
+
+    // Redirecionamento com cache-busting
+    header("Location: dashAcessoProf.php?t=".time());
+    exit();
+}
+
+
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
@@ -581,9 +629,13 @@ unset($_SESSION['alert']);
                         <?php endforeach; ?>
                     </div>
 
-                    <p class="tagService mt-3">Outros Serviços:</p>
+                    <p class="tagService mt-3">Outros Serviços: <i class="fas fa-edit ms-2" id="editOutrosServicosIcon"
+                            style="cursor: pointer;"></i></p>
                     <div class="services-container">
-                        <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
+                        <?php 
+$outrosServicos = $user['servicos']['outros'] ?? [];
+foreach (is_array($outrosServicos) ? $outrosServicos : (array)$outrosServicos as $servicoId => $servico): 
+?>
                         <div class="service-card">
                             <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
                             <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
@@ -816,6 +868,62 @@ unset($_SESSION['alert']);
                 </div>
             </div>
         </div>
+
+        <!-- Modal Outros Serviços -->
+        <div class="modal fade" id="outrosServicosModal" tabindex="-1" aria-labelledby="outrosServicosModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="outrosServicosModalLabel">Gerenciar Outros Serviços</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="outrosServicosForm" method="POST" action="dashAcessoProf.php">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <input type="hidden" name="action" value="update_servicos">
+
+
+                            <!-- Lista de Serviços Existentes -->
+                            <div id="listaOutrosServicos">
+                                <?php if (!empty($user['servicos']['outros'])): ?>
+                                <?php foreach ($user['servicos']['outros'] as $index => $servico): ?>
+                                <div class="servico-item">
+                                    <input type="text" class="form-control" name="outrosServicos[]"
+                                        value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>">
+                                    <button type="button" class="btn btn-danger remover-servico">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <?php endforeach; ?>
+                                <?php else: ?>
+                                <div class="alert alert-info">Nenhum serviço cadastrado</div>
+                                <?php endif; ?>
+                            </div>
+                    </div>
+
+                    <!-- Novo Serviço -->
+                    <div class="mb-3">
+                        <h6>Adicionar Novo:</h6>
+                        <div class="input-group">
+                            <input type="text" id="novoServicoInput" class="form-control"
+                                placeholder="Digite um novo serviço">
+                            <button type="button" id="btnAdicionarServico" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -951,6 +1059,184 @@ unset($_SESSION['alert']);
             .catch(error => console.error("Error:", error));
     });
     </script>
+
+
+    <script>
+    // Abrir modal de outros serviços
+    document.getElementById("editOutrosServicosIcon").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById("outrosServicosModal")).show();
+    });
+
+    // Adicionar novo serviço
+    document.getElementById("btnAdicionarServico").addEventListener("click", function() {
+        const input = document.getElementById("novoServicoInput");
+        if (input.value.trim() === "") return;
+
+        const container = document.getElementById("listaOutrosServicos");
+
+        // Remove a mensagem "Nenhum serviço cadastrado" se existir
+        const alertInfo = container.querySelector('.alert-info');
+        if (alertInfo) {
+            container.removeChild(alertInfo);
+        }
+
+        // Cria nova linha para o serviço
+        const novoItem = document.createElement("div");
+        novoItem.className = "input-group mb-2 servico-item";
+        novoItem.innerHTML = `
+        <input type="text" class="form-control" name="outrosServicos[]" 
+               value="${input.value.trim()}" required>
+        <button type="button" class="btn btn-danger remover-servico">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+
+        container.appendChild(novoItem);
+        input.value = "";
+    });
+
+    // Remover serviço (deleção dinâmica)
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("remover-servico") || e.target.closest(".remover-servico")) {
+            e.target.closest(".servico-item").remove();
+        }
+    });
+
+    document.getElementById("outrosServicosForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    
+    try {
+        // Mostra loading
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvando...';
+
+        // Coleta TODOS os serviços (incluindo os vazios)
+        const servicos = Array.from(
+            document.querySelectorAll('#listaOutrosServicos input[name="outrosServicos[]"]')
+        ).map(input => input.value.trim());
+
+        // Cria FormData
+        const formData = new FormData();
+        formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?>');
+        servicos.forEach(servico => {
+            formData.append('outrosServicos[]', servico);
+        });
+
+        // Envia requisição
+        const response = await fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        if (!response.ok) throw new Error("Erro no servidor");
+        
+        // Força recarregamento completo
+        window.location.href = 'dashAcessoProf.php?t=' + Date.now();
+        
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao salvar: " + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Salvar Alterações';
+    }
+});
+
+
+    // Funções auxiliares (já existentes ou novas)
+    function showAlert(type, message) {
+        // Sua implementação existente de exibir alertas
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 5000);
+    }
+
+    function updateServicosList(servicos) {
+        // Opcional: Atualiza a lista dinamicamente sem recarregar
+        const container = document.querySelector('.services-container');
+        if (container) {
+            container.innerHTML = servicos.map(servico => `
+            <div class="service-card">
+                <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                <span>${servico}</span>
+            </div>
+        `).join('');
+        }
+    }
+
+    // Verifica se a resposta é JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Resposta do servidor não é JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Erro ao salvar serviços');
+    }
+
+    // Fecha o modal e recarrega
+    bootstrap.Modal.getInstance(document.getElementById('outrosServicosModal')).hide();
+
+    // Feedback visual
+    alert(data.message);
+    location.reload();
+
+    }
+    catch (error) {
+        console.error("Erro:", error);
+        alert(error.message);
+    } finally {
+        // Restaura o botão
+        const btnSalvar = this.querySelector('button[type="submit"]');
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = 'Salvar Alterações';
+    }
+    });
+    </script>
+
+    <script>
+    // Abrir modal (sem variável global)
+    document.getElementById("editOutrosServicosIcon").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById("outrosServicosModal")).show();
+    });
+
+    // Adicionar novo serviço
+    document.getElementById("btnAdicionarServico").addEventListener("click", function() {
+        const input = document.getElementById("novoServicoInput");
+        if (input.value.trim() === "") return;
+
+        const container = document.getElementById("listaOutrosServicos");
+        const novoItem = document.createElement("div");
+        novoItem.className = "input-group mb-2 servico-item";
+        novoItem.innerHTML = `
+        <input type="text" class="form-control" name="outrosServicos[]" value="${input.value.trim()}" required>
+        <button type="button" class="btn btn-danger remover-servico"><i class="fas fa-trash"></i></button>
+    `;
+        container.appendChild(novoItem);
+        input.value = "";
+    });
+
+    // Remover serviço (sem rastreamento global)
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("remover-servico") || e.target.closest(".remover-servico")) {
+            e.preventDefault();
+            e.target.closest(".servico-item").remove();
+        }
+    });
+    </script>>
 
 </body>
 
