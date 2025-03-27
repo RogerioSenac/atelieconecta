@@ -152,12 +152,12 @@
                         <img class="img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
                     </div>
                 </div>
-                <p>
+                <p class="apresentacao-quem">
                     Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
                 </p>
                 <div class="row">
                     <div class="p-2 col-12 col-md-6">
-                        <p>
+                        <p class="apresentacao-txtquem">
                             O Ateliê Connect é uma plataforma inovadora que conecta pessoas a profissionais
                             especializados em moda, como estilistas, consultores de imagem e personal shoppers. Nosso
                             objetivo é facilitar o acesso a serviços personalizados de moda, proporcionando consultorias
@@ -165,7 +165,7 @@
                         </p>
                     </div>
                     <div class="p-2 col-12 col-md-6 ">
-                        <p>
+                        <p class="apresentacao-txtquem">
                             Com uma interface prática e intuitiva, o Ateliê Connect oferece uma experiência única,
                             permitindo agendar consultas, explorar portfólios e receber dicas de profissionais
                             qualificados. Acreditamos que a moda é uma poderosa ferramenta de expressão e confiança, e
