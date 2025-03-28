@@ -99,9 +99,9 @@ p.texto {
     /* background: url('../img/perfil_Cinza10.jpeg') no-repeat center center/cover; */
     color: white;
     text-align: center;
-    padding: 100px 0;
-    /* box-shadow: 2px 8px 10px 1px rgb(100, 100, 100); */
-    /* background-color: black; */
+    padding: 10px 0;
+    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
+    background-color: hsla(0, 0%, 100%, 0.493);
     border: none;
     min-height: 78svh;
     justify-items: center;

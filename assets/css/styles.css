@@ -573,7 +573,7 @@ footer {
 /* Seção de Responsividades */
 /****************************/
 
-@media (max-width: 320px) {
+@media (min-width: 0px) and (max-width: 320px) {
 
     /*Seção Banner*/
     .banner {
@@ -602,6 +602,8 @@ footer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 10px;
+    }
     }
 
     .service-item {
@@ -609,7 +611,6 @@ footer {
         max-width: 70% !important;
         padding: 5px;
         box-sizing: border-box;
-    }
 
     .imagem {
         width: 95% !important;
@@ -699,7 +700,7 @@ footer {
 
 }
 
-@media (max-width: 375px) {
+@media (min-width: 10px) and (max-width: 375px) {
 
     /*Seção Banner*/
     .banner {
@@ -801,7 +802,7 @@ footer {
 
 }
 
-@media (max-width: 425px) {
+@media (min-width: 376px) and (max-width: 425px) {
 
     /*Seção Banner*/
     .banner {
@@ -909,7 +910,7 @@ footer {
 
 }
 
-@media (max-width: 768px) {
+@media (min-width: 426px) and (max-width: 768px) {
 
     /*Seção Banner*/
     .banner {
@@ -1023,7 +1024,7 @@ footer {
 
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1024px) {
 
     /*Seção Banner*/
     .banner {
@@ -1134,7 +1135,7 @@ footer {
 
 }
 
-@media (max-width: 1440px) {
+@media (min-width: 1025px) and (max-width: 1440px) {
 
     .logo {
         /* margin-left: -50px; */
@@ -1204,7 +1205,7 @@ footer {
     }
 }
 
-@media (max-width: 2560px) {
+@media (min-width: 1441px) and (max-width: 2560px) {
 
 
     .logo {
@@ -1364,9 +1365,5 @@ footer {
         width: 90px;
         height: 90px;
     }
-
-
-
-
 
 }
