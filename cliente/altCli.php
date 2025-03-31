@@ -54,62 +54,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
     <title>Plataforma de Corte e Costura</title>
     <link rel="stylesheet" href="../assets/css/stylesCadLogin.css">
     <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.6-beta.9/dist/inputmask.min.js"></script>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const cpfCnpjInput = document.getElementById("cpf");
-        const celularInput = document.getElementById("cel");
-        const cepInput = document.getElementById("cep");
-        const tipoPessoa = document.querySelectorAll("input[name='tipo']");
-        const whatsappNumeroInput = document.getElementById("whatsapp_numero");
+        document.addEventListener("DOMContentLoaded", function() {
+            const cpfCnpjInput = document.getElementById("cpf");
+            const celularInput = document.getElementById("cel");
+            const cepInput = document.getElementById("cep");
+            const tipoPessoa = document.querySelectorAll("input[name='tipo']");
+            const outrosCheckbox = document.getElementById("outros");
+            const outrosServicosInput = document.getElementById("outros_servicos");
+            const whatsappNumeroInput = document.getElementById("whatsapp_numero");
+           
 
+            tipoPessoa.forEach(radio => radio.addEventListener("change", function() {
+                let mask = this.value === 'pf' ? "999.999.999-99" : "99.999.999/9999-99";
+                Inputmask({
+                    "mask": mask
+                }).mask(cpfCnpjInput);
+            }));
 
-        tipoPessoa.forEach(radio => radio.addEventListener("change", function() {
-            let mask = this.value === 'pf' ? "999.999.999-99" : "99.999.999/9999-99";
+            cpfCnpjInput.addEventListener("input", function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+
             Inputmask({
-                "mask": mask
-            }).mask(cpfCnpjInput);
-        }));
+                "mask": "(99) 99999-9999"
+            }).mask(celularInput);
+            Inputmask({
+                "mask": "99999-999"
+            }).mask(cepInput);
+            Inputmask({
+                "mask": "99999999999",
+                "placeholder": "",
+                "showMaskOnHover": false
+            }).mask(whatsappNumeroInput);
 
-        cpfCnpjInput.addEventListener("input", function() {
-            this.value = this.value.replace(/\D/g, '');
+            outrosCheckbox.addEventListener("change", function() {
+                if (this.checked) {
+                    outrosServicosInput.style.display = "block";
+                    outrosServicosInput.focus();
+                } else {
+                    outrosServicosInput.style.display = "none";
+                    outrosServicosInput.value = "";
+                }
+            });
         });
 
-        Inputmask({
-            "mask": "(99) 99999-9999"
-        }).mask(celularInput);
-        Inputmask({
-            "mask": "99999-999"
-        }).mask(cepInput);
-        Inputmask({
-            "mask": "99999999999",
-            "placeholder": "",
-            "showMaskOnHover": false
-        }).mask(whatsappNumeroInput);
-    });
+        function generateWhatsappURL() {
+            const ddi = document.getElementById("whatsapp_ddi").value;
+            const ddd = document.getElementById("whatsapp_ddd").value;
+            const numero = document.getElementById("whatsapp_numero").value;
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${ddi}${ddd}${numero}`;
+            document.getElementById("whatsapp_url").value = whatsappUrl;
+        }
 
-    function generateWhatsappURL() {
-        const ddi = document.getElementById("whatsapp_ddi").value;
-        const ddd = document.getElementById("whatsapp_ddd").value;
-        const numero = document.getElementById("whatsapp_numero").value;
-        const whatsappUrl = `https://api.whatsapp.com/send?phone=${ddi}${ddd}${numero}`;
-        document.getElementById("whatsapp_url").value = whatsappUrl;
-    }
+        function generateInstagramURL() {
+            const userInsta = document.getElementById("insta_user").value;
+            const instaUrl = `https://instagram.com/${userInsta}`;
+            document.getElementById("instagram_url").value = instaUrl;
+        }
 
-    function generateInstagramURL() {
-        const userInsta = document.getElementById("insta_user").value;
-        const instaUrl = `https://instagram.com/${userInsta}`;
-        document.getElementById("instagram_url").value = instaUrl;
-    }
+        function generateFacebookURL() {
+            const userFace = document.getElementById("face_user").value;
+            const faceUrl = `https://www.facebook.com/${userFace}`;
+            document.getElementById("facebook_url").value = faceUrl;
+        }
 
-    function generateFacebookURL() {
-        const userFace = document.getElementById("face_user").value;
-        const faceUrl = `https://www.facebook.com/${userFace}`;
-        document.getElementById("facebook_url").value = faceUrl;
-    }
     </script>
 </head>
 
@@ -117,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
     <div class="box">
         <h2>Cadastro de Usuário</h2>
         <form method="post" action="">
-            <!-- <?php if ($userData): ?>
+        <!-- <?php if ($userData): ?>
                     <?php foreach ($userData as $user): ?>
                         <div class="row">
                             <div class="col-md-6 dadosPessoais">
@@ -130,8 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
                 <?php endif; ?> -->
 
             <div class="inputbox">
-                <input type="text" name="nome" id="nome"
-                    value=<?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?>>
+                <input type="text" name="nome" id="nome" value=<?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?>>
             </div>
             <div class="radio-group">
                 <label><input type="radio" name="tipo" value="pf" id="pf" required> Pessoa Física</label>
@@ -308,18 +319,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
                         <option value="260">Zâmbia (+260)</option>
                         <option value="263">Zimbábue (+263)</option>
                     </select>
-                    <input type="text" name="whatsapp_ddd" id="whatsapp_ddd" placeholder="DDD"
-                        oninput="generateWhatsappURL()">
-                    <input type="text" name="whatsapp_numero" id="whatsapp_numero" placeholder="Número do WhatsApp"
-                        oninput="generateWhatsappURL()">
+                    <input type="text" name="whatsapp_ddd" id="whatsapp_ddd" placeholder="DDD"  oninput="generateWhatsappURL()">
+                    <input type="text" name="whatsapp_numero" id="whatsapp_numero" placeholder="Número do WhatsApp" oninput="generateWhatsappURL()">
                 </div>
                 <input type="hidden" name="whatsapp_url" id="whatsapp_url">
-
+                
                 <div class="inputbox">
-                    <input type="text" name="insta_user" id="insta_user" placeholder="Link do Instagram"
-                        oninput="generateInstagramURL()">
-                    <input type="text" name="face_user" id="face_user" placeholder="Link do Facebook"
-                        oninput="generateFacebookURL()">
+                    <input type="text" name="insta_user" id="insta_user" placeholder="Link do Instagram" oninput="generateInstagramURL()">
+                    <input type="text" name="face_user" id="face_user" placeholder="Link do Facebook" oninput="generateFacebookURL()">
                 </div>
                 <input type="hidden" name="instagram_url" id="instagram_url">
                 <input type="hidden" name="facebook_url" id="facebook_url">
@@ -354,8 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['senha'])) {
                         <div class="checkbox-container">
                             <input type="checkbox" id="outros" name="servicos[]" value="outros">
                             <span>Outros</span>
-                            <input type="text" id="outros_servicos" name="outros_servicos"
-                                placeholder="Descreva os serviços adicionais" autocomplete="off" style="display:none;">
+                            <input type="text" id="outros_servicos" name="outros_servicos" placeholder="Descreva os serviços adicionais" autocomplete="off" style="display:none;">
                         </div>
                     </div>
                 </div>

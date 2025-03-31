@@ -30,8 +30,8 @@ if (isset($_POST['email'])) {
             $_SESSION['email'] = $email;
             $_SESSION['senha'] = $senha;
 
-            // Redireciona para cadProf.php
-            header('Location: cadProf.php');
+            // Redireciona para cadCli.php
+            header('Location: cadCli.php');
             exit();
         } catch (Exception $e) {
             $msg = "Erro ao cadastrar usuário: " . $e->getMessage();
@@ -84,15 +84,15 @@ function validarForcaSenha($senha)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Acesso</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/stylesCadLogin.css">
     <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-    <div class="interface">
-        <div class="boxAcesso">
+    <div class="interfaceCadLogin">
+        <div class="box">
             <h2>Cadastro de Acesso</h2>
 
             <?php if (!empty($msg)) : ?>
@@ -120,7 +120,8 @@ function validarForcaSenha($senha)
                     value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
 
                 <input type="submit" value="Enviar" class="sub">
-                <a href="./index.php" class="back">Voltar</a>
+                <button class="back">Voltar</button>
+
             </form>
         </div>
     </div>

@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="interface">
-        <form class="acesso" method="post" action="recuperaSenhaProf.php">
+        <form class="acesso" method="post" action="recuperaSenhaCli.php">
             <h2>Recuperação de Senha</h2>
             
             <?php if (!empty($msg)) { ?>
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="submit" value="Enviar Link de Recuperação">
             </div>
             
-            <a href="loginProf.php" class="btn btn-secondary">Voltar ao Login</a>
+            <a href="loginCli.php" class="btn btn-secondary">Voltar ao Login</a>
         </form>
     </div>
 </body>

@@ -21,12 +21,12 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
         $_SESSION['email'] = $userData['email'];
         $_SESSION['userId'] = $userData['localId'];
 
-        header("Location: DashAcessoProf.php");
+        header("Location: DashAcessoCli.php");
         exit;
     } catch (Exception $e) {
         error_log($e->getMessage()); // Registrar erro para debug
         $msg = "Usuário ou senha incorretos!";
-        header("Location: loginProf.php?erro=" . urlencode($msg));
+        header("Location: loginCli.php?erro=" . urlencode($msg));
         exit;
     }
 }
