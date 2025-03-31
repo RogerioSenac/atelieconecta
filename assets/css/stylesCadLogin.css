@@ -207,9 +207,17 @@ form a {
     /* border: solid red; */
 }
 
+
+
+
+
+
+
+
+
 /*****************************************/
 /* ESTILO GERAL cadProf e cadLoginProf   */
-/*****************************************/
+/* ***************************************/
 .box {
     text-align: center;
     padding: 20px 30px;
@@ -217,7 +225,6 @@ form a {
     backdrop-filter: blur(20px);
     border-radius: 10px;
     background: rgba(139, 139, 139, 0.932);
-    /* border: 2px solid rgba(255, 255, 255, 0.5); */
 }
 
 .interface .box h2 {
@@ -277,6 +284,22 @@ form a {
 /*****************************************/
 /*      Estilo cadLoginProf.php          */
 /*****************************************/
+
+.interfaceCadLogin .box {
+    text-align: center;
+    padding: 20px 30px;
+    width: 650px;
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    background: rgba(139, 139, 139, 0.932);
+    /* border: 2px solid rgba(255, 255, 255, 0.5); */
+    border: solid red;
+}
+
+.interfaceCadLogin .box h2 {
+    color: white;
+}
+
 .box .formulario {
     padding: 20px;
 }
@@ -909,7 +932,7 @@ form a {
 /*  Area das Responsividades */
 /*****************************/
 
-@media (max-width: 320px) {
+@media (min-width:10px) and (max-width: 320px) {
 
     /*Tela Perfil de Acesso*/
     .perfil {
@@ -918,10 +941,39 @@ form a {
         flex-direction: column;
     }
 
-    /*Tela loginProf*/
-    .interface {
-        width: 90%;
+    /*Telas CadLoginProf*/
+    .interfaceCadLogin .box {
+        width: 100%;
     }
 
+}
 
+@media (min-width: 321px) and (max-width: 375px) {
+
+    /*Tela Perfil de Acesso*/
+    .perfil {
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /*Telas CadLoginProf*/
+    .interfaceCadLogin .box {
+        width: 100%;
+    }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+
+    /*Tela Perfil de Acesso*/
+    .perfil {
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /*Telas CadLoginProf*/
+    .interfaceCadLogin .box {
+        width: 100%;
+    }
 }
