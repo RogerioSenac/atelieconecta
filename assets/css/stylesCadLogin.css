@@ -92,24 +92,24 @@ p.texto {
     font-weight: bold;
 }
 
-.interface {
+.interfaceLogin {
     /* display: flex; */
     display: flex;
     margin: 5px;
-    /* background: url('../img/perfil_Cinza10.jpeg') no-repeat center center/cover; */
     color: white;
     text-align: center;
     padding: 10px 0;
     box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
     background-color: hsla(0, 0%, 100%, 0.493);
     border: none;
-    min-height: 78svh;
+    width: 95%;
+    min-height: 58svh;
     justify-items: center;
     align-items: center;
 }
 
 form {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0px auto;
     flex-direction: column;
     gap: 10px;
@@ -124,7 +124,7 @@ form {
 
 form input,
 form textarea {
-    width: 100%;
+    width: 95%;
     margin: 10px auto;
     background-color: #fff;
     border: 0px;
@@ -142,9 +142,7 @@ form textarea {
 }
 
 form .btn-enviar input {
-    /* margin-top: 10px; */
-    /* margin-bottom: 10px; */
-    width: 102%;
+    width: 92%;
     background: #38887F;
     color: #000;
     font-weight: 700;
@@ -164,7 +162,7 @@ form a {
     text-decoration: none;
 }
 
-.interface .btn-secondary {
+.interfaceLogin .btn-secondary {
     color: white;
 }
 
@@ -195,7 +193,7 @@ form a {
     padding: 5px;
 }
 
-.interface .btn {
+.interfaceLogin .btn {
     display: flex;
     width: 100px;
     height: 50px;
@@ -208,12 +206,6 @@ form a {
     justify-self: center;
     /* border: solid red; */
 }
-
-
-
-
-
-
 
 /*****************************************/
 /* ESTILO GERAL cadProf e cadLoginProf   */
