@@ -207,25 +207,10 @@ form a {
     /* border: solid red; */
 }
 
-
-
-
-
-
-
-
-
 /*****************************************/
 /* ESTILO GERAL cadProf e cadLoginProf   */
 /* ***************************************/
-.box {
-    text-align: center;
-    padding: 20px 30px;
-    width: 650px;
-    backdrop-filter: blur(20px);
-    border-radius: 10px;
-    background: rgba(139, 139, 139, 0.932);
-}
+
 
 .interface .box h2 {
     color: white;
@@ -300,8 +285,30 @@ form a {
     color: white;
 }
 
-.box .formulario {
+.interfaceCadLogin .box .formulario {
     padding: 20px;
+}
+
+.interfaceCadLogin .box .formulario form input,
+.interfaceCadLogin .box .formulario form select {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    font-weight: bolder;
+    text-shadow: 2px 2px 2px black;
+    border-bottom: 2px solid white;
+}
+
+.box .formulario form select {
+    background: rgba(128, 128, 128, 0.6);
+}
+
+.box .formulario form input::placeholder {
+    color: white;
 }
 
 .box .formulario h2 {
@@ -347,6 +354,16 @@ form a {
 /*****************************************/
 /*      Estilo cadProf.php               */
 /*****************************************/
+
+.boxCad {
+    text-align: center;
+    padding: 20px 30px;
+    width: 650px;
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    background: rgba(139, 139, 139, 0.932);
+}
+
 .linha {
     display: flex;
     flex-wrap: wrap;
@@ -471,8 +488,9 @@ form a {
 }
 
 #whatsapp_ddd {
-    width: 7%;
+    /* width: 7%; */
     font-size: 10pt;
+    width: 60px;
 }
 
 #whatsapp_ddd::placeholder {
@@ -531,31 +549,6 @@ form a {
 
 .botoes-container .back:hover {
     background-color: #747474;
-}
-
-/*****************************************/
-/*      Estilo cadLoginProf.php          */
-/*****************************************/
-.box .formulario form input,
-.box .formulario form select {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 16px;
-    font-weight: bolder;
-    text-shadow: 2px 2px 2px black;
-    border-bottom: 2px solid white;
-}
-
-.box .formulario form select {
-    background: rgba(128, 128, 128, 0.6);
-}
-
-.box .formulario form input::placeholder {
-    color: white;
 }
 
 /*****************************************/
@@ -944,6 +937,20 @@ form a {
     /*Telas CadLoginProf*/
     .interfaceCadLogin .box {
         width: 100%;
+    }
+
+    .boxCad {
+        width: 100%;
+    }
+
+    #whatsapp_ddi{
+        width: 150px;
+    }
+
+    #whatsapp_numero {
+        width: 183px;
+        
+        border: solid green;
     }
 
 }
