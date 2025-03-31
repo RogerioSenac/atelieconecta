@@ -268,11 +268,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         margin-top: 5px;
     }
 
-    .servicos-opcoes {
+    /* .servicos-opcoes {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
-    }
+    } */
 
     .checkbox-container {
         display: flex;
@@ -283,14 +283,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         margin-right: 8px;
     }
 
-    .servicos-container {
+    /* .servicos-container {
         max-height: 300px;
         overflow-y: auto;
         margin-bottom: 20px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-    }
+    } */
 
     .tipo-pessoa-container {
         display: flex;
@@ -328,11 +328,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         text-align: center;
         margin-bottom: 20px;
     }
-
+/* 
     .botoes-container {
         display: flex;
         justify-content: space-between;
-    }
+    } */
 
     .txt-labelService {
         display: block;
