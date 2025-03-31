@@ -573,7 +573,7 @@ footer {
 /* Seção de Responsividades */
 /****************************/
 
-@media (min-width: 0px) and (max-width: 320px) {
+@media (min-width: 10px) and (max-width: 320px) {
 
     /*Seção Banner*/
     .banner {
@@ -604,13 +604,14 @@ footer {
         justify-content: center;
         gap: 10px;
     }
-    }
+    
 
     .service-item {
         flex: 0 0 80% !important;
         max-width: 70% !important;
         padding: 5px;
         box-sizing: border-box;
+    }
 
     .imagem {
         width: 95% !important;
@@ -700,7 +701,7 @@ footer {
 
 }
 
-@media (min-width: 10px) and (max-width: 375px) {
+@media (min-width: 321px) and (max-width: 375px) {
 
     /*Seção Banner*/
     .banner {
@@ -729,10 +730,11 @@ footer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 10px;
     }
 
     .service-item {
-        flex: 0 0 80% !important;
+        flex: 0 0 90% !important;
         max-width: 70% !important;
         padding: 5px;
         box-sizing: border-box;
@@ -831,6 +833,7 @@ footer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 10px;
     }
 
     .service-item {
@@ -939,6 +942,7 @@ footer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 10px;
     }
 
     .service-item {
