@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <div class="interface">
+    <div class="interfaceLogin">
         <form class="acesso" method="post" action="loginProf.php" onsubmit="return validateForm()">
             <h2>Login de Acesso</h2>
             <!-- <img src="../assets/img/testeUsuario-removebg.png" class="iconeUsuario"> -->
