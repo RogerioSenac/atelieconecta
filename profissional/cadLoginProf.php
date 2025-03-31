@@ -91,7 +91,7 @@ function validarForcaSenha($senha)
 </head>
 
 <body>
-    <div class="interface">
+    <div class="interfaceCadLogin">
         <div class="box">
             <h2>Cadastro de Acesso</h2>
 
