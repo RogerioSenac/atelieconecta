@@ -483,7 +483,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <div class="box">
+    <div class="boxCad">
         <h2>Cadastro de Profissional</h2>
 
         <?php if ($msg): ?>
@@ -609,7 +609,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php endforeach; ?>
                     </select>
                     <input type="text" name="whatsapp_ddd" id="whatsapp_ddd" placeholder="DDD"
-                        oninput="generateWhatsappURL()" maxlength="2" style="width: 60px;">
+                        oninput="generateWhatsappURL()" maxlength="2" >
                     <input type="text" name="whatsapp_numero" id="whatsapp_numero" placeholder="Número do WhatsApp"
                         oninput="generateWhatsappURL()">
                 </div>
