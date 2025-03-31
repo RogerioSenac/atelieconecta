@@ -204,7 +204,6 @@ form a {
     margin-top: 10px;
     justify-content: center;
     justify-self: center;
-    /* border: solid red; */
 }
 
 /*****************************************/
@@ -277,8 +276,6 @@ form a {
     backdrop-filter: blur(20px);
     border-radius: 10px;
     background: rgba(139, 139, 139, 0.932);
-    /* border: 2px solid rgba(255, 255, 255, 0.5); */
-    border: solid red;
 }
 
 .interfaceCadLogin .box h2 {
@@ -976,14 +973,11 @@ form a {
         flex-direction: column;
         min-height: auto;
     }
-    
+
     .botoes-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        align-self: center;
-        align-content: center;
-        
     }
 
 }
@@ -1001,7 +995,45 @@ form a {
     .interfaceCadLogin .box {
         width: 100%;
     }
+
+    #whatsapp_ddi {
+        width: 150px;
+    }
+
+    #whatsapp_numero {
+        width: 210px;
+    }
+
+    #insta_user {
+        width: 210px;
+    }
+
+    #insta_user::placeholder {
+        font-size: 10px;
+    }
+
+    #face_user {
+        width: 210px
+    }
+
+    #face_user::placeholder {
+        font-size: 12px;
+    }
+
+    .servicos-opcoes {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .botoes-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
 }
+
 
 @media (min-width: 376px) and (max-width: 425px) {
 
@@ -1016,4 +1048,99 @@ form a {
     .interfaceCadLogin .box {
         width: 100%;
     }
+
+    #whatsapp_ddi {
+        width: 150px;
+    }
+
+    #whatsapp_numero {
+        width: 210px;
+    }
+
+    #insta_user {
+        width: 210px;
+    }
+
+    #insta_user::placeholder {
+        font-size: 10px;
+    }
+
+    #face_user {
+        width: 210px
+    }
+
+    #face_user::placeholder {
+        font-size: 12px;
+    }
+
+    .servicos-opcoes {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .botoes-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    .interfaceCadLogin .box {
+        width: 100%;
+    }
+
+    #insta_user {
+        width: 230px;
+    }
+
+    #insta_user::placeholder {
+        font-size: 11.5px;
+    }
+
+    #face_user {
+        width: 230px
+    }
+
+    #face_user::placeholder {
+        font-size: 12px;
+    }
+
+    .botoes-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .interfaceCadLogin .box {
+        width: 100%;
+    }
+
+    #insta_user {
+        width: 230px;
+    }
+
+    #insta_user::placeholder {
+        font-size: 11.5px;
+    }
+
+    #face_user {
+        width: 230px
+    }
+
+    #face_user::placeholder {
+        font-size: 12px;
+    }
+
+
+    .botoes-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
 }
