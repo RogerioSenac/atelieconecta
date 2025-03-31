@@ -377,8 +377,12 @@ form a {
 }
 
 .servicos-container {
-    text-align: center;
-    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .servicos-container span {
@@ -393,10 +397,9 @@ form a {
 }
 
 .servicos-opcoes {
-    display: flex;
-    justify-content: left;
-    margin-left: 100px;
-    gap: 150px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
 .coluna {
@@ -512,6 +515,7 @@ form a {
     width: 45%;
     font-size: 10pt;
 }
+
 
 .botoes-container {
     display: flex;
@@ -943,14 +947,43 @@ form a {
         width: 100%;
     }
 
-    #whatsapp_ddi{
+    #whatsapp_ddi {
         width: 150px;
     }
 
     #whatsapp_numero {
-        width: 183px;
+        width: 210px;
+    }
+
+    #insta_user {
+        width: 210px;
+    }
+
+    #insta_user::placeholder {
+        font-size: 10px;
+    }
+
+    #face_user {
+        width: 210px
+    }
+
+    #face_user::placeholder {
+        font-size: 12px;
+    }
+
+    .servicos-opcoes {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .botoes-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-self: center;
+        align-content: center;
         
-        border: solid green;
     }
 
 }
