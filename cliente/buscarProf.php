@@ -232,6 +232,24 @@ try {
         .btn-buscar:hover {
             background-color: #45a049;
         }
+      
+        .btn-voltar {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .btn-voltar:hover {
+            background-color: #6c755d;
+        }
 
         /* Estilos do carrossel */
         .carrossel-container {
@@ -556,8 +574,12 @@ try {
                         Digite parte do nome do serviço ou selecione na lista. A busca inclui todos os serviços cadastrados.
                     </div>
                 </div>
-
-                <button type="submit" class="btn-buscar">Buscar Profissionais</button>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <a href="dashAcessoCli.php" class="btn-voltar">
+                        <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn-buscar">Buscar Profissionais</button>
+                </div>
             </form>
         </div>
 
