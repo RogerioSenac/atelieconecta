@@ -320,11 +320,27 @@ try {
             background-color: #4CAF50;
         }
 
-        .profissional-card h3 {
-            color: #2c3e50;
-            margin-top: 0;
+        .profissional-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
+        }
+
+        .profissional-foto {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid #4CAF50;
+        }
+
+        .profissional-nome {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.5em;
         }
 
         .profissional-info {
@@ -499,6 +515,20 @@ try {
             color: #6c757d;
             margin-top: 5px;
         }
+
+        .foto-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: #777;
+            font-size: 2em;
+            border: 2px solid #ccc;
+        }
     </style>
 </head>
 
@@ -588,7 +618,16 @@ try {
                 <div class="carrossel" id="carrossel">
                     <?php foreach ($profissionais as $id => $profissional): ?>
                         <div class="profissional-card" data-index="<?= array_search($id, array_keys($profissionais)) ?>">
-                            <h3><?= htmlspecialchars($profissional['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?></h3>
+                            <div class="profissional-header">
+                                <?php if (!empty($profissional['foto'])): ?>
+                                    <img src="<?= htmlspecialchars($profissional['foto'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto do profissional" class="profissional-foto">
+                                <?php else: ?>
+                                    <div class="foto-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <h3 class="profissional-nome"><?= htmlspecialchars($profissional['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?></h3>
+                            </div>
 
                             <div class="profissional-info">
                                 <p><strong>Endereço:</strong>
