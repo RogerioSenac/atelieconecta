@@ -166,7 +166,6 @@ try {
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -175,55 +174,52 @@ try {
     <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* [Manter todos os estilos anteriores] */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
+        
         .filtros {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
-
+        
         .filtro-group {
             margin-bottom: 15px;
         }
-
+        
         .filtro-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-
-        .filtro-group select,
-        .filtro-group input {
+        
+        .filtro-group select, .filtro-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
+        
         .servicos-checkboxes {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
-
+        
         .checkbox-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
         }
-
+        
         .checkbox-container input {
             margin-right: 8px;
         }
-
+        
         .btn-buscar {
             background-color: #4CAF50;
             color: white;
@@ -234,99 +230,181 @@ try {
             font-size: 16px;
             margin-top: 10px;
         }
-
+        
         .btn-buscar:hover {
             background-color: #45a049;
         }
-
-        .resultados {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .profissional-card {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .profissional-card h3 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        .profissional-card p {
-            margin: 5px 0;
-        }
-
-        .servicos {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #ddd;
-        }
-
-        .servicos span {
-            display: inline-block;
-            background-color: #e9f7ef;
-            padding: 3px 8px;
-            margin: 2px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-
-        .servicos span.destaque {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .redes-sociais {
-            margin-top: 10px;
-        }
-
-        .redes-sociais a {
-            display: inline-block;
-            margin-right: 10px;
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .redes-sociais a:hover {
-            text-decoration: underline;
-        }
-
+        
         .mensagem {
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 4px;
         }
-
+        
         .mensagem.sucesso {
             background-color: #dff0d8;
             color: #3c763d;
         }
-
+        
         .mensagem.erro {
             background-color: #f2dede;
             color: #a94442;
         }
 
+        /* Estilos do carrossel */
+        .carrossel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 30px auto;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .carrossel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .profissional-card {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 25px;
+            background-color: white;
+        }
+        
+        .carrossel-controles {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .carrossel-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .carrossel-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .carrossel-indicadores {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .indicador {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .indicador.ativo {
+            background-color: #4CAF50;
+        }
+        
+        .profissional-card h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profissional-info {
+            margin-bottom: 15px;
+        }
+        
+        .profissional-info p {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .profissional-info strong {
+            color: #2c3e50;
+        }
+        
+        .servicos-container {
+            margin: 15px 0;
+        }
+        
+        .servicos-container h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .servicos-lista {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .servico-tag {
+            background-color: #e9f7ef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        
+        .servico-tag.destaque {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .redes-sociais {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .rede-social {
+            color: #4CAF50;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rede-social:hover {
+            text-decoration: underline;
+        }
+        
+        .sem-resultados {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-size: 1.1em;
+        }
 
-        /* Adicionar estilo para o campo de busca */
+        /* Estilos para os campos de busca */
         .search-container {
             position: relative;
             margin-bottom: 15px;
         }
-
+        
         .search-container input {
             width: 100%;
             padding: 10px 15px 10px 35px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
+        
         .search-container i {
             position: absolute;
             left: 10px;
@@ -334,7 +412,7 @@ try {
             transform: translateY(-50%);
             color: #777;
         }
-
+        
         .dropdown-content {
             display: none;
             position: absolute;
@@ -346,212 +424,284 @@ try {
             border-radius: 0 0 4px 4px;
             z-index: 1;
         }
-
+        
         .dropdown-content a {
             color: black;
             padding: 8px 16px;
             text-decoration: none;
             display: block;
         }
-
+        
         .dropdown-content a:hover {
             background-color: #f1f1f1;
         }
-
+        
         .show {
             display: block;
         }
-
-        
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1>Consulta de Profissionais</h1>
-
+        
         <?php if ($msg): ?>
-            <div class="mensagem sucesso"><?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="mensagem sucesso"><?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
-
+        
         <?php if ($error): ?>
-            <div class="mensagem erro"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="mensagem erro"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
-
+        
         <div class="filtros">
             <form method="post" action="">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-
+                
                 <div class="filtro-group">
                     <label for="cidade">Cidade:</label>
                     <div class="search-container">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="cidadeInput" onkeyup="filterDropdown('cidadeInput', 'cidadeDropdown')"
+                        <input type="text" id="cidadeInput" onkeyup="filterDropdown('cidadeInput', 'cidadeDropdown')" 
                             placeholder="Buscar cidade..." autocomplete="off">
                         <input type="hidden" name="cidade" id="cidadeHidden">
                         <div id="cidadeDropdown" class="dropdown-content">
                             <a onclick="selectOption('cidadeHidden', 'cidadeInput', '')">Todas as cidades</a>
                             <?php foreach ($cidadesUnicas as $cidade): ?>
-                                <a onclick="selectOption('cidadeHidden', 'cidadeInput', '<?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>')">
-                                    <?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>
-                                </a>
+                            <a onclick="selectOption('cidadeHidden', 'cidadeInput', '<?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>')">
+                                <?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>
+                            </a>
                             <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="filtro-group">
                     <label for="bairro">Bairro:</label>
                     <div class="search-container">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="bairroInput" onkeyup="filterDropdown('bairroInput', 'bairroDropdown')"
+                        <input type="text" id="bairroInput" onkeyup="filterDropdown('bairroInput', 'bairroDropdown')" 
                             placeholder="Buscar bairro..." autocomplete="off">
                         <input type="hidden" name="bairro" id="bairroHidden">
                         <div id="bairroDropdown" class="dropdown-content">
                             <a onclick="selectOption('bairroHidden', 'bairroInput', '')">Todos os bairros</a>
                             <?php foreach ($bairrosUnicos as $bairro): ?>
-                                <a onclick="selectOption('bairroHidden', 'bairroInput', '<?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>')">
-                                    <?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>
-                                </a>
+                            <a onclick="selectOption('bairroHidden', 'bairroInput', '<?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>')">
+                                <?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>
+                            </a>
                             <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="filtro-group">
                     <label>Serviços:</label>
                     <div class="servicos-checkboxes">
                         <?php foreach ($servicosDisponiveis as $servico): ?>
-                            <div class="checkbox-container">
-                                <input type="checkbox" name="servicos[]" id="servico_<?= htmlspecialchars(str_replace(' ', '_', $servico), ENT_QUOTES, 'UTF-8') ?>"
-                                    value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>"
-                                    <?= (isset($_POST['servicos']) && in_array($servico, $_POST['servicos'])) ? 'checked' : '' ?>>
-                                <label for="servico_<?= htmlspecialchars(str_replace(' ', '_', $servico), ENT_QUOTES, 'UTF-8') ?>">
-                                    <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
-                                </label>
-                            </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" name="servicos[]" id="servico_<?= htmlspecialchars(str_replace(' ', '_', $servico), ENT_QUOTES, 'UTF-8') ?>" 
+                                value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>"
+                                <?= (isset($_POST['servicos']) && in_array($servico, $_POST['servicos'])) ? 'checked' : '' ?>>
+                            <label for="servico_<?= htmlspecialchars(str_replace(' ', '_', $servico), ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
+                            </label>
+                        </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-
+                
                 <button type="submit" class="btn-buscar">Buscar Profissionais</button>
             </form>
         </div>
-
+        
         <?php if (!empty($profissionais)): ?>
-            <div class="resultados">
+        <div class="carrossel-container">
+            <div class="carrossel" id="carrossel">
                 <?php foreach ($profissionais as $id => $profissional): ?>
-                    <div class="profissional-card">
-                        <h3><?= htmlspecialchars($profissional['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?></h3>
-
-                        <p><strong>Endereço:</strong>
-                            <?= htmlspecialchars($profissional['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>,
-                            <?= htmlspecialchars($profissional['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?> -
-                            <?= htmlspecialchars($profissional['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?>/
+                <div class="profissional-card" data-index="<?= array_search($id, array_keys($profissionais)) ?>">
+                    <h3><?= htmlspecialchars($profissional['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?></h3>
+                    
+                    <div class="profissional-info">
+                        <p><strong>Endereço:</strong> 
+                            <?= htmlspecialchars($profissional['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>, 
+                            <?= htmlspecialchars($profissional['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?><br>
+                            <?= htmlspecialchars($profissional['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?> - 
                             <?= htmlspecialchars($profissional['endereco']['estado'] ?? '', ENT_QUOTES, 'UTF-8') ?>
                         </p>
-
+                        
                         <p><strong>Telefone:</strong> <?= htmlspecialchars($profissional['cel'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
-
-                        <?php if (isset($profissional['servicos'])): ?>
-                            <div class="servicos">
-                                <strong>Serviços:</strong><br>
-                                <?php if (isset($profissional['servicos']['principais'])): ?>
-                                    <?php foreach ($profissional['servicos']['principais'] as $servico): ?>
-                                        <span class="<?= (isset($_POST['servicos']) && in_array($servico, $_POST['servicos'])) ? 'destaque' : '' ?>">
-                                            <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
-                                        </span>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-
-                                <?php if (isset($profissional['servicos']['outros'])): ?>
-                                    <?php foreach ($profissional['servicos']['outros'] as $servico): ?>
-                                        <span>
-                                            <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
-                                        </span>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
+                    </div>
+                    
+                    <?php if (isset($profissional['servicos'])): ?>
+                    <div class="servicos-container">
+                        <h4>Serviços oferecidos:</h4>
+                        <div class="servicos-lista">
+                            <?php if (isset($profissional['servicos']['principais'])): ?>
+                                <?php foreach ($profissional['servicos']['principais'] as $servico): ?>
+                                    <span class="servico-tag <?= (isset($_POST['servicos']) && in_array($servico, $_POST['servicos'])) ? 'destaque' : '' ?>">
+                                        <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            
+                            <?php if (isset($profissional['servicos']['outros'])): ?>
+                                <?php foreach ($profissional['servicos']['outros'] as $servico): ?>
+                                    <span class="servico-tag">
+                                        <?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($profissional['redes_sociais'])): ?>
+                    <div class="redes-sociais">
+                        <?php if (!empty($profissional['redes_sociais']['whatsapp'])): ?>
+                            <a href="<?= htmlspecialchars($profissional['redes_sociais']['whatsapp'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="rede-social">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </a>
                         <?php endif; ?>
-
-                        <?php if (isset($profissional['redes_sociais'])): ?>
-                            <div class="redes-sociais">
-                                <?php if (!empty($profissional['redes_sociais']['whatsapp'])): ?>
-                                    <a href="<?= htmlspecialchars($profissional['redes_sociais']['whatsapp'], ENT_QUOTES, 'UTF-8') ?>" target="_blank">
-                                        <i class="fab fa-whatsapp"></i> WhatsApp
-                                    </a>
-                                <?php endif; ?>
-
-                                <?php if (!empty($profissional['redes_sociais']['instagram'])): ?>
-                                    <a href="<?= htmlspecialchars($profissional['redes_sociais']['instagram'], ENT_QUOTES, 'UTF-8') ?>" target="_blank">
-                                        <i class="fab fa-instagram"></i> Instagram
-                                    </a>
-                                <?php endif; ?>
-
-                                <?php if (!empty($profissional['redes_sociais']['facebook'])): ?>
-                                    <a href="<?= htmlspecialchars($profissional['redes_sociais']['facebook'], ENT_QUOTES, 'UTF-8') ?>" target="_blank">
-                                        <i class="fab fa-facebook"></i> Facebook
-                                    </a>
-                                <?php endif; ?>
-                            </div>
+                        
+                        <?php if (!empty($profissional['redes_sociais']['instagram'])): ?>
+                            <a href="<?= htmlspecialchars($profissional['redes_sociais']['instagram'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="rede-social">
+                                <i class="fab fa-instagram"></i> Instagram
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($profissional['redes_sociais']['facebook'])): ?>
+                            <a href="<?= htmlspecialchars($profissional['redes_sociais']['facebook'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="rede-social">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </a>
                         <?php endif; ?>
                     </div>
+                    <?php endif; ?>
+                </div>
                 <?php endforeach; ?>
+            </div>
+            
+            <div class="carrossel-controles">
+                <button class="carrossel-btn" id="btnAnterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="carrossel-btn" id="btnProximo"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="carrossel-indicadores" id="indicadores">
+                <?php for ($i = 0; $i < count($profissionais); $i++): ?>
+                    <div class="indicador <?= $i === 0 ? 'ativo' : '' ?>" data-index="<?= $i ?>"></div>
+                <?php endfor; ?>
+            </div>
+        </div>
+        <?php else: ?>
+            <div class="sem-resultados">
+                Nenhum profissional encontrado com os critérios selecionados.
             </div>
         <?php endif; ?>
     </div>
 
     <script>
-        // Função para filtrar opções no dropdown
-        function filterDropdown(inputId, dropdownId) {
-            const input = document.getElementById(inputId);
-            const filter = input.value.toUpperCase();
-            const dropdown = document.getElementById(dropdownId);
-            const options = dropdown.getElementsByTagName("a");
-
-            // Mostrar o dropdown
-            dropdown.classList.add("show");
-
-            for (let i = 0; i < options.length; i++) {
-                const txtValue = options[i].textContent || options[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    options[i].style.display = "";
+    // Função para filtrar opções no dropdown
+    function filterDropdown(inputId, dropdownId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toUpperCase();
+        const dropdown = document.getElementById(dropdownId);
+        const options = dropdown.getElementsByTagName("a");
+        
+        // Mostrar o dropdown
+        dropdown.classList.add("show");
+        
+        for (let i = 0; i < options.length; i++) {
+            const txtValue = options[i].textContent || options[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                options[i].style.display = "";
+            } else {
+                options[i].style.display = "none";
+            }
+        }
+    }
+    
+    // Função para selecionar uma opção do dropdown
+    function selectOption(hiddenId, inputId, value) {
+        document.getElementById(hiddenId).value = value;
+        document.getElementById(inputId).value = value;
+        document.getElementById(inputId + 'Dropdown').classList.remove("show");
+    }
+    
+    // Fechar dropdowns quando clicar fora
+    window.onclick = function(event) {
+        if (!event.target.matches('.search-container input')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].classList.contains('show')) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+    }
+    
+    // Script do carrossel
+    document.addEventListener('DOMContentLoaded', function() {
+        const carrossel = document.getElementById('carrossel');
+        const btnAnterior = document.getElementById('btnAnterior');
+        const btnProximo = document.getElementById('btnProximo');
+        const indicadores = document.querySelectorAll('.indicador');
+        let currentIndex = 0;
+        const totalItems = <?= count($profissionais) ?>;
+        
+        function updateCarrossel() {
+            carrossel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Atualizar indicadores
+            indicadores.forEach((indicador, index) => {
+                if (index === currentIndex) {
+                    indicador.classList.add('ativo');
                 } else {
-                    options[i].style.display = "none";
+                    indicador.classList.remove('ativo');
                 }
-            }
+            });
         }
-
-        // Função para selecionar uma opção do dropdown
-        function selectOption(hiddenId, inputId, value) {
-            document.getElementById(hiddenId).value = value;
-            document.getElementById(inputId).value = value;
-            document.getElementById(inputId + 'Dropdown').classList.remove("show");
+        
+        function nextItem() {
+            currentIndex = (currentIndex + 1) % totalItems;
+            updateCarrossel();
         }
-
-        // Fechar dropdowns quando clicar fora
-        window.onclick = function(event) {
-            if (!event.target.matches('.search-container input')) {
-                const dropdowns = document.getElementsByClassName("dropdown-content");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
-                }
-            }
+        
+        function prevItem() {
+            currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+            updateCarrossel();
         }
-
-        // Manter valores selecionados após submit (para os campos de busca)
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (isset($_POST['cidade']) && $_POST['cidade'] !== ''): ?>
-                document.getElementById('cidadeInput').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
-
-            <?php if (isset($_POST['bairro']) && $_POST['bairro'] !== ''): ?>
-                document.getElementById('bairroInput').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
+        
+        // Event listeners
+        btnProximo.addEventListener('click', nextItem);
+        btnAnterior.addEventListener('click', prevItem);
+        
+        // Navegação pelos indicadores
+        indicadores.forEach(indicador => {
+            indicador.addEventListener('click', function() {
+                currentIndex = parseInt(this.getAttribute('data-index'));
+                updateCarrossel();
+            });
         });
+        
+        // Navegação por teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextItem();
+            } else if (e.key === 'ArrowLeft') {
+                prevItem();
+            }
+        });
+        
+        // Autoplay (opcional)
+        // setInterval(nextItem, 5000);
+        
+        // Manter valores selecionados após submit (para os campos de busca)
+        <?php if (isset($_POST['cidade']) && $_POST['cidade'] !== ''): ?>
+            document.getElementById('cidadeInput').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
+        <?php endif; ?>
+        
+        <?php if (isset($_POST['bairro']) && $_POST['bairro'] !== ''): ?>
+            document.getElementById('bairroInput').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
+        <?php endif; ?>
+    });
     </script>
 </body>
-
 </html>
