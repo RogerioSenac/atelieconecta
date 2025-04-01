@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-
-
 if (!isset($_SESSION['logado'])) {
     header("Location: loginCli.php");
     exit();
@@ -474,7 +472,9 @@ unset($_SESSION['alert']);
                             <div class="info-item">
                                 <?php echo htmlspecialchars($user['endereco']['estado'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
                             </div>
-                            <?php echo htmlspecialchars($user['endereco']['cep'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
+                            <div class="info-item">
+                                <?php echo htmlspecialchars($user['endereco']['cep'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
                         </div>
                         <div class="info-row-contato">
                             <div class="info-item"><i class="fas fa-mobile-alt"></i>
