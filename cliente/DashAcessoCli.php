@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+
+
 if (!isset($_SESSION['logado'])) {
     header("Location: loginCli.php");
     exit();
@@ -12,6 +15,7 @@ if (empty($_SESSION['csrf_token'])) {
 
 // Obtém o email da sessão
 $email = $_SESSION['email'];
+
 
 // Verifica se o email está definido e não está vazio
 if (empty($email)) {
@@ -533,6 +537,7 @@ unset($_SESSION['alert']);
                 </div>
             </div>
         </div>
+
         <!-- Modal de Edição de Dados Pessoais -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -696,104 +701,8 @@ unset($_SESSION['alert']);
                 </div>
             </div>
         </div>
-        <!-- Modal Editar Serviços -->
-        <div class="modal fade" id="servicosModal" tabindex="-1" aria-labelledby="servicosModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="servicosModalLabel">Selecionar Serviços Principais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="servicosForm" method="POST" action="dashAcessoCli.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                            <div class="mb-3">
-                                <p class="mb-3">Marque os serviços que você oferece:</p>
-                                <div class="row" id="servicosDisponiveis">
-                                    <?php
-                                    // Serviços do usuário atual
-                                    $servicosUsuario = $user['servicos']['principais'] ?? [];
-
-                                    if (!empty($servicosDisponiveis)) {
-                                        foreach ($servicosDisponiveis as $servicoId => $servicoData) {
-                                            $nomeServico = $servicoData['nome'] ?? $servicoId;
-                                            $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
-                                            echo '<div class="col-md-4 mb-3">';
-                                            echo '<div class="form-check">';
-                                            echo '<input class="form-check-input" type="checkbox" name="servicosPrincipais[]" ';
-                                            echo 'value="' . htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8') . '" id="servico_' . $servicoId . '" ' . $checked . '>';
-                                            echo '<label class="form-check-label" for="servico_' . $servicoId . '">';
-                                            echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
-                                            echo '</label>';
-                                            echo '</div>';
-                                            echo '</div>';
-                                        }
-                                    } else {
-                                        echo '<div class="alert alert-warning">Nenhum serviço disponível encontrado</div>';
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar Seleção</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="outrosServicosModal" tabindex="-1" aria-labelledby="outrosServicosModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form id="outrosServicosForm" method="POST" action="dashAcessoCli.php">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                        <!-- Serviços Principais (campos ocultos) -->
-                        <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
-                            <input type="hidden" name="servicosPrincipais[]"
-                                value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>">
-                        <?php endforeach; ?>
-
-                        <!-- Lista de Outros Serviços -->
-                        <div id="listaOutrosServicos">
-                            <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
-                                <div class="servico-item input-group mb-2">
-                                    <input type="text" class="form-control" name="outrosServicos[]"
-                                        value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>" required>
-                                    <button type="button" class="btn btn-danger remover-servico">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-
-                        <!-- Botão para adicionar novo serviço -->
-                        <div class="mt-4">
-                            <label>Adicionar novo serviço:</label>
-                            <div class="input-group">
-                                <input type="text" id="novoServicoInput" class="form-control"
-                                    placeholder="Digite o nome do serviço">
-                                <button type="button" id="btnAdicionarServico" class="btn btn-success">
-                                    <i class="fas fa-plus"></i> Adicionar
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+       
+       
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -877,183 +786,7 @@ unset($_SESSION['alert']);
                     })
                     .catch(error => console.error("Error:", error));
             });
-
-            // Adiciona evento para abrir o modal de serviços
-            document.getElementById("editServicosIcon").addEventListener("click", function() {
-                new bootstrap.Modal(document.getElementById("servicosModal")).show();
-            });
-
-            // Adiciona novo campo de serviço
-            document.getElementById("adicionarServico").addEventListener("click", function() {
-                const container = document.getElementById("servicosContainer");
-                const novoInput = document.createElement("div");
-                novoInput.className = "input-group mb-2 servico-input";
-                novoInput.innerHTML = `
-        <input type="text" class="form-control" name="servicosPrincipais[]">
-        <button type="button" class="btn btn-danger remover-servico">
-            <i class="fas fa-trash"></i>
-        </button>
-    `;
-                container.appendChild(novoInput);
-            });
-
-            // Remove campo de serviço
-            document.addEventListener("click", function(e) {
-                if (e.target.classList.contains("remover-servico") || e.target.closest(".remover-servico")) {
-                    const inputGroup = e.target.closest(".servico-input");
-                    if (inputGroup) {
-                        inputGroup.remove();
-                    }
-                }
-            });
-
-            // Envio do formulário de serviços
-            document.getElementById("servicosForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                fetch("dashAcessoCli.php", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            location.reload();
-                        } else {
-                            alert("Erro ao salvar serviços");
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-            });
         </script>
-
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const outrosServicosModal = document.getElementById("outrosServicosModal");
-                const listaServicos = document.getElementById("listaOutrosServicos");
-                const form = document.getElementById("outrosServicosForm");
-
-                // Função para mostrar mensagem de lista vazia
-                function verificarListaVazia() {
-                    if (listaServicos.children.length === 0) {
-                        listaServicos.innerHTML = '<div class="alert alert-info">Nenhum serviço cadastrado</div>';
-                    }
-                }
-
-                // Abrir modal de outros serviços
-                document.getElementById("editOutrosServicosIcon").addEventListener("click", function() {
-                    new bootstrap.Modal(outrosServicosModal).show();
-                });
-
-                // Adicionar novo serviço
-                document.getElementById("btnAdicionarServico").addEventListener("click", function() {
-                    const input = document.getElementById("novoServicoInput");
-                    const servico = input.value.trim();
-
-                    if (!servico) {
-                        alert('Por favor, digite um nome para o serviço');
-                        input.focus();
-                        return;
-                    }
-
-                    // Remove mensagem de nenhum serviço se existir
-                    const alertInfo = listaServicos.querySelector('.alert-info');
-                    if (alertInfo) listaServicos.removeChild(alertInfo);
-
-                    // Cria novo item
-                    const novoItem = document.createElement("div");
-                    novoItem.className = "servico-item input-group mb-2";
-
-                    const inputField = document.createElement("input");
-                    inputField.type = "text";
-                    inputField.className = "form-control";
-                    inputField.name = "outrosServicos[]";
-                    inputField.value = servico;
-                    inputField.required = true;
-
-                    const removeBtn = document.createElement("button");
-                    removeBtn.type = "button";
-                    removeBtn.className = "btn btn-danger remover-servico";
-                    removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
-                    novoItem.appendChild(inputField);
-                    novoItem.appendChild(removeBtn);
-                    listaServicos.appendChild(novoItem);
-
-                    input.value = "";
-                    input.focus();
-                });
-
-                // Remover serviço
-                listaServicos.addEventListener("click", function(e) {
-                    const removeBtn = e.target.closest(".remover-servico");
-                    if (removeBtn) {
-                        e.preventDefault();
-                        removeBtn.closest(".servico-item").remove();
-                        verificarListaVazia();
-                    }
-                });
-
-                // Envio do formulário
-                form.addEventListener("submit", async function(e) {
-                    e.preventDefault();
-
-                    const btnSubmit = form.querySelector('button[type="submit"]');
-                    const originalText = btnSubmit.innerHTML;
-
-                    try {
-                        // Estado de carregamento
-                        btnSubmit.disabled = true;
-                        btnSubmit.innerHTML =
-                            '<span class="spinner-border spinner-border-sm"></span> Salvando...';
-
-                        // Validação final
-                        const servicos = Array.from(
-                            document.querySelectorAll('#listaOutrosServicos input[name="outrosServicos[]"]')
-                        ).map(input => input.value.trim()).filter(Boolean);
-
-                        if (servicos.length === 0) {
-                            throw new Error('Adicione pelo menos um serviço válido');
-                        }
-
-                        // Prepara dados para envio
-                        const formData = new FormData(form);
-                        formData.delete('outrosServicos[]'); // Remove valores antigos
-
-                        // Adiciona cada serviço ao FormData
-                        servicos.forEach(servico => {
-                            formData.append('outrosServicos[]', servico);
-                        });
-
-                        // Envia via fetch
-                        const response = await fetch(form.action, {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(await response.text() || 'Erro no servidor');
-                        }
-
-                        // Recarrega a página para ver as mudanças
-                        window.location.href = form.action + '?t=' + Date.now();
-
-                    } catch (error) {
-                        console.error("Erro:", error);
-                        alert("Erro ao salvar: " + error.message);
-                    } finally {
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerHTML = originalText;
-                    }
-                });
-
-                // Verifica estado inicial da lista
-                verificarListaVazia();
-            });
-        </script>
-
 </body>
 
 </html>
