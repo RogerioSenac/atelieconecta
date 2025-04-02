@@ -575,6 +575,9 @@ unset($_SESSION['alert']);
                 </div>
                 <div class="logout text-center mt-3">
                     <a href="buscarProf.php" class="btn btn-secondary">Buscar Profissionais</a>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
+                        <i class="fas fa-comment me-2"></i>Adicionar Comentário
+                    </button>
                     <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
                     <div class="logout-confirm" id="logoutConfirm">
                         <p>Tem certeza que deseja sair?</p>
@@ -584,13 +587,6 @@ unset($_SESSION['alert']);
                 </div>
 
             </div>
-            <!-- Adicione este código antes do fechamento da div .profile-container -->
-            <div class="text-center mt-3">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
-                    <i class="fas fa-comment me-2"></i>Adicionar Comentário
-                </button>
-            </div>
-
             <!-- Modal de Comentários -->
             <div class="modal fade" id="comentarioModal" tabindex="-1" aria-labelledby="comentarioModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
