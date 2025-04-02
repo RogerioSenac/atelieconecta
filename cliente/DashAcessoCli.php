@@ -528,8 +528,8 @@ unset($_SESSION['alert']);
                     </div>
                 </div>
                 <div class="logout text-center mt-3">
-                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
                     <a href="buscarProf.php" class="btn btn-secondary" >Buscar Profissionais</a>
+                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
                     <div class="logout-confirm" id="logoutConfirm">
                         <p>Tem certeza que deseja sair?</p>
                         <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
