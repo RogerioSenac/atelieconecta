@@ -5,13 +5,11 @@ require '../vendor/autoload.php';
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Exception\FirebaseException;
 
-// Verifica se o usuário está logado
 if (!isset($_SESSION['email'])) {
     header('Location: loginProf.php');
     exit();
 }
 
-// Gera token CSRF se não existir
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -24,18 +22,15 @@ $bairrosUnicos = [];
 $servicosDisponiveis = [];
 
 try {
-    // Conectar ao Firebase
     $factory = (new Factory())
         ->withServiceAccount('../config/chave.json')
         ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
 
     $database = $factory->createDatabase();
 
-    // Buscar todos os profissionais, serviços disponíveis e dados para filtros
     $profissionaisRef = $database->getReference('userProf');
     $todosProfissionais = $profissionaisRef->getValue();
 
-    // Buscar serviços disponíveis (exceto "outros")
     $servicosRef = $database->getReference('servicos');
     $todosServicos = $servicosRef->getValue();
 
@@ -49,7 +44,6 @@ try {
     }
 
     if ($todosProfissionais) {
-        // Processar para obter cidades e bairros únicos (case-insensitive)
         $cidades = [];
         $bairros = [];
 
@@ -82,7 +76,6 @@ try {
         });
     }
 
-    // Processar busca se houver submissão do formulário
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
         $cidadeFiltro = isset($_POST['cidade']) ? trim($_POST['cidade']) : '';
         $bairroFiltro = isset($_POST['bairro']) ? trim($_POST['bairro']) : '';
@@ -90,20 +83,16 @@ try {
         $servicoSelecionado = isset($_POST['servico']) ? trim($_POST['servico']) : '';
 
         // Converter filtros para lowercase para comparação case-insensitive
-        $cidadeFiltroLower = mb_strtolower($cidadeFiltro, 'UTF-8');
-        $bairroFiltroLower = mb_strtolower($bairroFiltro, 'UTF-8');
-        $servicoBuscaLower = mb_strtolower($servicoBusca, 'UTF-8');
+        $cidadeFiltroLower = !empty($cidadeFiltro) ? mb_strtolower($cidadeFiltro, 'UTF-8') : null;
+        $bairroFiltroLower = !empty($bairroFiltro) ? mb_strtolower($bairroFiltro, 'UTF-8') : null;
+        $servicoBuscaLower = !empty($servicoBusca) ? mb_strtolower($servicoBusca, 'UTF-8') : null;
 
-        // Construir query - agora buscamos todos e filtramos localmente para case-insensitive
-        $profissionaisSnapshot = $profissionaisRef->getValue();
-
-        // Aplicar filtros
         $profissionais = [];
-        foreach ($profissionaisSnapshot as $key => $profissional) {
+        foreach ($todosProfissionais as $key => $profissional) {
             $passouFiltros = true;
 
-            // Verificar filtro de cidade (case-insensitive)
-            if (!empty($cidadeFiltro)) {
+            // Filtro por cidade (case-insensitive)
+            if ($cidadeFiltroLower !== null) {
                 if (
                     !isset($profissional['endereco']['cidade']) ||
                     mb_strtolower($profissional['endereco']['cidade'], 'UTF-8') !== $cidadeFiltroLower
@@ -112,8 +101,8 @@ try {
                 }
             }
 
-            // Verificar filtro de bairro (case-insensitive)
-            if ($passouFiltros && !empty($bairroFiltro)) {
+            // Filtro por bairro (case-insensitive)
+            if ($passouFiltros && $bairroFiltroLower !== null) {
                 if (
                     !isset($profissional['endereco']['bairro']) ||
                     mb_strtolower($profissional['endereco']['bairro'], 'UTF-8') !== $bairroFiltroLower
@@ -122,13 +111,11 @@ try {
                 }
             }
 
-            // Verificar filtro de serviço
-            if ($passouFiltros && (!empty($servicoBusca) || !empty($servicoSelecionado))) {
+            // Filtro por serviço
+            if ($passouFiltros && ($servicoBuscaLower !== null || !empty($servicoSelecionado))) {
                 $temServico = false;
 
-                // Se houver texto digitado, busca em todos os serviços (principais e outros)
-                if (!empty($servicoBusca)) {
-                    // Verificar serviços principais
+                if ($servicoBuscaLower !== null) {
                     if (isset($profissional['servicos']['principais'])) {
                         foreach ($profissional['servicos']['principais'] as $servico) {
                             if (stripos($servico, $servicoBusca) !== false) {
@@ -138,7 +125,6 @@ try {
                         }
                     }
 
-                    // Verificar serviços "outros" se não encontrou nos principais
                     if (!$temServico && isset($profissional['servicos']['outros'])) {
                         foreach ($profissional['servicos']['outros'] as $outroServico) {
                             if (stripos($outroServico, $servicoBusca) !== false) {
@@ -149,7 +135,6 @@ try {
                     }
                 }
 
-                // Se houver serviço selecionado no dropdown, verifica apenas nos principais
                 if (!$temServico && !empty($servicoSelecionado)) {
                     if (isset($profissional['servicos']['principais'])) {
                         if (in_array($servicoSelecionado, $profissional['servicos']['principais'])) {
@@ -193,7 +178,7 @@ try {
             padding: 20px;
         }
 
-        .container h1{
+        .container h1 {
             color: #fff;
             text-align: center;
             padding: 10px;
@@ -238,7 +223,7 @@ try {
         .btn-buscar:hover {
             background-color: #45a049;
         }
-      
+
         .btn-voltar {
             background-color: #6c757d;
             color: white;
@@ -486,7 +471,7 @@ try {
 
         /* Estilos para o select de serviços */
         .servico-select {
-            width:100%;
+            width: 100%;
             padding: 2px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -498,21 +483,21 @@ try {
             background-position: right 10px center;
             background-size: 1em;
         }
-        
+
         .servico-select:focus {
             outline: none;
             border-color: #4CAF50;
         }
-        
+
         .servico-busca-container {
             display: flex;
             gap: 10px;
         }
-        
+
         .servico-busca-container input {
             flex: 1;
         }
-        
+
         .servico-busca-container select {
             width: 200px;
         }
@@ -535,6 +520,26 @@ try {
             color: #777;
             font-size: 2em;
             border: 2px solid #ccc;
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 10px) and (max-width: 320px) {
+            .filtros .servico-busca-container {
+                flex-direction: column;
+            }
+
+            #servico_busca::placeholder {
+                font-size: 12.8px;
+            }
+
+            .botoes{
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -611,7 +616,7 @@ try {
                         Digite parte do nome do serviço ou selecione na lista. A busca inclui todos os serviços cadastrados.
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <div class="botoes">
                     <a href="dashAcessoCli.php" class="btn-voltar">
                         <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Voltar
                     </a>
@@ -626,8 +631,8 @@ try {
                     <?php foreach ($profissionais as $id => $profissional): ?>
                         <div class="profissional-card" data-index="<?= array_search($id, array_keys($profissionais)) ?>">
                             <div class="profissional-header">
-                                <?php if (!empty($profissional['foto'])): ?>
-                                    <img src="<?= htmlspecialchars($profissional['foto'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto do profissional" class="profissional-foto">
+                                <?php if (!empty($profissional['fotoPerfil'])): ?>
+                                    <img src="<?= htmlspecialchars($profissional['fotoPerfil'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto do profissional" class="profissional-foto">
                                 <?php else: ?>
                                     <div class="foto-placeholder">
                                         <i class="fas fa-user"></i>
@@ -820,10 +825,12 @@ try {
             // Manter valores selecionados após submit
             <?php if (isset($_POST['cidade']) && $_POST['cidade'] !== ''): ?>
                 document.getElementById('cidadeInput').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
+                document.getElementById('cidadeHidden').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
             <?php endif; ?>
 
             <?php if (isset($_POST['bairro']) && $_POST['bairro'] !== ''): ?>
                 document.getElementById('bairroInput').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
+                document.getElementById('bairroHidden').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
             <?php endif; ?>
 
             <?php if (isset($_POST['servico']) && $_POST['servico'] !== ''): ?>

@@ -974,13 +974,59 @@ form a {
         min-height: auto;
     }
 
-    .botoes-container {
+    .logout {
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 10px;
     }
 
+    /* DashAcesso - Ajustes para o banner */
+    .banner-container {
+        height: 150px;
+        /* Altura reduzida para dispositivos pequenos */
+    }
+
+    .profile-container {
+        padding: 5px;
+        margin: 10px auto;
+        /* centraliza o container e mantém margem */
+        width: calc(100% - 20px);
+        /* subtrai o dobro da margem para compensar */
+        max-width: 1000px;
+        /* mantém um limite máximo para telas grandes */
+    }
+
+    .profile-img-container {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+    }
+
+    .info-row-nome {
+        font-size: 20px;
+    }
+
+    .info-row-end, .info-row-complEnd {
+        font-size: 14px;
+    }
+
+    .info-row-contato {
+        font-size: 12px;
+    }
+
+    .tagService {
+        font-size: 20px;
+    }
+
+    .info-row-complEnd {
+        /* display: flex; */
+        flex-wrap: wrap;
+        font-size: 15px;
+    }
 }
+
+
 
 @media (min-width: 321px) and (max-width: 375px) {
 
@@ -1026,10 +1072,48 @@ form a {
         min-height: auto;
     }
 
-    .botoes-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    /* DashAcesso - Ajustes para o banner */
+    .banner-container {
+        height: 150px;
+        /* Altura reduzida para dispositivos pequenos */
+    }
+
+    .profile-container {
+        padding: 5px;
+        margin: 10px auto;
+        /* centraliza o container e mantém margem */
+        width: calc(100% - 20px);
+        /* subtrai o dobro da margem para compensar */
+        max-width: 1000px;
+        /* mantém um limite máximo para telas grandes */
+    }
+
+    .profile-img-container {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+    }
+
+    .info-row-nome {
+        font-size: 20px;
+    }
+
+    .info-row-end, .info-row-complEnd {
+        font-size: 14px;
+    }
+
+    .info-row-contato {
+        font-size: 12px;
+    }
+
+    .tagService {
+        font-size: 20px;
+    }
+
+    .info-row-complEnd {
+        /* display: flex; */
+        flex-wrap: wrap;
+        font-size: 15px;
     }
 
 }
@@ -1085,6 +1169,50 @@ form a {
         align-items: center;
     }
 
+    /* DashAcesso - Ajustes para o banner */
+    .banner-container {
+        height: 150px;
+        /* Altura reduzida para dispositivos pequenos */
+    }
+
+    .profile-container {
+        padding: 5px;
+        margin: 10px auto;
+        /* centraliza o container e mantém margem */
+        width: calc(100% - 20px);
+        /* subtrai o dobro da margem para compensar */
+        max-width: 1000px;
+        /* mantém um limite máximo para telas grandes */
+    }
+
+    .profile-img-container {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+    }
+
+    .info-row-nome {
+        font-size: 20px;
+    }
+
+    .info-row-end, .info-row-complEnd {
+        font-size: 14px;
+    }
+
+    .info-row-contato {
+        font-size: 12px;
+    }
+
+    .tagService {
+        font-size: 20px;
+    }
+
+    .info-row-complEnd {
+        /* display: flex; */
+        flex-wrap: wrap;
+        font-size: 15px;
+    }
+
 }
 
 @media (min-width: 426px) and (max-width: 768px) {
@@ -1112,6 +1240,50 @@ form a {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    /* DashAcesso - Ajustes para o banner */
+    .banner-container {
+        height: 150px;
+        /* Altura reduzida para dispositivos pequenos */
+    }
+
+    .profile-container {
+        padding: 5px;
+        margin: 10px auto;
+        /* centraliza o container e mantém margem */
+        width: calc(100% - 20px);
+        /* subtrai o dobro da margem para compensar */
+        max-width: 1000px;
+        /* mantém um limite máximo para telas grandes */
+    }
+
+    .profile-img-container {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+    }
+
+    .info-row-nome {
+        font-size: 20px;
+    }
+
+    .info-row-end, .info-row-complEnd {
+        font-size: 14px;
+    }
+
+    .info-row-contato {
+        font-size: 12px;
+    }
+
+    .tagService {
+        font-size: 20px;
+    }
+
+    .info-row-complEnd {
+        /* display: flex; */
+        flex-wrap: wrap;
+        font-size: 15px;
     }
 }
 
@@ -1142,5 +1314,6 @@ form a {
         flex-direction: column;
         align-items: center;
     }
+
 
 }
