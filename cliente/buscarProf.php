@@ -193,6 +193,12 @@ try {
             padding: 20px;
         }
 
+        .container h1{
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
         .filtros {
             background-color: #f5f5f5;
             padding: 20px;
@@ -427,6 +433,7 @@ try {
             padding: 30px;
             color: #777;
             font-size: 1.1em;
+            color: #fff;
         }
 
         /* Estilos para os campos de busca */
@@ -479,8 +486,8 @@ try {
 
         /* Estilos para o select de serviços */
         .servico-select {
-            width: 100%;
-            padding: 10px;
+            width:100%;
+            padding: 2px;
             border: 1px solid #ddd;
             border-radius: 4px;
             appearance: none;
@@ -491,21 +498,21 @@ try {
             background-position: right 10px center;
             background-size: 1em;
         }
-
+        
         .servico-select:focus {
             outline: none;
             border-color: #4CAF50;
         }
-
+        
         .servico-busca-container {
             display: flex;
             gap: 10px;
         }
-
+        
         .servico-busca-container input {
             flex: 1;
         }
-
+        
         .servico-busca-container select {
             width: 200px;
         }
