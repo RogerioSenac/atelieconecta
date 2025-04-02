@@ -88,7 +88,7 @@
                         <div class="list-group">
                             <?php
                             // URL do Realtime Database Firebase
-                            $firebase_url = "https://SEU_PROJETO.firebaseio.com/comentarios.json";
+                            $firebase_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
 
                             // Fazendo a requisição para obter os comentários
                             $ch = curl_init();
