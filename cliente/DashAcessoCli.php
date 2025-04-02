@@ -382,6 +382,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
     exit();
 }
 
+// Processa o envio de comentários
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comentarioTexto'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoCli.php");
+        exit();
+    }
+
+    $titulo = filter_var($_POST['comentarioTitulo'], FILTER_SANITIZE_STRING);
+    $texto = filter_var($_POST['comentarioTexto'], FILTER_SANITIZE_STRING);
+    $avaliacao = filter_var($_POST['comentarioAvaliacao'], FILTER_SANITIZE_NUMBER_INT);
+
+    // Verifica se o texto do comentário não está vazio
+    if (empty($texto)) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'O comentário não pode estar vazio!'];
+        header("Location: dashAcessoCli.php");
+        exit();
+    }
+
+    try {
+        $novoComentario = [
+            'usuario_id' => $userKey,
+            'usuario_nome' => $user['nome'],
+            'usuario_email' => $user['acesso']['email'],
+            'titulo' => $titulo,
+            'texto' => $texto,
+            'avaliacao' => $avaliacao,
+            'data' => date('d/m/Y H:i:s'),
+            'aprovado' => true // Comentários precisam ser aprovados antes de aparecerem no index
+        ];
+
+        // Adiciona o comentário ao banco de dados
+        $database->getReference('comentarios')->push($novoComentario);
+
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Comentário enviado com sucesso! Obrigado por sua contribuição.'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao enviar comentário: ' . $e->getMessage()];
+    }
+
+    header("Location: dashAcessoCli.php");
+    exit();
+}
+
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
@@ -528,12 +574,58 @@ unset($_SESSION['alert']);
                     </div>
                 </div>
                 <div class="logout text-center mt-3">
-                    <a href="buscarProf.php" class="btn btn-secondary" >Buscar Profissionais</a>
+                    <a href="buscarProf.php" class="btn btn-secondary">Buscar Profissionais</a>
                     <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
                     <div class="logout-confirm" id="logoutConfirm">
                         <p>Tem certeza que deseja sair?</p>
                         <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
                         <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Adicione este código antes do fechamento da div .profile-container -->
+            <div class="text-center mt-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
+                    <i class="fas fa-comment me-2"></i>Adicionar Comentário
+                </button>
+            </div>
+
+            <!-- Modal de Comentários -->
+            <div class="modal fade" id="comentarioModal" tabindex="-1" aria-labelledby="comentarioModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="comentarioModalLabel">Adicionar Comentário</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="comentarioForm" method="POST" action="dashAcessoCli.php">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <div class="mb-3">
+                                    <label for="comentarioTitulo" class="form-label">Título</label>
+                                    <input type="text" class="form-control" id="comentarioTitulo" name="comentarioTitulo" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comentarioTexto" class="form-label">Comentário</label>
+                                    <textarea class="form-control" id="comentarioTexto" name="comentarioTexto" rows="5" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comentarioAvaliacao" class="form-label">Avaliação</label>
+                                    <select class="form-control" id="comentarioAvaliacao" name="comentarioAvaliacao" required>
+                                        <option value="5">Excelente ★★★★★</option>
+                                        <option value="4">Muito Bom ★★★★</option>
+                                        <option value="3">Bom ★★★</option>
+                                        <option value="2">Regular ★★</option>
+                                        <option value="1">Ruim ★</option>
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Enviar Comentário</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -702,8 +794,8 @@ unset($_SESSION['alert']);
                 </div>
             </div>
         </div>
-       
-       
+
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>

@@ -922,6 +922,61 @@ form a {
 }
 
 
+/* Estilos para o modal de comentários */
+#comentarioTexto {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.star-rating {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+/* Estilo para a seção de comentários no index.php */
+.comentarios-container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.comentario-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.comentario-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.comentario-usuario {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.comentario-data {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.comentario-titulo {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.comentario-texto {
+    margin-bottom: 10px;
+}
+
+
 /******************************/
 /*  Area das Responsividades */
 /*****************************/
