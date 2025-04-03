@@ -23,16 +23,24 @@ if (isset($_POST['email'])) {
         $msg = "As senhas não coincidem!";
     } else {
         try {
-            $auth = $factory->createAuth();
-            $newUser = $auth->createUserWithEmailAndPassword($email, $senha);
+            $database = $factory->createDatabase();
+            $reference = $database->getReference('userCli');
+            $snapshot = $reference->orderByChild('email')->equalTo($email)->getSnapshot();
+            
+            if ($snapshot->exists()) {
+                $msg = "Este e-mail já está cadastrado!";
+            } else {
+                $auth = $factory->createAuth();
+                $newUser = $auth->createUserWithEmailAndPassword($email, $senha);
 
-            // Armazena o e-mail e a senha na sessão
-            $_SESSION['email'] = $email;
-            $_SESSION['senha'] = $senha;
+                // Armazena o e-mail e a senha na sessão
+                $_SESSION['email'] = $email;
+                $_SESSION['senha'] = $senha;
 
-            // Redireciona para cadCli.php
-            header('Location: cadCli.php');
-            exit();
+                // Redireciona para cadCli.php
+                header('Location: cadCli.php');
+                exit();
+            }
         } catch (Exception $e) {
             $msg = "Erro ao cadastrar usuário: " . $e->getMessage();
         }
