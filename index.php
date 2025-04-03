@@ -83,35 +83,26 @@
                 <div id="comentariosCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <?php
-                        // URL do Realtime Database Firebase
-                        $firebase_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
 
-                        // Fazendo a requisição para obter os comentários
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $firebase_url);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                        $response = curl_exec($ch);
-                        curl_close($ch);
+                        // URLs do Firebase
+                        $firebase_comentarios_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
+                        $firebase_users_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/userCli.json";
 
-                        // Verifica se a resposta não é vazia e decodifica JSON
-                        if ($response === false) {
-                            echo '<div class="alert alert-danger">Erro ao conectar com o banco de dados</div>';
-                            $comentarios = [];
-                        } else {
-                            $comentarios = json_decode($response, true);
-
-                            // Verifica se o JSON foi decodificado corretamente
-                            if ($comentarios === null) {
-                                echo '<div class="alert alert-warning">Formato de dados inválido</div>';
-                                $comentarios = [];
-                            }
+                        function getFirebaseData($url)
+                        {
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $url);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            $response = curl_exec($ch);
+                            curl_close($ch);
+                            return $response !== false ? json_decode($response, true) : [];
                         }
 
-                        // Debug: Verifique os dados recebidos
-                        // echo '<pre>'.print_r($comentarios, true).'</pre>';
+                        // Obter dados
+                        $comentarios = getFirebaseData($firebase_comentarios_url);
+                        $usuarios = getFirebaseData($firebase_users_url);
 
-                        // Se não há comentários ou ocorreu erro
                         if (empty($comentarios)) {
                             echo '<div class="carousel-item active">';
                             echo '<div class="row justify-content-center">';
@@ -121,19 +112,18 @@
                             echo '</div>';
                             echo '</div>';
                         } else {
-                            // Filtra apenas comentários aprovados (se existir o campo)
+                            // Filtra e ordena comentários
                             $comentariosFiltrados = array_filter($comentarios, function ($comentario) {
                                 return !isset($comentario['aprovado']) || $comentario['aprovado'] === true;
                             });
 
-                            // Ordenar os comentários por data (do mais recente para o mais antigo)
                             usort($comentariosFiltrados, function ($a, $b) {
                                 $dateA = isset($a['data']) ? strtotime(str_replace('/', '-', $a['data'])) : 0;
                                 $dateB = isset($b['data']) ? strtotime(str_replace('/', '-', $b['data'])) : 0;
                                 return $dateB - $dateA;
                             });
 
-                            // Dividir os comentários em grupos de 3 para o carrossel
+                            // Dividir em grupos de 3
                             $comentariosChunks = array_chunk($comentariosFiltrados, 3);
 
                             foreach ($comentariosChunks as $index => $chunk) {
@@ -142,17 +132,42 @@
                                 echo '<div class="row justify-content-center">';
 
                                 foreach ($chunk as $comentario) {
-                                    $nome = isset($comentario['usuario_nome']) ? htmlspecialchars($comentario['usuario_nome']) : 'Usuário Anônimo';
+                                    $nome = htmlspecialchars($comentario['usuario_nome'] ?? 'Usuário Anônimo');
                                     $data = isset($comentario['data']) ? date('d/m/Y', strtotime(str_replace('/', '-', $comentario['data']))) : 'Data desconhecida';
-                                    $texto = isset($comentario['texto']) ? htmlspecialchars($comentario['texto']) : 'Sem comentário.';
-                                    $avaliacao = isset($comentario['avaliacao']) ? (int)$comentario['avaliacao'] : 0;
+                                    $texto = htmlspecialchars($comentario['texto'] ?? 'Sem comentário.');
+                                    $avaliacao = (int)($comentario['avaliacao'] ?? 0);
+                                    $userId = $comentario['usuario_id'] ?? null;
 
-                                    // Gerar estrelas de avaliação
+                                    // Obter foto do perfil - CORREÇÃO PRINCIPAL
+                                    // Dentro do loop dos comentários, onde busca a foto:
+                                    $fotoPerfil = 'assets/img/user-default.png'; // Foto padrão
+
+                                    if ($userId && isset($usuarios[$userId])) {
+                                        $userData = $usuarios[$userId];
+
+                                        if (!empty($userData['fotoPerfil'])) {
+                                            // Remove "../" se existir e garante o caminho correto
+                                            $fotoPath = str_replace('../', '', $userData['fotoPerfil']);
+
+                                            // Verifica se o arquivo existe (caminho relativo ao arquivo index.php)
+                                            if (file_exists(__DIR__ . '../' . $fotoPath)) {
+                                                $fotoPerfil = $fotoPath;
+                                            } else {
+                                                // Log para debug (opcional)
+                                                error_log("Foto não encontrada: " . __DIR__ . '/' . $fotoPath);
+                                            }
+                                        }
+                                    }
+                                    // Exibir estrelas de avaliação
                                     $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
 
+                                    // Exibir o card do depoimento
                                     echo '<div class="col-md-4 mb-4">';
                                     echo '<div class="depoimento-item card h-100 mx-2">';
                                     echo '<div class="card-body text-center">';
+                                    echo '<div class="foto-perfil-container">';
+                                    echo '<img src="' . $fotoPerfil . '" alt="Foto de ' . $nome . '" class="foto-perfil-depoimento" onerror="this.src=\'assets/img/user-default.png\'">';
+                                    echo '</div>';
                                     echo '<h5 class="card-title h5_depoimento">' . $nome . '</h5>';
                                     echo '<p class="card-subtitle mb-2 text-muted depoimento-date">' . $data . '</p>';
                                     echo '<div class="avaliacao mb-2 text-warning">' . $estrelas . '</div>';
@@ -162,8 +177,8 @@
                                     echo '</div>';
                                 }
 
-                                echo '</div>'; // fecha row
-                                echo '</div>'; // fecha carousel-item
+                                echo '</div>';
+                                echo '</div>';
                             }
                         }
                         ?>
@@ -181,6 +196,20 @@
                     <?php endif; ?>
                 </div>
             </div>
+        </section>
+
+        <?php if (!empty($comentarios) && count($comentariosChunks) > 1): ?>
+            <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        <?php endif; ?>
+        </div>
+        </div>
         </section>
 
         <section class="container-quem-somos" id="sobre">
