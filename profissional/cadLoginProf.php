@@ -3,6 +3,7 @@ session_start(); // Inicia a sessão
 require '../vendor/autoload.php';
 
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Auth;
 
 $factory = (new Factory())
     ->withServiceAccount('../config/chave.json')
@@ -24,6 +25,24 @@ if (isset($_POST['email'])) {
     } else {
         try {
             $auth = $factory->createAuth();
+
+            // Verifica se o e-mail já está cadastrado
+            try {
+                $existingUser = $auth->getUserByEmail($email);
+                // Se chegou aqui, o usuário já existe
+                echo "<script>
+                    alert('Este e-mail já tem cadastro. Por favor, forneça outro valido ou efetue o login com o ja cadastrado.');
+                    window.location.href = 'loginProf.php';
+                </script>";
+                exit();
+            } catch (Exception $e) {
+                // Se o erro for "user not found", continuamos com o cadastro
+                if (strpos($e->getMessage(), 'user not found') === false) {
+                    throw $e;
+                }
+            }
+
+            // Se o usuário não existir, cria o novo usuário
             $newUser = $auth->createUserWithEmailAndPassword($email, $senha);
 
             // Armazena o e-mail e a senha na sessão
@@ -96,7 +115,7 @@ function validarForcaSenha($senha)
             <h2>Cadastro de Acesso</h2>
 
             <?php if (!empty($msg)) : ?>
-            <p class="error-message"><?php echo $msg; ?></p>
+                <p class="error-message"><?php echo $msg; ?></p>
             <?php endif; ?>
 
             <form method="post" onsubmit="return validarSenha()">
@@ -127,73 +146,73 @@ function validarForcaSenha($senha)
     </div>
 
     <script>
-    function toggleSenha(id) {
-        let input = document.getElementById(id);
-        let icon = input.nextElementSibling;
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.replace("fa-eye-slash", "fa-eye");
-        }
-    }
-
-    function validarForcaSenha(senha) {
-        let erros = [];
-
-        // Mínimo de 8 caracteres
-        if (senha.length < 8) {
-            erros.push("A senha deve ter no mínimo 8 caracteres.");
+        function toggleSenha(id) {
+            let input = document.getElementById(id);
+            let icon = input.nextElementSibling;
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
         }
 
-        // Pelo menos uma letra maiúscula
-        if (!/[A-Z]/.test(senha)) {
-            erros.push("A senha deve conter pelo menos uma letra maiúscula.");
+        function validarForcaSenha(senha) {
+            let erros = [];
+
+            // Mínimo de 8 caracteres
+            if (senha.length < 8) {
+                erros.push("A senha deve ter no mínimo 8 caracteres.");
+            }
+
+            // Pelo menos uma letra maiúscula
+            if (!/[A-Z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra maiúscula.");
+            }
+
+            // Pelo menos uma letra minúscula
+            if (!/[a-z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra minúscula.");
+            }
+
+            // Pelo menos um número
+            if (!/[0-9]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um número.");
+            }
+
+            // Pelo menos um caractere especial
+            if (!/[!@#$%^&*()]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um caractere especial (!@#$%^&*()).");
+            }
+
+            // Se houver erros, retorna uma mensagem única com todos os requisitos
+            if (erros.length > 0) {
+                return "A senha não atende aos seguintes requisitos:\n- " + erros.join("\n- ");
+            }
+
+            return ""; // Senha válida
         }
 
-        // Pelo menos uma letra minúscula
-        if (!/[a-z]/.test(senha)) {
-            erros.push("A senha deve conter pelo menos uma letra minúscula.");
+        function validarSenha() {
+            let senha = document.getElementById("senha").value;
+            let confirmaSenha = document.getElementById("confirma_senha").value;
+
+            // Valida a força da senha
+            let mensagemErro = validarForcaSenha(senha);
+            if (mensagemErro) {
+                alert(mensagemErro);
+                return false;
+            }
+
+            // Verifica se as senhas coincidem
+            if (senha !== confirmaSenha) {
+                alert("As senhas não coincidem!");
+                return false;
+            }
+
+            return true;
         }
-
-        // Pelo menos um número
-        if (!/[0-9]/.test(senha)) {
-            erros.push("A senha deve conter pelo menos um número.");
-        }
-
-        // Pelo menos um caractere especial
-        if (!/[!@#$%^&*()]/.test(senha)) {
-            erros.push("A senha deve conter pelo menos um caractere especial (!@#$%^&*()).");
-        }
-
-        // Se houver erros, retorna uma mensagem única com todos os requisitos
-        if (erros.length > 0) {
-            return "A senha não atende aos seguintes requisitos:\n- " + erros.join("\n- ");
-        }
-
-        return ""; // Senha válida
-    }
-
-    function validarSenha() {
-        let senha = document.getElementById("senha").value;
-        let confirmaSenha = document.getElementById("confirma_senha").value;
-
-        // Valida a força da senha
-        let mensagemErro = validarForcaSenha(senha);
-        if (mensagemErro) {
-            alert(mensagemErro);
-            return false;
-        }
-
-        // Verifica se as senhas coincidem
-        if (senha !== confirmaSenha) {
-            alert("As senhas não coincidem!");
-            return false;
-        }
-
-        return true;
-    }
     </script>
 </body>
 
