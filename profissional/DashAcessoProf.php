@@ -379,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
 }
 
 // Processa alteração de serviços principais
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
             'type' => 'danger',
@@ -390,24 +390,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $refServicoPrincipais = $database->getReference('userProf/' . $userKey . '/servicos/principais');
-
-        // Verifica se o campo foi enviado e contém valores não vazios
-        if (!isset($_POST['servicosPrincipais']) || empty(array_filter($_POST['servicosPrincipais'], 'trim'))) {
-            // Remove completamente o nó se não houver serviços
-             $refServicoPrincipais->remove();
-        } else {
-            // Remove valores vazios e duplicados antes de salvar
-            $servicosPrincipais = array_unique(array_filter(array_map('trim', $_POST['servicosPrincipais'])));
-
-            $refServicoPrincipais->set($servicosPrincipais);
-        }
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços atualizados com sucesso!'];
+        $servicosPrincipais = array_unique(array_filter(array_map('trim', $_POST['servicosPrincipais'])));
+        $updates = [
+            'servicos/principais' => !empty($servicosPrincipais) ? array_values($servicosPrincipais) : null
+        ];
+        $database->getReference('userProf/' . $userKey)->update($updates);
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços principais atualizados!'];
     } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar serviços: ' . $e->getMessage()];
+        // ... tratamento de erro ...
     }
-
     header("Location: dashAcessoProf.php");
     exit();
 }
@@ -426,6 +417,35 @@ try {
     $servicosDisponiveis = [];
     // Você pode adicionar um log de erro se necessário
 }
+
+// Inicio Logica Outros Serviços
+// Processa alteração de outros serviços
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['outrosServicos'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Token de segurança inválido. Tente novamente.'
+        ];
+        header("Location: dashAcessoProf.php");
+        exit();
+    }
+
+    try {
+        $outrosServicos = array_values(array_filter(array_map('trim', $_POST['outrosServicos']), 'strlen'));
+        $updates = [
+            'servicos/outros' => !empty($outrosServicos) ? $outrosServicos : null
+        ];
+        $database->getReference('userProf/' . $userKey)->update($updates);
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Outros serviços atualizados!'];
+    } catch (Exception $e) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar outros serviços: ' . $e->getMessage()];
+    }
+    
+    header("Location: dashAcessoProf.php");
+    exit();
+}
+// Fim Logica Outros Serviços
+
 
 
 // Exibe alertas se existirem
@@ -570,7 +590,7 @@ unset($_SESSION['alert']);
                             <?php endif; ?>
                         </div>
                     </div>
-                        <!-- Inicio dos Serviços Principais -->
+                    <!-- Inicio dos Serviços Principais -->
                     <p class="tagService">Serviços Principais:
                         <i class="fas fa-edit ms-2" id="editServicosIcon" style="cursor: pointer;"></i>
                     </p>
@@ -587,7 +607,27 @@ unset($_SESSION['alert']);
                         <div class="alert alert-info">Até o momento nenhum serviço principal selecionado.</div>
                         <?php endif; ?>
                     </div>
-                            <!-- Fim dos Serviços Principais -->
+                    <!-- Fim dos Serviços Principais -->
+
+                    <!-- Inicio dos Outros Serviços -->
+                    <!-- Seção Outros Serviços -->
+                    <p class="tagService mt-4">Outros Serviços:
+                        <i class="fas fa-edit ms-2" id="editOutrosServicosIcon" style="cursor: pointer;"></i>
+                    </p>
+                    <div class="services-container">
+                        <?php if (!empty($user['servicos']['outros'])): ?>
+                        <?php foreach ($user['servicos']['outros'] as $servico): ?>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
+                                alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <div class="alert alert-info">Nenhum outro serviço cadastrado.</div>
+                        <?php endif; ?>
+                    </div>
+                    <!-- Fim dos Outros Serviços -->
                     <div class="logout text-center mt-3">
                         <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
                         <div class="logout-confirm" id="logoutConfirm">
@@ -775,186 +815,236 @@ unset($_SESSION['alert']);
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-    <form id="servicosForm" method="POST" action="dashAcessoProf.php">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <form id="servicosForm" method="POST" action="dashAcessoProf.php">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-        <div class="mb-3">
-            <p class="mb-3">Marque os serviços que você oferece:</p>
-            <?php if (!empty($servicosDisponiveis)): ?>
-                <div class="row" id="servicosDisponiveis">
-                    <?php
-                    $servicosUsuario = $user['servicos']['principais'] ?? [];
-                    foreach ($servicosDisponiveis as $servicoId => $servicoData) {
-                        $nomeServico = $servicoData['nome'] ?? $servicoId;
-                        $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
-                        echo '<div class="col-md-4 mb-3">';
-                        echo '<div class="form-check">';
-                        echo '<input class="form-check-input" type="checkbox" name="servicosPrincipais[]" ';
-                        echo 'value="'.htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8').'" id="servico_'.$servicoId.'" '.$checked.'>';
-                        echo '<label class="form-check-label" for="servico_'.$servicoId.'">';
-                        echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
-                        echo '</label>';
-                        echo '</div>';
-                        echo '</div>';
-                    }
-                    ?>
-                </div>
-            <?php else: ?>
-                <div class="alert alert-warning">Nenhum serviço disponível encontrado</div>
-            <?php endif; ?>
-            
-            <?php if (empty($user['servicos']['principais'])): ?>
-                <div class="alert alert-info mt-3">Até o momento nenhum serviço principal selecionado.</div>
-            <?php endif; ?>
-        </div>
+                                <div class="mb-3">
+                                    <p class="mb-3">Marque os serviços que você oferece:</p>
+                                    <?php if (!empty($servicosDisponiveis)): ?>
+                                    <div class="row" id="servicosDisponiveis">
+                                        <?php
+                                $servicosUsuario = $user['servicos']['principais'] ?? [];
+                                foreach ($servicosDisponiveis as $servicoId => $servicoData) {
+                                    $nomeServico = $servicoData['nome'] ?? $servicoId;
+                                    $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
+                                    echo '<div class="col-md-4 mb-3">';
+                                    echo '<div class="form-check d-flex align-items-center">';
+                                    echo '<input class="form-check-input me-2" type="checkbox" name="servicosPrincipais[]" style="width: 18px; height: 18px;" ';
+                                    echo 'value="'.htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8').'" id="servico_'.$servicoId.'" '.$checked.'>';
+                                    echo '<label class="form-check-label" for="servico_'.$servicoId.'">';
+                                    echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
+                                    echo '</label>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                }
+                                ?>
+                                    </div>
+                                    <?php else: ?>
+                                    <div class="alert alert-warning">Nenhum serviço disponível encontrado</div>
+                                    <?php endif; ?>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Salvar Seleção</button>
-        </div>
-    </form>
-</div>
+                                    <?php if (empty($user['servicos']['principais'])): ?>
+                                    <div class="alert alert-info mt-3">Até o momento nenhum serviço principal
+                                        selecionado.</div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar Seleção</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
-
+            </form>
         </div>
-    </div>
+        <!-- Inicio Modal Outros Serviços -->
+        <!-- Modal Outros Serviços -->
+        <div class="modal fade" id="outrosServicosModal" tabindex="-1" aria-labelledby="outrosServicosModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="outrosServicosModalLabel">Editar Outros Serviços</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="outrosServicosForm" method="POST" action="dashAcessoProf.php">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-    // Máscaras para os campos
-    $(document).ready(function() {
-        $('#editCel').mask('(00) 00000-0000');
-        $('#editCep').mask('00000-000');
+                            <div class="mb-3">
+                                <p class="mb-3">Adicione outros serviços que você oferece:</p>
+                                <div id="outrosServicosContainer">
+                                    <?php if (!empty($user['servicos']['outros'])): ?>
+                                    <?php foreach ($user['servicos']['outros'] as $index => $servico): ?>
+                                    <div class="input-group mb-2 servico-input">
+                                        <input type="text" class="form-control" name="outrosServicos[]"
+                                            value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>">
+                                        <button type="button" class="btn btn-danger remover-servico">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <?php endforeach; ?>
+                                    <?php else: ?>
+                                    <div class="input-group mb-2 servico-input">
+                                        <input type="text" class="form-control" name="outrosServicos[]">
+                                        <button type="button" class="btn btn-danger remover-servico">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
 
-        // Validação do formulário
-        document.getElementById('editForm').addEventListener('submit', function(event) {
-            const form = event.target;
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-                form.classList.add('was-validated');
-            }
-        });
+                                <button type="button" id="adicionarOutroServico" class="btn btn-sm btn-secondary mt-2">
+                                    <i class="fas fa-plus me-1"></i> Adicionar outro serviço
+                                </button>
+                            </div>
 
-        // Preenche o modal com os dados atuais
-        document.getElementById("editIcon").addEventListener("click", function() {
-            const modal = new bootstrap.Modal(document.getElementById("editModal"));
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fim Modal Outros Serviços -->
 
-            document.getElementById("editNome").value =
-                "<?= htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editCel").value =
-                "<?= htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editEmail").value =
-                "<?= htmlspecialchars($user['acesso']['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editCep").value =
-                "<?= htmlspecialchars($user['endereco']['cep'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editRua").value =
-                "<?= htmlspecialchars($user['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editBairro").value =
-                "<?= htmlspecialchars($user['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editCidade").value =
-                "<?= htmlspecialchars($user['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-            document.getElementById("editEstado").value =
-                "<?= htmlspecialchars($user['endereco']['estado'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
 
-            modal.show();
-        });
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        // Substitua todo o código JavaScript por este:
 
-        // Upload de imagens
-        document.getElementById('uploadImage').addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                document.getElementById('uploadForm').submit();
-            }
-        });
+        <script>
+        $(document).ready(function() {
+            // Máscaras para os campos
+            $('#editCel').mask('(00) 00000-0000');
+            $('#editCep').mask('00000-000');
 
-        document.getElementById('uploadBanner').addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                document.getElementById('uploadBannerForm').submit();
-            }
-        });
-    });
-    </script>
-
-    <script>
-    // Abrir modal de redes sociais
-    document.getElementById("editRedesIcon").addEventListener("click", function() {
-        new bootstrap.Modal(document.getElementById("redesModal")).show();
-    });
-
-    // Atualização em tempo real após salvar
-    document.getElementById("redesForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        fetch("dashAcessoProf.php", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    location.reload(); // Ou atualize apenas as redes sociais via JS
-                } else {
-                    alert("Erro ao salvar");
+            // Validação do formulário
+            document.getElementById('editForm').addEventListener('submit', function(event) {
+                const form = event.target;
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    form.classList.add('was-validated');
                 }
-            })
-            .catch(error => console.error("Error:", error));
-    });
+            });
 
-    // Adiciona evento para abrir o modal de serviços
-    document.getElementById("editServicosIcon").addEventListener("click", function() {
-        new bootstrap.Modal(document.getElementById("servicosModal")).show();
-    });
+            // Modal Dados Pessoais - CÓDIGO CORRIGIDO
+            document.getElementById("editIcon").addEventListener("click", function() {
+                const modal = new bootstrap.Modal(document.getElementById("editModal"));
 
-    // Adiciona novo campo de serviço
-    document.getElementById("adicionarServico").addEventListener("click", function() {
-        const container = document.getElementById("servicosContainer");
-        const novoInput = document.createElement("div");
-        novoInput.className = "input-group mb-2 servico-input";
-        novoInput.innerHTML = `
-        <input type="text" class="form-control" name="servicosPrincipais[]">
-        <button type="button" class="btn btn-danger remover-servico">
-            <i class="fas fa-trash"></i>
-        </button>
-    `;
-        container.appendChild(novoInput);
-    });
+                // Preenche os campos do formulário
+                document.getElementById("editNome").value =
+                    "<?= htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editCel").value =
+                    "<?= htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editEmail").value =
+                    "<?= htmlspecialchars($user['acesso']['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editCep").value =
+                    "<?= htmlspecialchars($user['endereco']['cep'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editRua").value =
+                    "<?= htmlspecialchars($user['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editBairro").value =
+                    "<?= htmlspecialchars($user['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editCidade").value =
+                    "<?= htmlspecialchars($user['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
+                document.getElementById("editEstado").value =
+                    "<?= htmlspecialchars($user['endereco']['estado'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
 
-    // Remove campo de serviço
-    document.addEventListener("click", function(e) {
-        if (e.target.classList.contains("remover-servico") || e.target.closest(".remover-servico")) {
-            const inputGroup = e.target.closest(".servico-input");
-            if (inputGroup) {
-                inputGroup.remove();
-            }
-        }
-    });
+                modal.show();
+            });
 
-    // Envio do formulário de serviços
-    document.getElementById("servicosForm").addEventListener("submit", function(e) {
-        e.preventDefault();
+            // Modal redes sociais
+            document.getElementById("editRedesIcon").addEventListener("click", function() {
+                new bootstrap.Modal(document.getElementById("redesModal")).show();
+            });
 
-        const formData = new FormData(this);
+            // Modal serviços principais
+            document.getElementById("editServicosIcon").addEventListener("click", function() {
+                new bootstrap.Modal(document.getElementById("servicosModal")).show();
+            });
 
-        fetch("dashAcessoProf.php", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert("Erro ao salvar serviços");
+            // Modal outros serviços
+            document.getElementById("editOutrosServicosIcon").addEventListener("click", function() {
+                new bootstrap.Modal(document.getElementById("outrosServicosModal")).show();
+            });
+
+            // Upload de imagens
+            document.getElementById('uploadImage').addEventListener('change', function() {
+                if (this.files && this.files[0]) document.getElementById('uploadForm').submit();
+            });
+
+            document.getElementById('uploadBanner').addEventListener('change', function() {
+                if (this.files && this.files[0]) document.getElementById('uploadBannerForm').submit();
+            });
+
+            // Envio do formulário de serviços principais
+            document.getElementById("servicosForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                fetch("dashAcessoProf.php", {
+                    method: "POST",
+                    body: formData
+                }).then(response => {
+                    if (response.ok) location.reload();
+                    else alert("Erro ao salvar serviços principais");
+                }).catch(error => console.error("Error:", error));
+            });
+
+            // Envio do formulário de outros serviços
+            document.getElementById("outrosServicosForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                fetch("dashAcessoProf.php", {
+                    method: "POST",
+                    body: formData
+                }).then(response => {
+                    if (response.ok) location.reload();
+                    else alert("Erro ao salvar outros serviços");
+                }).catch(error => console.error("Error:", error));
+            });
+
+            // Adicionar outro serviço
+            document.getElementById("adicionarOutroServico").addEventListener("click", function() {
+                const container = document.getElementById("outrosServicosContainer");
+                const novoInput = document.createElement("div");
+                novoInput.className = "input-group mb-2 servico-input";
+                novoInput.innerHTML = `
+            <input type="text" class="form-control" name="outrosServicos[]">
+            <button type="button" class="btn btn-danger remover-servico">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+                container.appendChild(novoInput);
+            });
+
+            // Remover serviço
+            document.addEventListener("click", function(e) {
+                if (e.target.closest(".remover-servico")) {
+                    const inputGroup = e.target.closest(".servico-input");
+                    if (inputGroup) {
+                        const container = inputGroup.parentElement;
+                        if (container.querySelectorAll('.servico-input').length > 1) {
+                            inputGroup.remove();
+                        } else {
+                            inputGroup.querySelector('input').value = '';
+                        }
+                    }
                 }
-            })
-            .catch(error => console.error("Error:", error));
-    });
-    </script>
+            });
+        });
+        </script>
+
 
 </body>
 
