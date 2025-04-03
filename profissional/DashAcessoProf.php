@@ -617,11 +617,10 @@ unset($_SESSION['alert']);
                     <div class="services-container">
                         <?php if (!empty($user['servicos']['outros'])): ?>
                         <?php foreach ($user['servicos']['outros'] as $servico): ?>
-                        <div class="service-card">
-                            <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
-                                alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
-                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                        </div>
+                            <div class="service-card">
+                                    <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                                    <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                                </div>
                         <?php endforeach; ?>
                         <?php else: ?>
                         <div class="alert alert-info">Nenhum outro serviço cadastrado.</div>
