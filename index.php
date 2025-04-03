@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Alterado para Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -41,7 +39,7 @@
 
     <main>
         <section class="banner" id="banner">
-            <h1>Bem-vindo à Plataforma do Atelie Connect</h1></br>
+            <h1>Bem-vindo à Plataforma do Atelie Connecta</h1></br>
             <p>Conectando você aos talentos da moda.</p>
         </section>
 
@@ -79,71 +77,110 @@
             </div>
         </section>
 
-        <section class="comentario" id="comentario" class="comentario d-flex flex-column align-items-center">
+        <section class="comentario" id="comentario">
             <h2>Depoimentos Recentes</h2>
             <div class="container">
-                <div class="row">
-                    <!-- Card de Depoimentos -->
-                    <div class="col-md-6">
-                        <div class="list-group">
-                            <?php
-                            // URL do Realtime Database Firebase
-                            $firebase_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
+                <div id="comentariosCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php
+                        // URL do Realtime Database Firebase
+                        $firebase_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
 
-                            // Fazendo a requisição para obter os comentários
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, $firebase_url);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                            $response = curl_exec($ch);
-                            curl_close($ch);
+                        // Fazendo a requisição para obter os comentários
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $firebase_url);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        $response = curl_exec($ch);
+                        curl_close($ch);
 
-                            // Verifica se a resposta não é vazia e decodifica JSON
-                            if ($response) {
-                                $comentarios = json_decode($response, true);
-                            } else {
-                                $comentarios = [];
-                            }
+                        // Verifica se a resposta não é vazia e decodifica JSON
+                        if ($response === false) {
+                            echo '<div class="alert alert-danger">Erro ao conectar com o banco de dados</div>';
+                            $comentarios = [];
+                        } else {
+                            $comentarios = json_decode($response, true);
 
                             // Verifica se o JSON foi decodificado corretamente
-                            if (!is_array($comentarios)) {
-                                echo "<p>Erro ao carregar os comentários.</p>";
-                                exit;
+                            if ($comentarios === null) {
+                                echo '<div class="alert alert-warning">Formato de dados inválido</div>';
+                                $comentarios = [];
                             }
+                        }
 
-                            // Ordenar os comentários por data (do mais recente para o mais antigo)
-                            usort($comentarios, function ($a, $b) {
-                                return strtotime($b['data']) - strtotime($a['data']);
+                        // Debug: Verifique os dados recebidos
+                        // echo '<pre>'.print_r($comentarios, true).'</pre>';
+
+                        // Se não há comentários ou ocorreu erro
+                        if (empty($comentarios)) {
+                            echo '<div class="carousel-item active">';
+                            echo '<div class="row justify-content-center">';
+                            echo '<div class="col-12 text-center">';
+                            echo '<p class="text-muted">Nenhum depoimento encontrado.</p>';
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
+                        } else {
+                            // Filtra apenas comentários aprovados (se existir o campo)
+                            $comentariosFiltrados = array_filter($comentarios, function ($comentario) {
+                                return !isset($comentario['aprovado']) || $comentario['aprovado'] === true;
                             });
 
-                            // Selecionar os 5 últimos
-                            $comentarios = array_slice($comentarios, 0, 5);
+                            // Ordenar os comentários por data (do mais recente para o mais antigo)
+                            usort($comentariosFiltrados, function ($a, $b) {
+                                $dateA = isset($a['data']) ? strtotime(str_replace('/', '-', $a['data'])) : 0;
+                                $dateB = isset($b['data']) ? strtotime(str_replace('/', '-', $b['data'])) : 0;
+                                return $dateB - $dateA;
+                            });
 
-                            // Loop para exibir os comentários
-                            if (!empty($comentarios)) {
-                                foreach ($comentarios as $comentario) {
-                                    // Verifica se os campos existem antes de acessar
-                                    $nome = isset($comentario['nome']) ? htmlspecialchars($comentario['nome']) : 'Usuário Anônimo';
-                                    $foto = isset($comentario['foto']) && !empty($comentario['foto']) ? htmlspecialchars($comentario['foto']) : 'Assets/img/default-user.png';
-                                    $data = isset($comentario['data']) ? date('d/m/Y', strtotime($comentario['data'])) : 'Data desconhecida';
+                            // Dividir os comentários em grupos de 3 para o carrossel
+                            $comentariosChunks = array_chunk($comentariosFiltrados, 3);
+
+                            foreach ($comentariosChunks as $index => $chunk) {
+                                $activeClass = $index === 0 ? 'active' : '';
+                                echo '<div class="carousel-item ' . $activeClass . '">';
+                                echo '<div class="row justify-content-center">';
+
+                                foreach ($chunk as $comentario) {
+                                    $nome = isset($comentario['usuario_nome']) ? htmlspecialchars($comentario['usuario_nome']) : 'Usuário Anônimo';
+                                    $data = isset($comentario['data']) ? date('d/m/Y', strtotime(str_replace('/', '-', $comentario['data']))) : 'Data desconhecida';
                                     $texto = isset($comentario['texto']) ? htmlspecialchars($comentario['texto']) : 'Sem comentário.';
+                                    $avaliacao = isset($comentario['avaliacao']) ? (int)$comentario['avaliacao'] : 0;
 
-                                    echo '<div class="depoimento-item d-flex flex-column align-items-center">';
-                                    echo '<img src="' . $foto . '" alt="Foto de ' . $nome . '" class="user-photo">';
-                                    echo '<div class="depoimento-content text-center">';
-                                    echo '<h5 class="h5_depoimento">' . $nome . '</h5>';
-                                    echo '<p class="depoimento-date">' . $data . '</p>';
-                                    echo '<p class="p_depoimento">' . $texto . '</p>';
+                                    // Gerar estrelas de avaliação
+                                    $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
+
+                                    echo '<div class="col-md-4 mb-4">';
+                                    echo '<div class="depoimento-item card h-100 mx-2">';
+                                    echo '<div class="card-body text-center">';
+                                    echo '<h5 class="card-title h5_depoimento">' . $nome . '</h5>';
+                                    echo '<p class="card-subtitle mb-2 text-muted depoimento-date">' . $data . '</p>';
+                                    echo '<div class="avaliacao mb-2 text-warning">' . $estrelas . '</div>';
+                                    echo '<p class="card-text p_depoimento">' . $texto . '</p>';
+                                    echo '</div>';
                                     echo '</div>';
                                     echo '</div>';
                                 }
-                            } else {
-                                echo '<p>Nenhum depoimento encontrado.</p>';
+
+                                echo '</div>'; // fecha row
+                                echo '</div>'; // fecha carousel-item
                             }
-                            ?>
-                        </div>
+                        }
+                        ?>
                     </div>
+
+                    <?php if (!empty($comentarios) && count($comentariosChunks) > 1): ?>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Próximo</span>
+                        </button>
+                    <?php endif; ?>
                 </div>
+            </div>
         </section>
 
         <section class="container-quem-somos" id="sobre">
@@ -262,6 +299,35 @@
             // Fechar o menu sanduíche ao clicar em um item
             $('.navbar-nav>li>a').on('click', function() {
                 $('.navbar-collapse').removeClass('show');
+            });
+        });
+    </script>
+
+    <!-- Scripts atualizados para Bootstrap 5 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Inicialização do carrossel
+        document.addEventListener('DOMContentLoaded', function() {
+            var myCarousel = document.querySelector('#comentariosCarousel');
+            var carousel = new bootstrap.Carousel(myCarousel, {
+                interval: 5000, // Muda a cada 5 segundos
+                wrap: true
+            });
+
+            // Menu mobile (ajustado para Bootstrap 5)
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+
+            navbarToggler.addEventListener('click', function() {
+                navbarCollapse.classList.toggle('show');
+            });
+
+            // Fechar menu ao clicar em um item
+            document.querySelectorAll('.navbar-nav>li>a').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    navbarCollapse.classList.remove('show');
+                });
             });
         });
     </script>
