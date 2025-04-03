@@ -1,881 +1,344 @@
-<?php
-session_start();
-
-if (!isset($_SESSION['logado'])) {
-    header("Location: loginCli.php");
-    exit();
-}
-
-// Gera token CSRF se não existir
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Obtém o email da sessão
-$email = $_SESSION['email'];
-
-
-// Verifica se o email está definido e não está vazio
-if (empty($email)) {
-    die("Erro: Email do usuário não encontrado na sessão.");
-}
-
-// Inclui o autoload do Composer
-require __DIR__ . '/../vendor/autoload.php';
-
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Exception\FirebaseException;
-
-// Verifica se a extensão GD está habilitada
-if (!extension_loaded('gd')) {
-    die("Erro: A extensão GD não está habilitada no PHP. Habilite-a no php.ini e reinicie o servidor.");
-}
-
-// Configura a biblioteca Intervention Image com o driver GD
-$manager = new ImageManager(new Driver());
-
-$factory = (new Factory())
-    ->withServiceAccount('../config/chave.json')
-    ->withDatabaseUri('https://atelieconecta-d9030-default-rtdb.firebaseio.com/');
-
-$database = $factory->createDatabase();
-
-// Busca os dados do usuário no Firebase Realtime Database
-try {
-    $userData = $database->getReference('userCli')
-        ->orderByChild('acesso/email')
-        ->equalTo($email)
-        ->getValue();
-
-    if (empty($userData)) {
-        throw new Exception("Nenhum dado encontrado para o usuário logado.");
-    }
-
-    $userKey = array_key_first($userData);
-    $user = $userData[$userKey];
-
-    // Garante que redes_sociais é um array e está com a estrutura correta
-    if (!isset($user['redes_sociais']) || !is_array($user['redes_sociais'])) {
-        $user['redes_sociais'] = [
-            'whatsapp' => '',
-            'instagram' => '',
-            'facebook' => ''
-        ];
-    } else {
-        // Garante que todos os campos existem
-        $user['redes_sociais'] = array_merge([
-            'whatsapp' => '',
-            'instagram' => '',
-            'facebook' => ''
-        ], $user['redes_sociais']);
-    }
-} catch (Exception $e) {
-    die("Erro ao buscar dados do usuário: " . $e->getMessage());
-}
-
-// Função para validar e redimensionar imagem
-function processarImagem($arquivo, $pastaDestino, $largura, $altura)
-{
-    global $manager;
-
-    // Verifica tipo de arquivo
-    $permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!in_array($arquivo['type'], $permitidos)) {
-        throw new Exception("Tipo de arquivo não permitido. Use JPEG, PNG, GIF ou WEBP.");
-    }
-
-    // Verifica tamanho do arquivo (máximo 5MB)
-    if ($arquivo['size'] > 5 * 1024 * 1024) {
-        throw new Exception("O arquivo é muito grande. Tamanho máximo: 5MB.");
-    }
-
-    $nomeArquivo = uniqid() . '.' . pathinfo($arquivo['name'], PATHINFO_EXTENSION);
-    $caminhoCompleto = $pastaDestino . $nomeArquivo;
-
-    try {
-        $imagem = $manager->read($arquivo['tmp_name'])
-            ->resize($largura, $altura)
-            ->save($caminhoCompleto, 75);
-
-        return $caminhoCompleto;
-    } catch (Exception $e) {
-        throw new Exception("Erro ao processar imagem: " . $e->getMessage());
-    }
-}
-
-// Funções para tratamento de redes sociais
-function formatSocialLink($value, $type)
-{
-    if (empty($value)) return 'Não disponível';
-
-    $value = (string)$value; // Garante que é string
-
-    switch ($type) {
-        case 'whatsapp':
-            // Remove tudo que não é número
-            $numero = preg_replace('/[^0-9]/', '', $value);
-
-            // Verifica se tem código do país (padrão: 55 para Brasil)
-            if (strlen($numero) > 11) {
-                $codigoPais = substr($numero, 0, 2);
-                $restante = substr($numero, 2);
-            } else {
-                $codigoPais = '55'; // Assume Brasil se não tiver código
-                $restante = $numero;
-            }
-
-            // Formata o número (XX) XXXXX-XXXX
-            if (strlen($restante) === 11) {
-                return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $restante);
-            }
-            return $restante; // Retorna sem formatação se não tiver tamanho esperado
-
-        case 'instagram':
-            $perfil = str_replace(
-                ['https://instagram.com/', 'https://www.instagram.com/', '@'],
-                '',
-                $value
-            );
-            return '@' . $perfil;
-
-        case 'facebook':
-            // Extrai apenas o nome do perfil (remove URLs)
-            $perfil = str_replace(
-                ['https://facebook.com/', 'https://www.facebook.com/', 'facebook.com/'],
-                '',
-                $value
-            );
-            return $perfil; // Mostra apenas o nome sem o domínio
-
-        default:
-            return $value;
-    }
-}
-
-function getSocialLink($value, $type)
-{
-    if (empty($value)) return '#';
-
-    $value = (string)$value;
-    $value = trim($value);
-
-    switch ($type) {
-        case 'whatsapp':
-            // Remove tudo que não é número
-            $numero = preg_replace('/[^0-9]/', '', $value);
-
-            // Verifica se já tem código do país
-            if (strlen($numero) <= 11) {
-                $numero = '55' . $numero; // Adiciona código do Brasil se não tiver
-            }
-            return 'https://wa.me/' . $numero;
-
-        case 'instagram':
-            $usuario = str_replace(['@', 'https://instagram.com/', 'https://www.instagram.com/'], '', $value);
-            return 'https://instagram.com/' . $usuario;
-
-        case 'facebook':
-            // Remove todos os prefixos possíveis
-            $perfil = str_replace(
-                ['https://facebook.com/', 'https://www.facebook.com/', 'facebook.com/'],
-                '',
-                $value
-            );
-            return 'https://www.facebook.com/' . $perfil;
-
-        default:
-            return '#';
-    }
-}
-
-// Processa o upload da nova foto de perfil
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoPerfil']) && $_FILES['fotoPerfil']['error'] === UPLOAD_ERR_OK) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    $uploadDir = '../assets/uploads/';
-
-    try {
-        $caminhoImagem = processarImagem($_FILES['fotoPerfil'], $uploadDir, 200, 200);
-        $database->getReference('userCli/' . $userKey . '/fotoPerfil')->set($caminhoImagem);
-        $user['fotoPerfil'] = $caminhoImagem;
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Foto de perfil atualizada com sucesso!'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao processar a imagem: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Processa o upload da nova foto do banner
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fotoBanner']) && $_FILES['fotoBanner']['error'] === UPLOAD_ERR_OK) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    $uploadDir = '../assets/uploads/';
-
-    try {
-        $caminhoImagem = processarImagem($_FILES['fotoBanner'], $uploadDir, 1200, 300);
-        $database->getReference('userCli/' . $userKey . '/fotoBanner')->set($caminhoImagem);
-        $user['fotoBanner'] = $caminhoImagem;
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Foto do banner atualizada com sucesso!'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao processar a imagem: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Processa as alterações de dados do usuário
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editNome']) && isset($_POST['editCel'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    // Validação dos dados
-    $novoNome = filter_var($_POST['editNome'], FILTER_SANITIZE_STRING);
-    $novoCel = filter_var($_POST['editCel'], FILTER_SANITIZE_STRING);
-    $novoEmail = filter_var($_POST['editEmail'], FILTER_VALIDATE_EMAIL);
-    $novoCep = filter_var($_POST['editCep'], FILTER_SANITIZE_STRING);
-    $novoRua = filter_var($_POST['editRua'], FILTER_SANITIZE_STRING);
-    $novoBairro = filter_var($_POST['editBairro'], FILTER_SANITIZE_STRING);
-    $novoCidade = filter_var($_POST['editCidade'], FILTER_SANITIZE_STRING);
-    $novoEstado = filter_var($_POST['editEstado'], FILTER_SANITIZE_STRING);
-
-    if (!$novoEmail) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'E-mail inválido!'];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    try {
-        $updates = [
-            'nome' => $novoNome,
-            'cel' => $novoCel,
-            'acesso/email' => $novoEmail,
-            'endereco/cep' => $novoCep,
-            'endereco/rua' => $novoRua,
-            'endereco/bairro' => $novoBairro,
-            'endereco/cidade' => $novoCidade,
-            'endereco/estado' => $novoEstado
-        ];
-
-        $database->getReference('userCli/' . $userKey)->update($updates);
-
-        // Atualiza a sessão
-        $_SESSION['email'] = $novoEmail;
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Dados atualizados com sucesso!'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar dados: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Processa edição das redes sociais
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['whatsapp'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    try {
-        // Formata os dados antes de salvar
-        $whatsapp = preg_replace('/[^0-9]/', '', $_POST['whatsapp']);
-        $instagram = str_replace('@', '', $_POST['instagram']);
-
-        $redesSociais = [
-            'whatsapp' => $whatsapp,
-            'instagram' => $instagram,
-            'facebook' => $_POST['facebook']
-        ];
-
-        $database->getReference('userCli/' . $userKey . '/redes_sociais')->set($redesSociais);
-
-        // Atualiza localmente para não precisar recarregar
-        $user['redes_sociais'] = $redesSociais;
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Redes sociais atualizadas com sucesso!'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar redes sociais: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Processa alteração de senha
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    $currentPassword = $_POST['currentPassword'];
-    $newPassword = $_POST['newPassword'];
-    $confirmPassword = $_POST['confirmPassword'];
-
-    // Verifica se a senha atual está correta
-    if (!password_verify($currentPassword, $user['acesso']['senha'])) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Senha atual incorreta!'];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    // Verifica se as novas senhas coincidem
-    if ($newPassword !== $confirmPassword) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'As novas senhas não coincidem!'];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    // Verifica força da senha (opcional)
-    if (strlen($newPassword) < 8) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'A senha deve ter pelo menos 8 caracteres!'];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    try {
-        // Atualiza a senha
-        $newHashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-        $database->getReference('userCli/' . $userKey . '/acesso/senha')->set($newHashedPassword);
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Senha alterada com sucesso!'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao atualizar senha: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Processa o envio de comentários
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comentarioTexto'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Token de segurança inválido. Tente novamente.'
-        ];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    $titulo = filter_var($_POST['comentarioTitulo'], FILTER_SANITIZE_STRING);
-    $texto = filter_var($_POST['comentarioTexto'], FILTER_SANITIZE_STRING);
-    $avaliacao = filter_var($_POST['comentarioAvaliacao'], FILTER_SANITIZE_NUMBER_INT);
-
-    // Verifica se o texto do comentário não está vazio
-    if (empty($texto)) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'O comentário não pode estar vazio!'];
-        header("Location: dashAcessoCli.php");
-        exit();
-    }
-
-    try {
-        $novoComentario = [
-            'usuario_id' => $userKey,
-            'usuario_nome' => $user['nome'],
-            'usuario_email' => $user['acesso']['email'],
-            'titulo' => $titulo,
-            'texto' => $texto,
-            'avaliacao' => $avaliacao,
-            'data' => date('d/m/Y H:i:s'),
-            'aprovado' => true // Comentários precisam ser aprovados antes de aparecerem no index
-        ];
-
-        // Adiciona o comentário ao banco de dados
-        $database->getReference('comentarios')->push($novoComentario);
-
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Comentário enviado com sucesso! Obrigado por sua contribuição.'];
-    } catch (Exception $e) {
-        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Erro ao enviar comentário: ' . $e->getMessage()];
-    }
-
-    header("Location: dashAcessoCli.php");
-    exit();
-}
-
-// Exibe alertas se existirem
-$alert = $_SESSION['alert'] ?? null;
-unset($_SESSION['alert']);
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Clientes</title>
-    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="../assets/css/stylesCadLogin.css">
+    <title>Plataforma de Corte e Costura</title>
+    <link rel="stylesheet" href="../atelieconecta/assets/css/styles.css">
+    <link rel="icon" href="../atelieconecta/assets/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Alterado para Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
-<body class="dash">
-    <?php if ($alert): ?>
-        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show" role="alert"
-            style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-            <?= htmlspecialchars($alert['message'], ENT_QUOTES, 'UTF-8') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<body>
+    <header>
+        <div class="container">
+            <img class="logo" src="assets/img/new_logo3.png" alt="logo">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="#banner">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#services">Serviços</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#comentario">Comentarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#sobre">Sobre Nós</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <a href="perfil.php"><img src="./assets/img/login_3cinza.png" class="btn-login"></a>
         </div>
-        <script>
-            setTimeout(() => document.querySelector('.alert').remove(), 5000);
-        </script>
-    <?php endif; ?>
-    <div class="container mt-5">
-        <div class="profile-container">
-            <!-- Banner com ícone de câmera para upload -->
-            <div class="banner-container">
-                <div class="banner"
-                    style="background-image: url('<?php echo htmlspecialchars($user['fotoBanner'] ?? '../assets/img/loginUsuario10.jpeg', ENT_QUOTES, 'UTF-8'); ?>');">
-                </div>
-                <label for="uploadBanner" class="camera-icon-banner">
-                    <i class="fas fa-camera"></i>
-                </label>
-                <form id="uploadBannerForm" action="dashAcessoCli.php" method="POST" enctype="multipart/form-data"
-                    style="display: none;">
-                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                    <input type="file" id="uploadBanner" name="fotoBanner" accept="image/*">
-                </form>
-                <img id="bannerPreview" class="preview-image" alt="Pré-visualização do banner">
-            </div>
+    </header>
 
-            <!-- Foto de perfil com ícone de câmera para upload -->
-            <div class="profile-header">
-                <div class="profile-img-container">
-                    <img src="<?php echo htmlspecialchars($user['fotoPerfil'] ?? '../assets/img/perfil_cliente10.png', ENT_QUOTES, 'UTF-8'); ?>"
-                        alt="Foto de Perfil" class="profile-img" id="profileImage">
-                    <label for="uploadImage" class="camera-icon">
-                        <i class="fas fa-camera"></i>
-                    </label>
-                    <form id="uploadForm" action="dashAcessoCli.php" method="POST" enctype="multipart/form-data"
-                        style="display: none;">
-                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                        <input type="file" id="uploadImage" name="fotoPerfil" accept="image/*">
-                    </form>
-                    <img id="profilePreview" class="preview-image" alt="Pré-visualização da foto de perfil">
-                </div>
-            </div>
+    <main>
+        <section class="banner" id="banner">
+            <h1>Bem-vindo à Plataforma do Atelie Connecta</h1></br>
+            <p>Conectando você aos talentos da moda.</p>
+        </section>
 
-            <div class="data-section">
+        <section class="services" id="services">
+            <div class="container">
+                <h2>Serviços Oferecidos</h2>
                 <div class="row">
-                    <div class="col-md-6 dadosPessoais">
-                        <h4>Dados Pessoais
-                            <!-- Ícone para editar os dados pessoais -->
-                            <i class="fas fa-edit" id="editIcon" style="cursor: pointer;"></i>
-                        </h4>
-                        <div class="info-row-nome">
-                            <div class="info-item"><i class="fas fa-user"></i>
-                                <?php echo htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        </div>
-                        <div class="info-row-end">
-                            <div class="info-item"><i class="fas fa-house"></i>
-                                <?php echo htmlspecialchars($user['endereco']['rua'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                        </div>
-                        <div class="info-row-complEnd">
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['endereco']['bairro'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['endereco']['cidade'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['endereco']['estado'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                            <div class="info-item">
-                                <?php echo htmlspecialchars($user['endereco']['cep'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                        </div>
-                        <div class="info-row-contato">
-                            <div class="info-item"><i class="fas fa-mobile-alt"></i>
-                                <?php echo htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                        </div>
-                        <div class="info-row-contato">
-                            <div class="info-item"><i class="fas fa-envelope"></i>
-                                <?php echo htmlspecialchars($user['acesso']['email'] ?? 'Não informado', ENT_QUOTES, 'UTF-8'); ?>
-                            </div>
-                        </div>
+                    <div class="service-item col-6 col-lg-4">
+                        <img class="imagem" src="./assets/img/servico-1.jpeg" alt="Serviço 1">
+                        <p class="tesoura">Customização</p>
                     </div>
-
-                    <div class="col-md-6 dadosSociais text-start">
-                        <p class="tagService mt-3">Redes Sociais:
-                            <i class="fas fa-edit ms-2" id="editRedesIcon" style="cursor: pointer;"></i>
-                        </p>
-
-                        <div class="info-item">
-                            <i class="fab fa-whatsapp"></i>
-                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?></span>
-                            <?php if (!empty($user['redes_sociais']['whatsapp'])): ?>
-                                <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['whatsapp'], 'whatsapp'), ENT_QUOTES, 'UTF-8') ?>"
-                                    target="_blank">
-                                    <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="info-item">
-                            <i class="fab fa-instagram"></i>
-                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?></span>
-                            <?php if (!empty($user['redes_sociais']['instagram'])): ?>
-                                <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['instagram'], 'instagram'), ENT_QUOTES, 'UTF-8') ?>"
-                                    target="_blank">
-                                    <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="info-item">
-                            <i class="fab fa-facebook"></i>
-                            <span><?= htmlspecialchars(formatSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?></span>
-                            <?php if (!empty($user['redes_sociais']['facebook'])): ?>
-                                <a href="<?= htmlspecialchars(getSocialLink($user['redes_sociais']['facebook'], 'facebook'), ENT_QUOTES, 'UTF-8') ?>"
-                                    target="_blank">
-                                    <i class="fas fa-external-link-alt ms-2" style="color: #6c757d; cursor: pointer;"></i>
-                                </a>
-                            <?php endif; ?>
-                        </div>
+                    <div class="col-6 col-lg-4 service-item">
+                        <img class="imagem" src="./assets/img/servico-2.jpeg" alt="Serviço 2">
+                        <p class="tesoura">Ateliê sob Medida</p>
+                    </div>
+                    <div class="col-6 col-lg-4 service-item">
+                        <img class="imagem" src="./assets/img/servico-3.jpeg" alt="Serviço 3">
+                        <p class="tesoura">Consertos e Ajuste</p>
                     </div>
                 </div>
-                <div class="logout text-center mt-3">
-                    <a href="buscarProf.php" class="btn btn-secondary">Buscar Profissionais</a>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
-                        <i class="fas fa-comment me-2"></i>Adicionar Comentário
-                    </button>
-                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
-                    <div class="logout-confirm" id="logoutConfirm">
-                        <p>Tem certeza que deseja sair?</p>
-                        <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
-                        <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
+                <div class="row">
+                    <div class="col-6 col-lg-4 service-item">
+                        <img class="imagem" src="./assets/img/servico-4.jpeg" alt="Serviço 4">
+                        <p class="tesoura">Estilista</p>
                     </div>
-                </div>
-
-            </div>
-            <!-- Modal de Comentários -->
-            <div class="modal fade" id="comentarioModal" tabindex="-1" aria-labelledby="comentarioModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content custom-modal">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="comentarioModalLabel">Adicionar Comentário</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="comentarioForm" method="POST" action="dashAcessoCli.php">
-                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                <div class="mb-3">
-                                    <label for="comentarioTitulo" class="form-label">Título</label>
-                                    <input type="text" class="form-control" id="comentarioTitulo" name="comentarioTitulo" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="comentarioTexto" class="form-label">Comentário</label>
-                                    <textarea class="form-control" id="comentarioTexto" name="comentarioTexto" rows="5" required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="comentarioAvaliacao" class="form-label">Avaliação</label>
-                                    <select class="form-control" id="comentarioAvaliacao" name="comentarioAvaliacao" required>
-                                        <option value="5">Excelente ★★★★★</option>
-                                        <option value="4">Muito Bom ★★★★</option>
-                                        <option value="3">Bom ★★★</option>
-                                        <option value="2">Regular ★★</option>
-                                        <option value="1">Ruim ★</option>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Enviar Comentário</button>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="col-6 col-lg-4 service-item">
+                        <img class="imagem" src="./assets/img/servico-6.jpeg" alt="Serviço 5">
+                        <p class="tesoura">Roupas Personalizadas</p>
+                    </div>
+                    <div class="col-6 col-lg-4 service-item">
+                        <img class="imagem" src="./assets/img/servico-5.jpeg" alt="Serviço 6">
+                        <p class="tesoura">Modelagem</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Modal de Edição de Dados Pessoais -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editForm" method="POST" action="dashAcessoCli.php" novalidate>
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editNome" class="form-label">Nome</label>
-                                    <input type="text" class="form-control" id="editNome" name="editNome" required>
-                                    <div class="invalid-feedback">Por favor, insira seu nome.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCel" class="form-label">Celular</label>
-                                    <input type="text" class="form-control" id="editCel" name="editCel" required>
-                                    <div class="invalid-feedback">Por favor, insira um celular válido.</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editEmail" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="editEmail" name="editEmail" required>
-                                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCep" class="form-label">CEP</label>
-                                    <input type="text" class="form-control" id="editCep" name="editCep" required>
-                                    <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
-                                </div>
-                            </div>
-                            <h6 class="section-title">Endereço</h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editRua" class="form-label">Rua</label>
-                                    <input type="text" class="form-control" id="editRua" name="editRua" required>
-                                    <div class="invalid-feedback">Por favor, insira a rua.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editBairro" class="form-label">Bairro</label>
-                                    <input type="text" class="form-control" id="editBairro" name="editBairro" required>
-                                    <div class="invalid-feedback">Por favor, insira o bairro.</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCidade" class="form-label">Cidade</label>
-                                    <input type="text" class="form-control" id="editCidade" name="editCidade" required>
-                                    <div class="invalid-feedback">Por favor, insira a cidade.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editEstado" class="form-label">Estado</label>
-                                    <input type="text" class="form-control" id="editEstado" name="editEstado" required>
-                                    <div class="invalid-feedback">Por favor, insira o estado.</div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <section class="comentario" id="comentario">
+            <h2>Depoimentos Recentes</h2>
+            <div class="container">
+                <div id="comentariosCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php
+                        // URLs do Firebase
+                        $firebase_comentarios_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
+                        $firebase_users_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/userCli.json";
 
-        <!-- Modal Redes Sociais -->
-        <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="redesForm" method="POST" action="dashAcessoCli.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
-                                <input type="text" class="form-control" name="whatsapp"
-                                    value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">@</span>
-                                    <input type="text" class="form-control" name="instagram"
-                                        value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
-                                <input type="text" class="form-control" name="facebook"
-                                    value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Alterar Senha -->
-        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="passwordForm" method="POST" action="dashAcessoCli.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Senha Atual</label>
-                                <input type="password" class="form-control" id="currentPassword" name="currentPassword"
-                                    required>
-                                <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">Nova Senha</label>
-                                <input type="password" class="form-control" id="newPassword" name="newPassword"
-                                    required>
-                                <div class="invalid-feedback">Por favor, insira uma nova senha.</div>
-                                <div class="password-strength">
-                                    <span></span>
-                                </div>
-                                <small class="text-muted">A senha deve ter pelo menos 8 caracteres.</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                                    required>
-                                <div class="invalid-feedback">As senhas não coincidem.</div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-        <script>
-            // Máscaras para os campos
-            $(document).ready(function() {
-                $('#editCel').mask('(00) 00000-0000');
-                $('#editCep').mask('00000-000');
-
-                // Validação do formulário
-                document.getElementById('editForm').addEventListener('submit', function(event) {
-                    const form = event.target;
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        form.classList.add('was-validated');
-                    }
-                });
-
-                // Preenche o modal com os dados atuais
-                document.getElementById("editIcon").addEventListener("click", function() {
-                    const modal = new bootstrap.Modal(document.getElementById("editModal"));
-
-                    document.getElementById("editNome").value =
-                        "<?= htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editCel").value =
-                        "<?= htmlspecialchars($user['cel'], ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editEmail").value =
-                        "<?= htmlspecialchars($user['acesso']['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editCep").value =
-                        "<?= htmlspecialchars($user['endereco']['cep'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editRua").value =
-                        "<?= htmlspecialchars($user['endereco']['rua'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editBairro").value =
-                        "<?= htmlspecialchars($user['endereco']['bairro'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editCidade").value =
-                        "<?= htmlspecialchars($user['endereco']['cidade'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-                    document.getElementById("editEstado").value =
-                        "<?= htmlspecialchars($user['endereco']['estado'] ?? '', ENT_QUOTES, 'UTF-8') ?>";
-
-                    modal.show();
-                });
-
-                // Upload de imagens
-                document.getElementById('uploadImage').addEventListener('change', function() {
-                    if (this.files && this.files[0]) {
-                        document.getElementById('uploadForm').submit();
-                    }
-                });
-
-                document.getElementById('uploadBanner').addEventListener('change', function() {
-                    if (this.files && this.files[0]) {
-                        document.getElementById('uploadBannerForm').submit();
-                    }
-                });
-            });
-        </script>
-
-        <script>
-            // Abrir modal de redes sociais
-            document.getElementById("editRedesIcon").addEventListener("click", function() {
-                new bootstrap.Modal(document.getElementById("redesModal")).show();
-            });
-
-            // Atualização em tempo real após salvar
-            document.getElementById("redesForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                fetch("dashAcessoCli.php", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            location.reload(); // Ou atualize apenas as redes sociais via JS
-                        } else {
-                            alert("Erro ao salvar");
+                        function getFirebaseData($url) {
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $url);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            $response = curl_exec($ch);
+                            curl_close($ch);
+                            return $response !== false ? json_decode($response, true) : [];
                         }
-                    })
-                    .catch(error => console.error("Error:", error));
-            });
-        </script>
-</body>
 
+                        // Obter dados
+                        $comentarios = getFirebaseData($firebase_comentarios_url);
+                        $usuarios = getFirebaseData($firebase_users_url);
+
+                        if (empty($comentarios)) {
+                            echo '<div class="carousel-item active">';
+                            echo '<div class="row justify-content-center">';
+                            echo '<div class="col-12 text-center">';
+                            echo '<p class="text-muted">Nenhum depoimento encontrado.</p>';
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
+                        } else {
+                            // Filtra e ordena comentários
+                            $comentariosFiltrados = array_filter($comentarios, function ($comentario) {
+                                return !isset($comentario['aprovado']) || $comentario['aprovado'] === true;
+                            });
+
+                            usort($comentariosFiltrados, function ($a, $b) {
+                                $dateA = isset($a['data']) ? strtotime(str_replace('/', '-', $a['data'])) : 0;
+                                $dateB = isset($b['data']) ? strtotime(str_replace('/', '-', $b['data'])) : 0;
+                                return $dateB - $dateA;
+                            });
+
+                            // Dividir em grupos de 3
+                            $comentariosChunks = array_chunk($comentariosFiltrados, 3);
+
+                            foreach ($comentariosChunks as $index => $chunk) {
+                                $activeClass = $index === 0 ? 'active' : '';
+                                echo '<div class="carousel-item ' . $activeClass . '">';
+                                echo '<div class="row justify-content-center">';
+
+                                foreach ($chunk as $comentario) {
+                                    $nome = htmlspecialchars($comentario['usuario_nome'] ?? 'Usuário Anônimo');
+                                    $data = isset($comentario['data']) ? date('d/m/Y', strtotime(str_replace('/', '-', $comentario['data']))) : 'Data desconhecida';
+                                    $texto = htmlspecialchars($comentario['texto'] ?? 'Sem comentário.');
+                                    $avaliacao = (int)($comentario['avaliacao'] ?? 0);
+                                    $userId = $comentario['usuario_id'] ?? null;
+
+                                    // Tratamento seguro para foto de perfil
+                                    $fotoPerfil = 'assets/img/user-default.png'; // Padrão
+                                    
+                                    if ($userId && isset($usuarios[$userId])) {
+                                        $userData = $usuarios[$userId];
+                                        
+                                        if (!empty($userData['fotoPerfil'])) {
+                                            $fotoPath = $userData['fotoPerfil'];
+                                            
+                                            // Corrige caminhos relativos
+                                            if (strpos($fotoPath, '../') === 0) {
+                                                $fotoPath = substr($fotoPath, 3);
+                                            }
+                                            
+                                            // Garante caminho baseado em assets/
+                                            if (strpos($fotoPath, 'assets/') !== 0) {
+                                                $fotoPath = 'assets/uploads/' . $fotoPath;
+                                            }
+                                            
+                                            $fotoPerfil = $fotoPath;
+                                        }
+                                    }
+
+                                    // Estrelas de avaliação
+                                    $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
+
+                                    // Card do depoimento
+                                    echo '<div class="col-md-4 mb-4">';
+                                    echo '<div class="depoimento-item card h-100 mx-2">';
+                                    echo '<div class="card-body text-center">';
+                                    echo '<div class="foto-perfil-container">';
+                                    echo '<img src="' . $fotoPerfil . '" alt="Foto de ' . $nome . '" class="foto-perfil-depoimento" onerror="this.src=\'assets/img/user-default.png\'">';
+                                    echo '</div>';
+                                    echo '<h5 class="card-title h5_depoimento">' . $nome . '</h5>';
+                                    echo '<p class="card-subtitle mb-2 text-muted depoimento-date">' . $data . '</p>';
+                                    echo '<div class="avaliacao mb-2 text-warning">' . $estrelas . '</div>';
+                                    echo '<p class="card-text p_depoimento">' . $texto . '</p>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                }
+
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                        }
+                        ?>
+                    </div>
+
+                    <?php if (!empty($comentarios) && count($comentariosChunks) > 1): ?>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Próximo</span>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </section>
+
+        <section class="container-quem-somos" id="sobre">
+            <div class="container-quem">
+                <div class="row-q">
+                    <div class="col-12 text-center">
+                        <img class="img-fluid" src="./assets/img/outdor2.png" alt="foto fachada">
+                    </div>
+                </div>
+                <p class="apresentacao-quem">
+                    Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
+                </p>
+                <div class="row">
+                    <div class="p-2 col-12 col-md-6">
+                        <p class="apresentacao-txtquem">
+                            O Ateliê Connect é uma plataforma inovadora que conecta pessoas a profissionais
+                            especializados em moda, como estilistas, consultores de imagem e personal shoppers. Nosso
+                            objetivo é facilitar o acesso a serviços personalizados de moda, proporcionando consultorias
+                            e sugestões de looks que atendem às necessidades e estilos de cada indivíduo.
+                        </p>
+                    </div>
+                    <div class="p-2 col-12 col-md-6 ">
+                        <p class="apresentacao-txtquem">
+                            Com uma interface prática e intuitiva, o Ateliê Connect oferece uma experiência única,
+                            permitindo agendar consultas, explorar portfólios e receber dicas de profissionais
+                            qualificados. Acreditamos que a moda é uma poderosa ferramenta de expressão e confiança, e
+                            estamos aqui para ajudar você a encontrar o visual que reflita sua verdadeira identidade.
+                        </p>
+                    </div>
+                </div>
+        </section>
+
+        <section class="contato" id="contato">
+            <div class="img-contato">
+                <img src="./assets/img/developersRGTsemfundo2.png">
+            </div>
+            <p class="somosadev">MUITO PRAZER,<br> <span>SOMOS A DEVELOPER RGT</span></p>
+            <p class="txtApres">
+                A <span>Developer RGT</span> é formada por talentosos alunos do curso técnico de
+                Informática para Internet do <span>SENAC REGISTRO</span>, unidos pela paixão por tecnologia e
+                inovação.
+            </p>
+
+            <p class="txtApres">
+                Especializados em <span>DESENVOLVIMENTO WEB</span>, estamos no mercado desde
+                <span>Janeiro/2024</span>,
+                criando soluções digitais sob medida para empresas e empreendedores. Nossa equipe aplica as mais
+                avançadas
+                técnicas e <span>BOAS PRÁTICAS</span> do setor para desenvolver aplicações web
+                <span>CRIATIVAS</span>,
+                <span>INOVADORAS</span> e altamente funcionais.
+            </p>
+
+            <p class="txtApres">
+                Se você busca um site profissional, moderno e totalmente personalizado, a <span>Developer RGT</span>
+                está pronta
+                para transformar sua ideia em realidade. <strong>Entre em contato e leve sua presença digital para o
+                    próximo nível!</strong>
+            </p>
+
+            <div class="btn-social">
+                <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA=="
+                    target="_blank"><button><i class="rede fa-brands fa-instagram"></i></button></a>
+
+                <a href="https://www.linkedin.com/in/developers-rgt-862402309/" target="_blank"><button><i
+                            class="fa-brands fa-linkedin"></i></button></a>
+
+                <a href="https://www.youtube.com/@developers_rgt?si=oQlWOmaRf2SRPzlD&fbclid=PAZXh0bgNhZW0CMTEAAaYqnLMgVcRIadkyQ5bQ6MNxTCTzn54hLfiPhnE_JIKYDPlky-PEubYzu0g_aem_AZ5WecxAIc8cxdrGFj8cjiGjndHYazGJ6A-xIEf5Gyn1Et8ZO3SSA65_nPesYYSksfh2gltMmyF2FESUFtbq0KQ2"
+                    target="_blank"><button><i class="fa-brands fa-youtube"></i></button></a>
+
+                <a href="https://github.com/DevelopersRGT" target="_blank"><button><i
+                            class="fa-brands fa-github"></i></button></a>
+
+                <a href="falecomdevelopersrgt@gmail.com" target="_blank"><button><i
+                            class="fas fa-envelope"></i></button></a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="rodape">
+            <div>
+                <img class="logo_dev" src="./assets/img/logo_devergt10.jpeg" alt="logo astronauta">
+            </div>
+            <p>&copy; 2025 Plataforma de Corte e Costura. <br>Todos os direitos reservados.</p>
+            <div class="txt_logo">
+                <p class="p_footer">Design By <span>DevelopersRGT</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Alternar o menu sanduíche ao clicar no ícone
+        $(document).ready(function() {
+            $('.navbar-toggler').on('click', function() {
+                $('.navbar-collapse').toggleClass('show');
+            });
+
+            // Fechar o menu sanduíche ao clicar fora dele
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('.navbar').length) {
+                    $('.navbar-collapse').removeClass('show');
+                }
+            });
+
+            // Fechar o menu sanduíche ao clicar em um item
+            $('.navbar-nav>li>a').on('click', function() {
+                $('.navbar-collapse').removeClass('show');
+            });
+        });
+    </script>
+
+    <!-- Scripts atualizados para Bootstrap 5 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Inicialização do carrossel
+        document.addEventListener('DOMContentLoaded', function() {
+            var myCarousel = document.querySelector('#comentariosCarousel');
+            var carousel = new bootstrap.Carousel(myCarousel, {
+                interval: 5000, // Muda a cada 5 segundos
+                wrap: true
+            });
+
+            // Menu mobile (ajustado para Bootstrap 5)
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+
+            navbarToggler.addEventListener('click', function() {
+                navbarCollapse.classList.toggle('show');
+            });
+
+            // Fechar menu ao clicar em um item
+            document.querySelectorAll('.navbar-nav>li>a').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    navbarCollapse.classList.remove('show');
+                });
+            });
+        });
+    </script>
+</body>
 </html>

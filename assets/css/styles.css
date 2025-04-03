@@ -203,6 +203,29 @@ nav ul li a {
     font-size: 2.5em;
 }
 
+/* Estilos para as fotos de perfil nos depoimentos */
+.foto-perfil-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.foto-perfil-depoimento {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fallback para imagens quebradas */
+.foto-perfil-depoimento[src*="user-default.png"] {
+    background-color: #f0f0f0;
+    padding: 15%;
+}
+
 /* Carrossel de comentários */
 #comentariosCarousel {
     max-width: 1200px;
@@ -213,37 +236,34 @@ nav ul li a {
     padding: 20px 0;
 }
 
-/* Cards de depoimentos */
+* Ajustes para os cards de depoimento */
 .depoimento-item {
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 15px;
-    padding: 20px;
-    height: 100%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin: 0 10px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    background-color: #fff;
 }
 
 .depoimento-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .h5_depoimento {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
     color: #333;
-    margin-bottom: 10px;
 }
 
 .depoimento-date {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #666;
     margin-bottom: 15px;
 }
 
 .p_depoimento {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #555;
     line-height: 1.5;
 }
@@ -263,8 +283,9 @@ nav ul li a {
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
+    padding: 15px;
     width: 40px;
     height: 40px;
     background-size: 60%;
