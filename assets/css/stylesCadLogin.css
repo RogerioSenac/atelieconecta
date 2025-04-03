@@ -921,6 +921,23 @@ form a {
     margin-right: 10px;
 }
 
+.services-container .alert {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Se quiser estilizar especialmente a mensagem no modal */
+#servicosModal .alert-info {
+    background-color: #e7f5fe;
+    border-color: #b8e2fb;
+    color: #0c5460;
+}
+
+/* Fim do incluido por Wagner*/
+
 
 /* Estilos para o modal de comentários */
 #comentarioTexto {

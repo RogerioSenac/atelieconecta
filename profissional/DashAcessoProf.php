@@ -412,7 +412,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-
 // Busca os serviços disponíveis no Firebase
 try {
     $servicosRef = $database->getReference('servicos');
@@ -429,48 +428,6 @@ try {
 }
 
 
-// Processa alteração de outros serviços
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['outrosServicos'])) {
-    try {
-        // Verifica o token CSRF
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-            throw new Exception("Token de segurança inválido. Tente novamente.");
-        }
-
-        // Filtra serviços vazios e remove duplicados
-        $outrosServicos = array_unique(array_filter(array_map('trim', $_POST['outrosServicos']), function ($servico) {
-            return !empty($servico);
-        }));
-
-        // Busca os serviços principais existentes no Firebase
-        $servicosPrincipais = $database->getReference('userProf/' . $userKey . '/servicos/principais')->getValue();
-        $servicosPrincipais = is_array($servicosPrincipais) ? $servicosPrincipais : [];
-
-        // Atualiza o nó "servicos" no Firebase com os principais e outros serviços
-        $servicosAtualizados = [
-            'principais' => $servicosPrincipais,
-            'outros' => $outrosServicos
-        ];
-
-        $database->getReference('userProf/' . $userKey . '/servicos')->set($servicosAtualizados);
-
-        // Define mensagem de sucesso
-        $_SESSION['alert'] = [
-            'type' => 'success',
-            'message' => 'Outros serviços atualizados com sucesso!'
-        ];
-    } catch (Exception $e) {
-        // Define mensagem de erro
-        $_SESSION['alert'] = [
-            'type' => 'danger',
-            'message' => 'Erro ao atualizar outros serviços: ' . $e->getMessage()
-        ];
-    }
-
-    // Redireciona para evitar reenvio do formulário
-    header("Location: dashAcessoProf.php?t=" . time());
-    exit();
-}
 // Exibe alertas se existirem
 $alert = $_SESSION['alert'] ?? null;
 unset($_SESSION['alert']);
@@ -613,305 +570,257 @@ unset($_SESSION['alert']);
                             <?php endif; ?>
                         </div>
                     </div>
-
+                        <!-- Inicio dos Serviços Principais -->
                     <p class="tagService">Serviços Principais:
                         <i class="fas fa-edit ms-2" id="editServicosIcon" style="cursor: pointer;"></i>
                     </p>
                     <div class="services-container">
-                        <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
+                        <?php if (!empty($user['servicos']['principais'])): ?>
+                        <?php foreach ($user['servicos']['principais'] as $servico): ?>
                         <div class="service-card">
                             <img src="../assets/img/icon_<?php echo strtolower(str_replace(' ', '', $servico)); ?>.png"
                                 alt="<?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?>">
                             <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
                         </div>
                         <?php endforeach; ?>
+                        <?php else: ?>
+                        <div class="alert alert-info">Até o momento nenhum serviço principal selecionado.</div>
+                        <?php endif; ?>
                     </div>
-
-                    <p class="tagService mt-3">Outros Serviços: <i class="fas fa-edit ms-2" id="editOutrosServicosIcon"
-                            style="cursor: pointer;"></i></p>
-                    <div class="services-container">
-                        <?php 
-$outrosServicos = $user['servicos']['outros'] ?? [];
-foreach (is_array($outrosServicos) ? $outrosServicos : (array)$outrosServicos as $servicoId => $servico): 
-?>
-                        <div class="service-card">
-                            <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
-                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                            <!-- Fim dos Serviços Principais -->
+                    <div class="logout text-center mt-3">
+                        <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
+                        <div class="logout-confirm" id="logoutConfirm">
+                            <p>Tem certeza que deseja sair?</p>
+                            <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
+                            <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <div class="logout text-center mt-3">
-                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
-                    <div class="logout-confirm" id="logoutConfirm">
-                        <p>Tem certeza que deseja sair?</p>
-                        <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
-                        <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Modal de Edição de Dados Pessoais -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editNome" class="form-label">Nome</label>
-                                    <input type="text" class="form-control" id="editNome" name="editNome" required>
-                                    <div class="invalid-feedback">Por favor, insira seu nome.</div>
+            <!-- Modal de Edição de Dados Pessoais -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Editar Dados Pessoais</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editForm" method="POST" action="dashAcessoProf.php" novalidate>
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editNome" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="editNome" name="editNome" required>
+                                        <div class="invalid-feedback">Por favor, insira seu nome.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editCel" class="form-label">Celular</label>
+                                        <input type="text" class="form-control" id="editCel" name="editCel" required>
+                                        <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCel" class="form-label">Celular</label>
-                                    <input type="text" class="form-control" id="editCel" name="editCel" required>
-                                    <div class="invalid-feedback">Por favor, insira um celular válido.</div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editEmail" class="form-label">E-mail</label>
+                                        <input type="email" class="form-control" id="editEmail" name="editEmail"
+                                            required>
+                                        <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editCep" class="form-label">CEP</label>
+                                        <input type="text" class="form-control" id="editCep" name="editCep" required>
+                                        <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editEmail" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="editEmail" name="editEmail" required>
-                                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                <h6 class="section-title">Endereço</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editRua" class="form-label">Rua</label>
+                                        <input type="text" class="form-control" id="editRua" name="editRua" required>
+                                        <div class="invalid-feedback">Por favor, insira a rua.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editBairro" class="form-label">Bairro</label>
+                                        <input type="text" class="form-control" id="editBairro" name="editBairro"
+                                            required>
+                                        <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCep" class="form-label">CEP</label>
-                                    <input type="text" class="form-control" id="editCep" name="editCep" required>
-                                    <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editCidade" class="form-label">Cidade</label>
+                                        <input type="text" class="form-control" id="editCidade" name="editCidade"
+                                            required>
+                                        <div class="invalid-feedback">Por favor, insira a cidade.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editEstado" class="form-label">Estado</label>
+                                        <input type="text" class="form-control" id="editEstado" name="editEstado"
+                                            required>
+                                        <div class="invalid-feedback">Por favor, insira o estado.</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <h6 class="section-title">Endereço</h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editRua" class="form-label">Rua</label>
-                                    <input type="text" class="form-control" id="editRua" name="editRua" required>
-                                    <div class="invalid-feedback">Por favor, insira a rua.</div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editBairro" class="form-label">Bairro</label>
-                                    <input type="text" class="form-control" id="editBairro" name="editBairro" required>
-                                    <div class="invalid-feedback">Por favor, insira o bairro.</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editCidade" class="form-label">Cidade</label>
-                                    <input type="text" class="form-control" id="editCidade" name="editCidade" required>
-                                    <div class="invalid-feedback">Por favor, insira a cidade.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editEstado" class="form-label">Estado</label>
-                                    <input type="text" class="form-control" id="editEstado" name="editEstado" required>
-                                    <div class="invalid-feedback">Por favor, insira o estado.</div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Redes Sociais -->
-        <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="redesForm" method="POST" action="dashAcessoProf.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
-                                <input type="text" class="form-control" name="whatsapp"
-                                    value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">@</span>
-                                    <input type="text" class="form-control" name="instagram"
-                                        value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
-                                <input type="text" class="form-control" name="facebook"
-                                    value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Modal Alterar Senha -->
-        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="passwordForm" method="POST" action="dashAcessoProf.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <!-- Modal Redes Sociais -->
+            <div class="modal fade" id="redesModal" tabindex="-1" aria-labelledby="redesModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="redesModalLabel">Editar Redes Sociais</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="redesForm" method="POST" action="dashAcessoProf.php">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Senha Atual</label>
-                                <input type="password" class="form-control" id="currentPassword" name="currentPassword"
-                                    required>
-                                <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">Nova Senha</label>
-                                <input type="password" class="form-control" id="newPassword" name="newPassword"
-                                    required>
-                                <div class="invalid-feedback">Por favor, insira uma nova senha.</div>
-                                <div class="password-strength">
-                                    <span></span>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fab fa-whatsapp me-2"></i>WhatsApp</label>
+                                    <input type="text" class="form-control" name="whatsapp"
+                                        value="<?= htmlspecialchars($user['redes_sociais']['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                                 </div>
-                                <small class="text-muted">A senha deve ter pelo menos 8 caracteres.</small>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                                    required>
-                                <div class="invalid-feedback">As senhas não coincidem.</div>
-                            </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">@</span>
+                                        <input type="text" class="form-control" name="instagram"
+                                            value="<?= htmlspecialchars(str_replace('@', '', $user['redes_sociais']['instagram'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                    </div>
+                                </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
-                            </div>
-                        </form>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fab fa-facebook me-2"></i>Facebook</label>
+                                    <input type="text" class="form-control" name="facebook"
+                                        value="<?= htmlspecialchars($user['redes_sociais']['facebook'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Modal Editar Serviços -->
-        <div class="modal fade" id="servicosModal" tabindex="-1" aria-labelledby="servicosModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content custom-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="servicosModalLabel">Selecionar Serviços Principais</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="servicosForm" method="POST" action="dashAcessoProf.php">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                            <div class="mb-3">
-                                <p class="mb-3">Marque os serviços que você oferece:</p>
-                                <div class="row" id="servicosDisponiveis">
-                                    <?php
-                            // Serviços do usuário atual
-                            $servicosUsuario = $user['servicos']['principais'] ?? [];
-                            
-                            if (!empty($servicosDisponiveis)) {
-                                foreach ($servicosDisponiveis as $servicoId => $servicoData) {
-                                    $nomeServico = $servicoData['nome'] ?? $servicoId;
-                                    $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
-                                    echo '<div class="col-md-4 mb-3">';
-                                    echo '<div class="form-check">';
-                                    echo '<input class="form-check-input" type="checkbox" name="servicosPrincipais[]" ';
-                                    echo 'value="'.htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8').'" id="servico_'.$servicoId.'" '.$checked.'>';
-                                    echo '<label class="form-check-label" for="servico_'.$servicoId.'">';
-                                    echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
-                                    echo '</label>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                }
-                            } else {
-                                echo '<div class="alert alert-warning">Nenhum serviço disponível encontrado</div>';
-                            }
-                            ?>
+            <!-- Modal Alterar Senha -->
+            <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="passwordModalLabel">Alterar Senha</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="passwordForm" method="POST" action="dashAcessoProf.php">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Senha Atual</label>
+                                    <input type="password" class="form-control" id="currentPassword"
+                                        name="currentPassword" required>
+                                    <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
                                 </div>
-                            </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Salvar Seleção</button>
-                            </div>
-                        </form>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nova Senha</label>
+                                    <input type="password" class="form-control" id="newPassword" name="newPassword"
+                                        required>
+                                    <div class="invalid-feedback">Por favor, insira uma nova senha.</div>
+                                    <div class="password-strength">
+                                        <span></span>
+                                    </div>
+                                    <small class="text-muted">A senha deve ter pelo menos 8 caracteres.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        name="confirmPassword" required>
+                                    <div class="invalid-feedback">As senhas não coincidem.</div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- Inicio Modal Editar Serviços -->
+            <div class="modal fade" id="servicosModal" tabindex="-1" aria-labelledby="servicosModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="servicosModalLabel">Selecionar Serviços Principais</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+    <form id="servicosForm" method="POST" action="dashAcessoProf.php">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+        <div class="mb-3">
+            <p class="mb-3">Marque os serviços que você oferece:</p>
+            <?php if (!empty($servicosDisponiveis)): ?>
+                <div class="row" id="servicosDisponiveis">
+                    <?php
+                    $servicosUsuario = $user['servicos']['principais'] ?? [];
+                    foreach ($servicosDisponiveis as $servicoId => $servicoData) {
+                        $nomeServico = $servicoData['nome'] ?? $servicoId;
+                        $checked = in_array($nomeServico, $servicosUsuario) ? 'checked' : '';
+                        echo '<div class="col-md-4 mb-3">';
+                        echo '<div class="form-check">';
+                        echo '<input class="form-check-input" type="checkbox" name="servicosPrincipais[]" ';
+                        echo 'value="'.htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8').'" id="servico_'.$servicoId.'" '.$checked.'>';
+                        echo '<label class="form-check-label" for="servico_'.$servicoId.'">';
+                        echo htmlspecialchars($nomeServico, ENT_QUOTES, 'UTF-8');
+                        echo '</label>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                    ?>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-warning">Nenhum serviço disponível encontrado</div>
+            <?php endif; ?>
+            
+            <?php if (empty($user['servicos']['principais'])): ?>
+                <div class="alert alert-info mt-3">Até o momento nenhum serviço principal selecionado.</div>
+            <?php endif; ?>
         </div>
 
-        <div class="modal fade" id="outrosServicosModal" tabindex="-1" aria-labelledby="outrosServicosModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="outrosServicosForm" method="POST" action="dashAcessoProf.php">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                <!-- Serviços Principais (campos ocultos) -->
-                <?php foreach ($user['servicos']['principais'] ?? [] as $servico): ?>
-                <input type="hidden" name="servicosPrincipais[]"
-                    value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>">
-                <?php endforeach; ?>
-
-                <!-- Lista de Outros Serviços -->
-                <div id="listaOutrosServicos">
-                    <?php foreach ($user['servicos']['outros'] ?? [] as $servico): ?>
-                    <div class="servico-item input-group mb-2">
-                        <input type="text" class="form-control" name="outrosServicos[]"
-                            value="<?= htmlspecialchars($servico, ENT_QUOTES, 'UTF-8') ?>" required>
-                        <button type="button" class="btn btn-danger remover-servico">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <!-- Botão para adicionar novo serviço -->
-                <div class="mt-4">
-                    <label>Adicionar novo serviço:</label>
-                    <div class="input-group">
-                        <input type="text" id="novoServicoInput" class="form-control"
-                            placeholder="Digite o nome do serviço">
-                        <button type="button" id="btnAdicionarServico" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Adicionar
-                        </button>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar Seleção</button>
+        </div>
+    </form>
+</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                </div>
-            </form>
+
         </div>
     </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -1045,132 +954,6 @@ foreach (is_array($outrosServicos) ? $outrosServicos : (array)$outrosServicos as
             })
             .catch(error => console.error("Error:", error));
     });
-    </script>
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const outrosServicosModal = document.getElementById("outrosServicosModal");
-    const listaServicos = document.getElementById("listaOutrosServicos");
-    const form = document.getElementById("outrosServicosForm");
-
-    // Função para mostrar mensagem de lista vazia
-    function verificarListaVazia() {
-        if (listaServicos.children.length === 0) {
-            listaServicos.innerHTML = '<div class="alert alert-info">Nenhum serviço cadastrado</div>';
-        }
-    }
-
-    // Abrir modal de outros serviços
-    document.getElementById("editOutrosServicosIcon").addEventListener("click", function () {
-        new bootstrap.Modal(outrosServicosModal).show();
-    });
-
-    // Adicionar novo serviço
-    document.getElementById("btnAdicionarServico").addEventListener("click", function () {
-        const input = document.getElementById("novoServicoInput");
-        const servico = input.value.trim();
-
-        if (!servico) {
-            alert('Por favor, digite um nome para o serviço');
-            input.focus();
-            return;
-        }
-
-        // Remove mensagem de nenhum serviço se existir
-        const alertInfo = listaServicos.querySelector('.alert-info');
-        if (alertInfo) listaServicos.removeChild(alertInfo);
-
-        // Cria novo item
-        const novoItem = document.createElement("div");
-        novoItem.className = "servico-item input-group mb-2";
-
-        const inputField = document.createElement("input");
-        inputField.type = "text";
-        inputField.className = "form-control";
-        inputField.name = "outrosServicos[]";
-        inputField.value = servico;
-        inputField.required = true;
-
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "btn btn-danger remover-servico";
-        removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
-        novoItem.appendChild(inputField);
-        novoItem.appendChild(removeBtn);
-        listaServicos.appendChild(novoItem);
-
-        input.value = "";
-        input.focus();
-    });
-
-    // Remover serviço
-    listaServicos.addEventListener("click", function (e) {
-        const removeBtn = e.target.closest(".remover-servico");
-        if (removeBtn) {
-            e.preventDefault();
-            removeBtn.closest(".servico-item").remove();
-            verificarListaVazia();
-        }
-    });
-
-    // Envio do formulário
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const btnSubmit = form.querySelector('button[type="submit"]');
-        const originalText = btnSubmit.innerHTML;
-
-        try {
-            // Estado de carregamento
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML =
-                '<span class="spinner-border spinner-border-sm"></span> Salvando...';
-
-            // Validação final
-            const servicos = Array.from(
-                document.querySelectorAll('#listaOutrosServicos input[name="outrosServicos[]"]')
-            ).map(input => input.value.trim()).filter(Boolean);
-
-            if (servicos.length === 0) {
-                throw new Error('Adicione pelo menos um serviço válido');
-            }
-
-            // Prepara dados para envio
-            const formData = new FormData(form);
-            formData.delete('outrosServicos[]'); // Remove valores antigos
-
-            // Adiciona cada serviço ao FormData
-            servicos.forEach(servico => {
-                formData.append('outrosServicos[]', servico);
-            });
-
-            // Envia via fetch
-            const response = await fetch(form.action, {
-                method: "POST",
-                body: formData
-            });
-  
-            if (!response.ok) {
-                throw new Error(await response.text() || 'Erro no servidor');
-            }
-
-            // Recarrega a página para ver as mudanças
-            window.location.href = form.action + '?t=' + Date.now();
-
-        } catch (error) {
-            console.error("Erro:", error);
-            alert("Erro ao salvar: " + error.message);
-        } finally {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = originalText;
-        }
-    });
-
-    // Verifica estado inicial da lista
-    verificarListaVazia();
-});
     </script>
 
 </body>
