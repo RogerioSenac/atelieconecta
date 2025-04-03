@@ -1,8 +1,9 @@
 <?php
-session_start(); // Inicia a sessão
+session_start();
 require '../vendor/autoload.php';
 
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Exception\Auth\EmailExists;
 
 $factory = (new Factory())
     ->withServiceAccount('../config/chave.json')
@@ -23,24 +24,24 @@ if (isset($_POST['email'])) {
         $msg = "As senhas não coincidem!";
     } else {
         try {
-            $database = $factory->createDatabase();
-            $reference = $database->getReference('userCli');
-            $snapshot = $reference->orderByChild('email')->equalTo($email)->getSnapshot();
+            $auth = $factory->createAuth();
             
-            if ($snapshot->exists()) {
+            // Verifica se o e-mail já está cadastrado no Firebase Authentication
+            try {
+                $auth->getUserByEmail($email);
                 $msg = "Este e-mail já está cadastrado!";
-            } else {
-                $auth = $factory->createAuth();
+            } catch (\Kreait\Firebase\Exception\Auth\UserNotFound $e) {
+                // Se o usuário não existe, prossegue com o cadastro
                 $newUser = $auth->createUserWithEmailAndPassword($email, $senha);
 
-                // Armazena o e-mail e a senha na sessão
                 $_SESSION['email'] = $email;
                 $_SESSION['senha'] = $senha;
 
-                // Redireciona para cadCli.php
                 header('Location: cadCli.php');
                 exit();
             }
+        } catch (EmailExists $e) {
+            $msg = "Este e-mail já está cadastrado!";
         } catch (Exception $e) {
             $msg = "Erro ao cadastrar usuário: " . $e->getMessage();
         }
@@ -104,12 +105,13 @@ function validarForcaSenha($senha)
             <h2>Cadastro de Acesso</h2>
 
             <?php if (!empty($msg)) : ?>
-            <p class="error-message"><?php echo $msg; ?></p>
+            <div class="error-message"><?php echo nl2br(htmlspecialchars($msg)); ?></div>
             <?php endif; ?>
 
             <form method="post" onsubmit="return validarSenha()">
                 <div class="inputbox">
-                    <input type="email" name="email" id="email" placeholder="Informe seu Email" required>
+                    <input type="email" name="email" id="email" placeholder="Informe seu Email" required
+                        value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                 </div>
 
                 <div class="inputbox password-container">
@@ -123,13 +125,8 @@ function validarForcaSenha($senha)
                     <i class="fa fa-eye toggle-password" onclick="toggleSenha('confirma_senha')"></i>
                 </div>
 
-                <!-- Campo oculto para passar o e-mail -->
-                <input type="hidden" name="email_hidden"
-                    value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
-
                 <input type="submit" value="Enviar" class="sub">
-                <button class="back">Voltar</button>
-
+                <button type="button" class="back" onclick="window.history.back()">Voltar</button>
             </form>
         </div>
     </div>
