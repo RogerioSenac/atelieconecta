@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require '../vendor/autoload.php';
@@ -421,58 +422,30 @@ try {
             color: #fff;
         }
 
-        /* Estilos para os campos de busca */
-        .search-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .search-container input {
+        /* Estilos para os selects */
+        .select-cidade-bairro {
             width: 100%;
-            padding: 10px 15px 10px 35px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
         }
 
-        .search-container i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 0 0 4px 4px;
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 8px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .show {
-            display: block;
+        .select-cidade-bairro:focus {
+            outline: none;
+            border-color: #4CAF50;
         }
 
         /* Estilos para o select de serviços */
         .servico-select {
             width: 100%;
-            padding: 2px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             appearance: none;
@@ -562,38 +535,28 @@ try {
 
                 <div class="filtro-group">
                     <label for="cidade">Cidade:</label>
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="cidadeInput" onkeyup="filterDropdown('cidadeInput', 'cidadeDropdown')"
-                            placeholder="Buscar cidade..." autocomplete="off">
-                        <input type="hidden" name="cidade" id="cidadeHidden">
-                        <div id="cidadeDropdown" class="dropdown-content">
-                            <a onclick="selectOption('cidadeHidden', 'cidadeInput', '')">Todas as cidades</a>
-                            <?php foreach ($cidadesUnicas as $cidade): ?>
-                                <a onclick="selectOption('cidadeHidden', 'cidadeInput', '<?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>')">
-                                    <?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+                    <select name="cidade" id="cidade" class="select-cidade-bairro">
+                        <option value="">Selecione uma cidade</option>
+                        <?php foreach ($cidadesUnicas as $cidade): ?>
+                            <option value="<?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>"
+                                <?= (isset($_POST['cidade']) && $_POST['cidade'] === $cidade) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="filtro-group">
                     <label for="bairro">Bairro:</label>
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="bairroInput" onkeyup="filterDropdown('bairroInput', 'bairroDropdown')"
-                            placeholder="Buscar bairro..." autocomplete="off">
-                        <input type="hidden" name="bairro" id="bairroHidden">
-                        <div id="bairroDropdown" class="dropdown-content">
-                            <a onclick="selectOption('bairroHidden', 'bairroInput', '')">Todos os bairros</a>
-                            <?php foreach ($bairrosUnicos as $bairro): ?>
-                                <a onclick="selectOption('bairroHidden', 'bairroInput', '<?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>')">
-                                    <?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+                    <select name="bairro" id="bairro" class="select-cidade-bairro">
+                        <option value="">Selecione um bairro</option>
+                        <?php foreach ($bairrosUnicos as $bairro): ?>
+                            <option value="<?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>"
+                                <?= (isset($_POST['bairro']) && $_POST['bairro'] === $bairro) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="filtro-group">
@@ -730,45 +693,6 @@ try {
     </div>
 
     <script>
-        // Função para filtrar opções no dropdown
-        function filterDropdown(inputId, dropdownId) {
-            const input = document.getElementById(inputId);
-            const filter = input.value.toUpperCase();
-            const dropdown = document.getElementById(dropdownId);
-            const options = dropdown.getElementsByTagName("a");
-
-            // Mostrar o dropdown
-            dropdown.classList.add("show");
-
-            for (let i = 0; i < options.length; i++) {
-                const txtValue = options[i].textContent || options[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    options[i].style.display = "";
-                } else {
-                    options[i].style.display = "none";
-                }
-            }
-        }
-
-        // Função para selecionar uma opção do dropdown
-        function selectOption(hiddenId, inputId, value) {
-            document.getElementById(hiddenId).value = value;
-            document.getElementById(inputId).value = value;
-            document.getElementById(inputId + 'Dropdown').classList.remove("show");
-        }
-
-        // Fechar dropdowns quando clicar fora
-        window.onclick = function(event) {
-            if (!event.target.matches('.search-container input')) {
-                const dropdowns = document.getElementsByClassName("dropdown-content");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
-                }
-            }
-        }
-
         // Script do carrossel
         document.addEventListener('DOMContentLoaded', function() {
             const carrossel = document.getElementById('carrossel');
@@ -821,27 +745,9 @@ try {
                     prevItem();
                 }
             });
-
-            // Manter valores selecionados após submit
-            <?php if (isset($_POST['cidade']) && $_POST['cidade'] !== ''): ?>
-                document.getElementById('cidadeInput').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
-                document.getElementById('cidadeHidden').value = '<?= htmlspecialchars($_POST['cidade'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
-
-            <?php if (isset($_POST['bairro']) && $_POST['bairro'] !== ''): ?>
-                document.getElementById('bairroInput').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
-                document.getElementById('bairroHidden').value = '<?= htmlspecialchars($_POST['bairro'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
-
-            <?php if (isset($_POST['servico']) && $_POST['servico'] !== ''): ?>
-                document.getElementById('servico').value = '<?= htmlspecialchars($_POST['servico'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
-
-            <?php if (isset($_POST['servico_busca']) && $_POST['servico_busca'] !== ''): ?>
-                document.getElementById('servico_busca').value = '<?= htmlspecialchars($_POST['servico_busca'], ENT_QUOTES, 'UTF-8') ?>';
-            <?php endif; ?>
         });
     </script>
 </body>
 
 </html>
+[file content end]
