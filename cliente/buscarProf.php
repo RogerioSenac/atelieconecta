@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require '../vendor/autoload.php';
@@ -750,4 +749,3 @@ try {
 </body>
 
 </html>
-[file content end]
