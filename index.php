@@ -39,7 +39,7 @@
 
     <main>
         <section class="banner" id="banner">
-            <h1>Bem-vindo à Plataforma do Atelie Connecta</h1></br>
+            <h1>Bem-vindo à Plataforma do Atelie Conecta</h1></br>
             <p>Conectando você aos talentos da moda.</p>
         </section>
 
