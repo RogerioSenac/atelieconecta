@@ -990,6 +990,14 @@ form a {
     background-color: #dc3545;
     border-color: #dc3545;
 }
+
+.logout-confirm {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 /* Fim do incluido por Wagner*/
 
 

@@ -378,7 +378,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['currentPassword'])) {
     exit();
 }
 
-// Processa alteração de serviços principais
+/// Processa alteração de serviços principais
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['alert'] = [
@@ -390,15 +390,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['servicosPrincipais'])
     }
 
     try {
-        $servicosPrincipais = array_unique(array_filter(array_map('trim', $_POST['servicosPrincipais'])));
+        // Processa os serviços principais
+        $servicosPrincipais = [];
+        
+        // Verifica se foi enviado algum serviço (pode ser array vazio)
+        if (isset($_POST['servicosPrincipais']) && is_array($_POST['servicosPrincipais'])) {
+            $servicosPrincipais = array_unique(array_filter(array_map('trim', $_POST['servicosPrincipais'])));
+        }
+        
+        // Prepara os dados para atualização
         $updates = [
             'servicos/principais' => !empty($servicosPrincipais) ? array_values($servicosPrincipais) : null
         ];
+        
+        // Atualiza no Firebase
         $database->getReference('userProf/' . $userKey)->update($updates);
-        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços principais atualizados!'];
+        
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Serviços principais atualizados com sucesso!'];
     } catch (Exception $e) {
-        // ... tratamento de erro ...
+        $_SESSION['alert'] = [
+            'type' => 'danger',
+            'message' => 'Erro ao atualizar serviços principais: ' . $e->getMessage()
+        ];
     }
+    
     header("Location: dashAcessoProf.php");
     exit();
 }
@@ -617,24 +632,22 @@ unset($_SESSION['alert']);
                     <div class="services-container">
                         <?php if (!empty($user['servicos']['outros'])): ?>
                         <?php foreach ($user['servicos']['outros'] as $servico): ?>
-                            <div class="service-card">
-                                    <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
-                                    <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
-                                </div>
+                        <div class="service-card">
+                            <img src="../assets/img/icon_outros.png" alt="Outros Serviços">
+                            <span><?php echo htmlspecialchars($servico, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
                         <?php endforeach; ?>
                         <?php else: ?>
                         <div class="alert alert-info">Nenhum outro serviço cadastrado.</div>
                         <?php endif; ?>
                     </div>
                     <!-- Fim dos Outros Serviços -->
+
+                    <!-- inicio do Sair -->
                     <div class="logout text-center mt-3">
-                        <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
-                        <div class="logout-confirm" id="logoutConfirm">
-                            <p>Tem certeza que deseja sair?</p>
-                            <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
-                            <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
-                        </div>
+                        <button id="logoutBtn" class="btn btn-danger">Sair</button>
                     </div>
+                    <!-- fim do Sair -->
                 </div>
             </div>
             <!-- Modal de Edição de Dados Pessoais -->
@@ -987,6 +1000,17 @@ unset($_SESSION['alert']);
 
             // Envio do formulário de serviços principais
             document.getElementById("servicosForm").addEventListener("submit", function(e) {
+                // Cria um campo hidden se nenhum checkbox estiver selecionado
+                if (document.querySelectorAll('#servicosDisponiveis input[type="checkbox"]:checked')
+                    .length === 0) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'servicosPrincipais[]';
+                    hiddenInput.value = '';
+                    this.appendChild(hiddenInput);
+                }
+
+                // Continua com o envio normal
                 e.preventDefault();
                 const formData = new FormData(this);
 
@@ -1041,7 +1065,29 @@ unset($_SESSION['alert']);
                     }
                 }
             });
-        });
+
+            // Logout
+            // Logout seguro com CSRF
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                if (confirm('Tem certeza que deseja sair do sistema?')) {
+                    // Cria um formulário temporário para enviar o token CSRF
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '../logout.php';
+
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = 'csrf_token';
+                    tokenInput.value = '<?= $_SESSION['csrf_token'] ?>';
+
+                    form.appendChild(tokenInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }); // Esta chave fecha o $(document).ready que estava faltando
         </script>
 
 
