@@ -334,7 +334,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var myCarousel = document.querySelector('#comentariosCarousel');
             var carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 5000, // Muda a cada 5 segundos
+                interval: 999999999, // Muda a cada 5 segundos
                 wrap: true
             });
 
