@@ -144,20 +144,14 @@
 
                                     if ($userId && isset($usuarios[$userId])) {
                                         $userData = $usuarios[$userId];
-
+                                        
                                         if (!empty($userData['fotoPerfil'])) {
-                                            // Remove "../" se existir e garante o caminho correto
-                                            $fotoPath = str_replace('../', '', $userData['fotoPerfil']);
-
-                                            // Verifica se o arquivo existe (caminho relativo ao arquivo index.php)
-                                            if (file_exists(__DIR__ . '../' . $fotoPath)) {
-                                                $fotoPerfil = $fotoPath;
-                                            } else {
-                                                // Log para debug (opcional)
-                                                error_log("Foto não encontrada: " . __DIR__ . '/' . $fotoPath);
-                                            }
+                                            // Remove "../" do início do caminho se existir
+                                            $fotoPath = ($userData['fotoPerfil']);
+                                            $fotoPerfil = $fotoPath;
                                         }
                                     }
+
                                     // Exibir estrelas de avaliação
                                     $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
 

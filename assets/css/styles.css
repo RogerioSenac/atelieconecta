@@ -184,130 +184,142 @@ nav ul li a {
 /*********************************************/
 /*------------- Seção Depoimentos------------*/
 /*********************************************/
+/* Seção de Comentários */
 .comentario {
     background: url('../img/comentario_fundo10.png') no-repeat center center/cover;
     color: black;
     text-align: center;
     padding: 100px 0;
-    box-shadow: 2px 8px 10px 1px rgb(100, 100, 100);
-    margin-top: 30px;
-    background-color: white;
+    background-color: #f8f9fa;
+    position: relative;
     border: none;
     min-height: 100vh;
+
 }
 
 .comentario h2 {
     text-align: center;
-    color: white;
     margin-bottom: 50px;
-    font-size: 2.5em;
+    font-size: 2.5rem;
+    color: #f8f9fa;;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
 }
 
-/* Estilos para as fotos de perfil nos depoimentos */
-.foto-perfil-container {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 15px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.comentario h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b6b, #f8a5c2);
 }
 
-.foto-perfil-depoimento {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Fallback para imagens quebradas */
-.foto-perfil-depoimento[src*="user-default.png"] {
-    background-color: #f0f0f0;
-    padding: 15%;
-}
-
-/* Carrossel de comentários */
+/* Container do Carrossel */
 #comentariosCarousel {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.carousel-inner {
+    display: flex;
+    margin-top: 150px;
     padding: 20px 0;
 }
 
-* Ajustes para os cards de depoimento */
-.depoimento-item {
-    border-radius: 10px;
+/* Cards de depoimento - CORREÇÃO: usando classes reais do seu código */
+.col-md-4.mb-4 .card {
     border: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background-color: white;
+    margin: 10px 10px;
+    height: 100%;
+}
+
+.col-md-4.mb-4 .card:hover {
+    transform: translateY(-10px);
+}
+
+/* Foto de Perfil */
+.foto-perfil-container {
+    width: 100px;
+    height: 100px;
+    margin: -10px auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #696969;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
     background-color: #fff;
 }
 
-.depoimento-item:hover {
-    transform: translateY(-5px);
+.foto-perfil-depoimento {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+}
+
+/* Conteúdo do Card */
+.card-body {
+    padding: 50px 20px 20px;
+    text-align: center;
 }
 
 .h5_depoimento {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 1.3rem;
     color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .depoimento-date {
-    font-size: 0.8rem;
-    color: #666;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 10px;
 }
 
 .p_depoimento {
-    font-size: 0.9rem;
     color: #555;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-top: 15px;
 }
 
+/* Avaliação com Estrelas */
 .avaliacao {
     font-size: 1.2rem;
-    margin-bottom: 15px;
+    letter-spacing: 2px;
     color: #ffc107;
+    margin: 10px 0;
 }
 
-/* Controles do carrossel */
+/* Controles do Carrossel */
 .carousel-control-prev,
 .carousel-control-next {
-    width: 5%;
-    opacity: 1;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 50%;
-    padding: 15px;
     width: 40px;
     height: 40px;
-    background-size: 60%;
-}
-
-/* Indicadores do carrossel */
-.carousel-indicators {
-    bottom: -50px;
-}
-
-.carousel-indicators button {
-    width: 12px;
-    height: 12px;
+    background-color: #f8a5c2;
     border-radius: 50%;
-    margin: 0 5px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+    
 }
 
-.carousel-indicators button.active {
-    background-color: white;
+.carousel-control-prev {
+    left: -40px;
 }
+
+.carousel-control-next {
+    right: -20px;
+}
+
+/* .carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: #ff6b6b;
+} */
+
 
 /*********************************************/
 /*------------- Seção Quem Somos------------*/
@@ -646,7 +658,7 @@ footer {
         justify-content: center;
         gap: 10px;
     }
-    
+
 
     .service-item {
         flex: 0 0 80% !important;
@@ -731,6 +743,10 @@ footer {
     }
 
     /* Seção Rodapé */
+
+    .rodape {
+        width: 100%;
+    }
 
     .rodape P {
         font-size: 13px;
@@ -834,6 +850,11 @@ footer {
     }
 
     /*Seção Rodape*/
+
+    .rodape {
+        width: 100%;
+    }
+
     .rodape P {
         font-size: 13px;
         color: black;
@@ -940,7 +961,10 @@ footer {
     footer {
         margin: 0px 0px;
         margin: 5px;
+    }
 
+    .rodape {
+        width: 100%;
     }
 
     .rodape p {
@@ -1056,6 +1080,10 @@ footer {
     footer {
         margin: 0px 0px;
         margin: 5px;
+    }
+
+    .rodape {
+        width: 100%;
     }
 
     .rodape p {
@@ -1174,6 +1202,10 @@ footer {
         margin: 5px;
     }
 
+    .rodape {
+        width: 100%;
+    }
+
     .rodape p {
         font-size: 15px;
         color: #000;
@@ -1243,6 +1275,10 @@ footer {
     footer {
         margin: 0px 0px;
         margin: 5px;
+    }
+
+    .rodape {
+        width: 100%;
     }
 
     .rodape p {
@@ -1400,6 +1436,10 @@ footer {
     footer {
         margin: 0px 0px;
         margin: 5px;
+    }
+
+    .rodape{
+        width: 100%;
     }
 
     .rodape p {
