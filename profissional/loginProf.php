@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } catch (WrongPassword $e) {
         $msg = "Senha incorreta. Tente novamente ou recupere sua senha";
     } catch (FailedToVerifyToken $e) {
-        $msg = "Erro na autenticação. Tente novamente mais tarde";
+        $msg = "Erro na autenticação. Verifique o perfil de acesso e tente novamente";
     } catch (Exception $e) {
         $msg = "Ocorreu um erro. Por favor, tente novamente";
     }
