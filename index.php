@@ -140,15 +140,21 @@
 
                                     // Obter foto do perfil - CORREÇÃO PRINCIPAL
                                     // Dentro do loop dos comentários, onde busca a foto:
+                                    // Obter foto do perfil - CORREÇÃO PRINCIPAL
                                     $fotoPerfil = 'assets/img/user-default.png'; // Foto padrão
 
                                     if ($userId && isset($usuarios[$userId])) {
                                         $userData = $usuarios[$userId];
-                                        
+
                                         if (!empty($userData['fotoPerfil'])) {
                                             // Remove "../" do início do caminho se existir
-                                            $fotoPath = ($userData['fotoPerfil']);
-                                            $fotoPerfil = $fotoPath;
+                                            $fotoPath = ltrim($userData['fotoPerfil'], './');
+                                            $fotoPath = str_replace('../', '', $fotoPath);
+
+                                            // Verifica se o arquivo existe localmente
+                                            if (file_exists($fotoPath)) {
+                                                $fotoPerfil = $fotoPath;
+                                            }
                                         }
                                     }
 
@@ -334,7 +340,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var myCarousel = document.querySelector('#comentariosCarousel');
             var carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 5000, // Muda a cada 5 segundos
+                interval: 999999999, // Muda a cada 5 segundos
                 wrap: true
             });
 
