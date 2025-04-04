@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['email'] = $email;
 
         // Redireciona para o painel de acesso
-        header('Location: DashAcessoCli.php');
+        header('Location: dashAcessoCli.php');
         exit();
     } catch (Exception $e) {
         $msg = "E-mail ou senha incorretos!";

@@ -580,14 +580,18 @@ unset($_SESSION['alert']);
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
                         <i class="fas fa-comment me-2"></i>Adicionar Comentário
                     </button>
-                    <a href="#" id="logoutBtn" class="btn btn-danger">Sair</a>
+                   
                     <div class="logout-confirm" id="logoutConfirm">
                         <p>Tem certeza que deseja sair?</p>
                         <a href="logout.php" class="btn btn-danger btn-sm">Sim, sair</a>
                         <button class="btn btn-secondary btn-sm" id="cancelLogout">Cancelar</button>
                     </div>
                 </div>
-
+                <!-- inicio do Sair -->
+                <div class="logout text-center mt-3">
+                    <button id="logoutBtn" class="btn btn-danger">Sair</button>
+                </div>
+                <!-- fim do Sair -->
             </div>
             <!-- Modal de Comentários -->
             <div class="modal fade" id="comentarioModal" tabindex="-1" aria-labelledby="comentarioModalLabel" aria-hidden="true">
@@ -876,6 +880,27 @@ unset($_SESSION['alert']);
                         }
                     })
                     .catch(error => console.error("Error:", error));
+            });
+            // Logout
+            // Logout seguro com CSRF
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                if (confirm('Tem certeza que deseja sair do sistema?')) {
+                    // Cria um formulário temporário para enviar o token CSRF
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '../logout.php';
+
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = 'csrf_token';
+                    tokenInput.value = '<?= $_SESSION['csrf_token'] ?>';
+
+                    form.appendChild(tokenInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
             });
         </script>
 </body>

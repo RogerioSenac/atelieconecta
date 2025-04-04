@@ -16,7 +16,7 @@
 <body>
     <div class="perfil d-flex flex-column">
         <div class="tipo-perfil">
-            <a href="./Cliente/loginCli.php">
+            <a href="./cliente/loginCli.php">
                 <img src="./assets/img/ic_woman_rosa.png" class="btn-perfil">
             </a>
             <p class="texto">Cliente</p>
