@@ -39,7 +39,7 @@
 
     <main>
         <section class="banner" id="banner">
-            <h1>Bem-vindo à Plataforma do Atelie Conecta</h1></br>
+            <h1>Bem-vindo à Plataforma do Ateliê Conecta</h1></br>
             <p>Conectando você aos talentos da moda.</p>
         </section>
 
@@ -231,12 +231,12 @@ if (file_exists($fotoPath)) {
                     </div>
                 </div>
                 <p class="apresentacao-quem">
-                    Transforme seu estilo de forma simples e eficiente com o Ateliê Connect.
+                    Transforme seu estilo de forma simples e eficiente com o Ateliê Conecta.
                 </p>
                 <div class="row">
                     <div class="p-2 col-12 col-md-6">
                         <p class="apresentacao-txtquem">
-                            O Ateliê Connect é uma plataforma inovadora que conecta pessoas a profissionais
+                            O Ateliê Conecta é uma plataforma inovadora que conecta pessoas a profissionais
                             especializados em moda, como estilistas, consultores de imagem e personal shoppers. Nosso
                             objetivo é facilitar o acesso a serviços personalizados de moda, proporcionando consultorias
                             e sugestões de looks que atendem às necessidades e estilos de cada indivíduo.
@@ -244,7 +244,7 @@ if (file_exists($fotoPath)) {
                     </div>
                     <div class="p-2 col-12 col-md-6 ">
                         <p class="apresentacao-txtquem">
-                            Com uma interface prática e intuitiva, o Ateliê Connect oferece uma experiência única,
+                            Com uma interface prática e intuitiva, o Ateliê Conecta oferece uma experiência única,
                             permitindo agendar consultas, explorar portfólios e receber dicas de profissionais
                             qualificados. Acreditamos que a moda é uma poderosa ferramenta de expressão e confiança, e
                             estamos aqui para ajudar você a encontrar o visual que reflita sua verdadeira identidade.

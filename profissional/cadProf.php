@@ -616,9 +616,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="hidden" name="whatsapp_url" id="whatsapp_url">
 
                 <div class="inputbox">
+                    <span class="at-icon">@</span>
                     <input type="text" name="insta_user" id="insta_user"
-                        placeholder="Nome de usuário do Instagram (sem @)" oninput="generateInstagramURL()">
-                    <input type="text" name="face_user" id="face_user" placeholder="Nome de usuário do Facebook"
+                        placeholder="Usuário Instagram" oninput="generateInstagramURL()">
+                    <input type="text" name="face_user" id="face_user" placeholder="Usuário Facebook"
                         oninput="generateFacebookURL()">
                 </div>
                 <input type="hidden" name="instagram_url" id="instagram_url">
