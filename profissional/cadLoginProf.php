@@ -29,31 +29,46 @@ if (isset($_POST['email'])) {
             // Verifica se o e-mail já está cadastrado
             try {
                 $existingUser = $auth->getUserByEmail($email);
-                // Se chegou aqui, o usuário já existe
+                // Se o e-mail já estiver cadastrado, mostra mensagem e redireciona
                 echo "<script>
-                    alert('Este e-mail já tem cadastro. Por favor, forneça outro valido ou efetue o login com o ja cadastrado.');
+                    alert('Este e-mail já tem cadastro. Por favor, forneça outro valido ou efetue o login com o já cadastrado.');
                     window.location.href = 'loginProf.php';
                 </script>";
                 exit();
             } catch (Exception $e) {
-                // Se o erro for "user not found", continuamos com o cadastro
-                if (strpos($e->getMessage(), 'user not found') === false) {
+                // Se o erro for "user not found", o usuário não existe e podemos continuar
+                if (strpos($e->getMessage(), 'No user with email') !== false) {
+                    // Continuar com a criação do usuário
+                } else {
+                    // Se o erro for diferente de "user not found", mostra o erro
                     throw $e;
                 }
             }
 
-            // Se o usuário não existir, cria o novo usuário
-            $newUser = $auth->createUserWithEmailAndPassword($email, $senha);
+            // Cria o usuário com a SDK Admin corretamente
+            $userProperties = [
+                'email' => $email,
+                'emailVerified' => false,
+                'password' => $senha,
+            ];
+            $newUser = $auth->createUser($userProperties);
 
-            // Armazena o e-mail e a senha na sessão
+            // Depuração: verificar os dados do usuário criado
+            echo '<pre>';
+            var_dump($newUser);
+            echo '</pre>';
+
+            // Armazena o e-mail na sessão
             $_SESSION['email'] = $email;
-            $_SESSION['senha'] = $senha;
 
             // Redireciona para cadProf.php
             header('Location: cadProf.php');
             exit();
         } catch (Exception $e) {
             $msg = "Erro ao cadastrar usuário: " . $e->getMessage();
+            echo "<pre>";
+            var_dump($e); // Exibe mais detalhes sobre o erro para depuração
+            echo "</pre>";
         }
     }
 }
@@ -87,7 +102,7 @@ function validarForcaSenha($senha)
         $erros[] = "A senha deve conter pelo menos um caractere especial (!@#$%^&*()).";
     }
 
-    // Se houver erros, retorna uma mensagem única com todos os requisitos
+    // Retorna mensagem de erro única
     if (!empty($erros)) {
         return "A senha não atende aos seguintes requisitos:\n- " . implode("\n- ", $erros);
     }
@@ -98,7 +113,6 @@ function validarForcaSenha($senha)
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -108,7 +122,6 @@ function validarForcaSenha($senha)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-
 <body>
     <div class="interfaceCadLogin">
         <div class="box">
@@ -134,18 +147,14 @@ function validarForcaSenha($senha)
                     <i class="fa fa-eye toggle-password" onclick="toggleSenha('confirma_senha')"></i>
                 </div>
 
-                <!-- Campo oculto para passar o e-mail -->
-                <input type="hidden" name="email_hidden"
-                    value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
-
                 <input type="submit" value="Enviar" class="sub">
-                <button class="back">Voltar</button>
-
+                <button class="back" type="button" onclick="window.location.href='loginProf.php'">Voltar</button>
             </form>
         </div>
     </div>
 
     <script>
+        // Scripts JavaScript para exibir/esconder senha
         function toggleSenha(id) {
             let input = document.getElementById(id);
             let icon = input.nextElementSibling;
@@ -156,42 +165,6 @@ function validarForcaSenha($senha)
                 input.type = "password";
                 icon.classList.replace("fa-eye-slash", "fa-eye");
             }
-        }
-
-        function validarForcaSenha(senha) {
-            let erros = [];
-
-            // Mínimo de 8 caracteres
-            if (senha.length < 8) {
-                erros.push("A senha deve ter no mínimo 8 caracteres.");
-            }
-
-            // Pelo menos uma letra maiúscula
-            if (!/[A-Z]/.test(senha)) {
-                erros.push("A senha deve conter pelo menos uma letra maiúscula.");
-            }
-
-            // Pelo menos uma letra minúscula
-            if (!/[a-z]/.test(senha)) {
-                erros.push("A senha deve conter pelo menos uma letra minúscula.");
-            }
-
-            // Pelo menos um número
-            if (!/[0-9]/.test(senha)) {
-                erros.push("A senha deve conter pelo menos um número.");
-            }
-
-            // Pelo menos um caractere especial
-            if (!/[!@#$%^&*()]/.test(senha)) {
-                erros.push("A senha deve conter pelo menos um caractere especial (!@#$%^&*()).");
-            }
-
-            // Se houver erros, retorna uma mensagem única com todos os requisitos
-            if (erros.length > 0) {
-                return "A senha não atende aos seguintes requisitos:\n- " + erros.join("\n- ");
-            }
-
-            return ""; // Senha válida
         }
 
         function validarSenha() {
@@ -213,7 +186,33 @@ function validarForcaSenha($senha)
 
             return true;
         }
+
+        function validarForcaSenha(senha) {
+            // Função de validação de força de senha
+            let erros = [];
+
+            if (senha.length < 8) {
+                erros.push("A senha deve ter no mínimo 8 caracteres.");
+            }
+            if (!/[A-Z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra maiúscula.");
+            }
+            if (!/[a-z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra minúscula.");
+            }
+            if (!/[0-9]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um número.");
+            }
+            if (!/[!@#$%^&*()]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um caractere especial (!@#$%^&*()).");
+            }
+
+            if (erros.length > 0) {
+                return "A senha não atende aos seguintes requisitos:\n- " + erros.join("\n- ");
+            }
+
+            return ""; // Senha válida
+        }
     </script>
 </body>
-
 </html>
