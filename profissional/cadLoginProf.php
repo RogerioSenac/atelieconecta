@@ -54,9 +54,7 @@ if (isset($_POST['email'])) {
             $newUser = $auth->createUser($userProperties);
 
             // Depuração: verificar os dados do usuário criado
-            echo '<pre>';
-            var_dump($newUser);
-            echo '</pre>';
+            
 
             // Armazena o e-mail na sessão
             $_SESSION['email'] = $email;
@@ -66,9 +64,7 @@ if (isset($_POST['email'])) {
             exit();
         } catch (Exception $e) {
             $msg = "Erro ao cadastrar usuário: " . $e->getMessage();
-            echo "<pre>";
-            var_dump($e); // Exibe mais detalhes sobre o erro para depuração
-            echo "</pre>";
+            
         }
     }
 }
