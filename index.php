@@ -83,130 +83,141 @@
                 <div id="comentariosCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <?php
+                // URLs do Firebase
+                $firebase_comentarios_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
+                $firebase_users_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/userCli.json";
 
-                        // URLs do Firebase
-                        $firebase_comentarios_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/comentarios.json";
-                        $firebase_users_url = "https://atelieconecta-d9030-default-rtdb.firebaseio.com/userCli.json";
+                function getFirebaseData($url) {
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    $response = curl_exec($ch);
+                    curl_close($ch);
+                    return $response !== false ? json_decode($response, true) : [];
+                }
 
-                        function getFirebaseData($url)
-                        {
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, $url);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                            $response = curl_exec($ch);
-                            curl_close($ch);
-                            return $response !== false ? json_decode($response, true) : [];
-                        }
+                // Obter dados
+                $comentarios = getFirebaseData($firebase_comentarios_url);
+                $usuarios = getFirebaseData($firebase_users_url);
 
-                        // Obter dados
-                        $comentarios = getFirebaseData($firebase_comentarios_url);
-                        $usuarios = getFirebaseData($firebase_users_url);
+                if (empty($comentarios)) {
+                    echo '<div class="carousel-item active">';
+                    echo '<div class="row justify-content-center">';
+                    echo '<div class="col-12 text-center">';
+                    echo '<p class="text-muted">Nenhum depoimento encontrado.</p>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                } else {
+                    // Filtra e ordena comentários
+                    $comentariosFiltrados = array_filter($comentarios, function ($comentario) {
+                        return !isset($comentario['aprovado']) || $comentario['aprovado'] === true;
+                    });
 
-                        if (empty($comentarios)) {
-                            echo '<div class="carousel-item active">';
-                            echo '<div class="row justify-content-center">';
-                            echo '<div class="col-12 text-center">';
-                            echo '<p class="text-muted">Nenhum depoimento encontrado.</p>';
-                            echo '</div>';
-                            echo '</div>';
-                            echo '</div>';
-                        } else {
-                            // Filtra e ordena comentários
-                            $comentariosFiltrados = array_filter($comentarios, function ($comentario) {
-                                return !isset($comentario['aprovado']) || $comentario['aprovado'] === true;
-                            });
+                    usort($comentariosFiltrados, function ($a, $b) {
+                        $dateA = isset($a['data']) ? strtotime(str_replace('/', '-', $a['data'])) : 0;
+                        $dateB = isset($b['data']) ? strtotime(str_replace('/', '-', $b['data'])) : 0;
+                        return $dateB - $dateA;
+                    });
 
-                            usort($comentariosFiltrados, function ($a, $b) {
-                                $dateA = isset($a['data']) ? strtotime(str_replace('/', '-', $a['data'])) : 0;
-                                $dateB = isset($b['data']) ? strtotime(str_replace('/', '-', $b['data'])) : 0;
-                                return $dateB - $dateA;
-                            });
+                    // Dividir em grupos de 3
+                    $comentariosChunks = array_chunk($comentariosFiltrados, 3);
 
-                            // Dividir em grupos de 3
-                            $comentariosChunks = array_chunk($comentariosFiltrados, 3);
+                    foreach ($comentariosChunks as $index => $chunk) {
+                        $activeClass = $index === 0 ? 'active' : '';
+                        echo '<div class="carousel-item ' . $activeClass . '">';
+                        echo '<div class="row justify-content-center">';
 
-                            foreach ($comentariosChunks as $index => $chunk) {
-                                $activeClass = $index === 0 ? 'active' : '';
-                                echo '<div class="carousel-item ' . $activeClass . '">';
-                                echo '<div class="row justify-content-center">';
+                        foreach ($chunk as $comentarioId => $comentario) {
+                            $nome = htmlspecialchars($comentario['usuario_nome'] ?? 'Usuário Anônimo');
+                            $data = isset($comentario['data']) ? date('d/m/Y', strtotime(str_replace('/', '-', $comentario['data']))) : 'Data desconhecida';
+                            $texto = htmlspecialchars($comentario['texto'] ?? 'Sem comentário.');
+                            $avaliacao = (int)($comentario['avaliacao'] ?? 0);
+                            $userId = $comentario['usuario_id'] ?? null;
 
-                                foreach ($chunk as $comentario) {
-                                    $nome = htmlspecialchars($comentario['usuario_nome'] ?? 'Usuário Anônimo');
-                                    $data = isset($comentario['data']) ? date('d/m/Y', strtotime(str_replace('/', '-', $comentario['data']))) : 'Data desconhecida';
-                                    $texto = htmlspecialchars($comentario['texto'] ?? 'Sem comentário.');
-                                    $avaliacao = (int)($comentario['avaliacao'] ?? 0);
-                                    $userId = $comentario['usuario_id'] ?? null;
-
-                                    // Obter foto do perfil - CORREÇÃO PRINCIPAL
-                                    // Dentro do loop dos comentários, onde busca a foto:
-                                    // Obter foto do perfil - CORREÇÃO PRINCIPAL
-                                    $fotoPerfil = 'assets/img/user-default.png'; // Foto padrão
-
-                                    if ($userId && isset($usuarios[$userId])) {
-                                        $userData = $usuarios[$userId];
-
-                                        if (!empty($userData['fotoPerfil'])) {
-                                            // Remove "../" do início do caminho se existir
-                                            $fotoPath = ltrim($userData['fotoPerfil'], './');
-                                            $fotoPath = str_replace('../', '', $fotoPath);
-
-                                            // Verifica se o arquivo existe localmente
-                                            if (file_exists($fotoPath)) {
-                                                $fotoPerfil = $fotoPath;
-                                            }
-                                        }
+                            // SISTEMA MELHORADO - BUSCA A FOTO DIRETAMENTE DO COMENTÁRIO
+                            $fotoPerfil = 'assets/img/user-default.png';
+                            
+                            // 1. Tenta pegar a foto diretamente do comentário
+                            if (!empty($comentario['fotoPerfil'])) {
+                                $fotoPath = $comentario['fotoPerfil'];
+                                
+                                // Remove "./" do início do caminho se existir
+                                $fotoPath = ltrim($fotoPath, './'); // Remove "./" do caminho
+if (file_exists($fotoPath)) {
+    $fotoPerfil = $fotoPath;
+} else {
+    // Tenta com "assets/" antes
+    $alternatePath = 'assets/' . $fotoPath;
+    if (file_exists($alternatePath)) {
+        $fotoPerfil = $alternatePath;
+    }
+}
+                                
+                                // Verifica se o arquivo existe
+                                if (file_exists($fotoPath)) {
+                                    $fotoPerfil = $fotoPath;
+                                } else {
+                                    // Tenta adicionar "assets/" se o caminho direto não funcionar
+                                    $alternatePath = 'assets/' . $fotoPath;
+                                    if (file_exists($alternatePath)) {
+                                        $fotoPerfil = $alternatePath;
                                     }
-
-                                    // Exibir estrelas de avaliação
-                                    $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
-
-                                    // Exibir o card do depoimento
-                                    echo '<div class="col-md-4 mb-4">';
-                                    echo '<div class="depoimento-item card h-100 mx-2">';
-                                    echo '<div class="card-body text-center">';
-                                    echo '<div class="foto-perfil-container">';
-                                    echo '<img src="' . $fotoPerfil . '" alt="Foto de ' . $nome . '" class="foto-perfil-depoimento" onerror="this.src=\'assets/img/user-default.png\'">';
-                                    echo '</div>';
-                                    echo '<h5 class="card-title h5_depoimento">' . $nome . '</h5>';
-                                    echo '<p class="card-subtitle mb-2 text-muted depoimento-date">' . $data . '</p>';
-                                    echo '<div class="avaliacao mb-2 text-warning">' . $estrelas . '</div>';
-                                    echo '<p class="card-text p_depoimento">' . $texto . '</p>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                    echo '</div>';
                                 }
-
-                                echo '</div>';
-                                echo '</div>';
                             }
+
+                            // Exibir estrelas de avaliação
+                            $estrelas = str_repeat('★', $avaliacao) . str_repeat('☆', 5 - $avaliacao);
+
+                            // Exibir o card do depoimento
+                            echo '<div class="col-md-4 mb-4">';
+                            echo '<div class="depoimento-item card h-100 mx-2">';
+                            echo '<div class="card-body text-center">';
+                            echo '<div class="foto-perfil-container">';
+                            echo '<img src="' . $fotoPerfil . '" alt="Foto de ' . $nome . '" class="foto-perfil-depoimento" onerror="this.src=\'assets/img/user-default.png\'">';
+                            echo '</div>';
+                            echo '<h5 class="card-title h5_depoimento">' . $nome . '</h5>';
+                            echo '<p class="card-subtitle mb-2 text-muted depoimento-date">' . $data . '</p>';
+                            echo '<div class="avaliacao mb-2 text-warning">' . $estrelas . '</div>';
+                            echo '<p class="card-text p_depoimento">' . $texto . '</p>';
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
                         }
-                        ?>
+
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                }
+                ?>
                     </div>
 
                     <?php if (!empty($comentarios) && count($comentariosChunks) > 1): ?>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Anterior</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Próximo</span>
-                        </button>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
                     <?php endif; ?>
                 </div>
             </div>
         </section>
 
         <?php if (!empty($comentarios) && count($comentariosChunks) > 1): ?>
-            <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Próximo</span>
-            </button>
+        <button class="carousel-control-prev" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#comentariosCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
         <?php endif; ?>
         </div>
         </div>
@@ -277,8 +288,8 @@
             </p>
 
             <div class="btn-social">
-                <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA=="
-                    target="_blank"><button><i class="rede fa-brands fa-instagram"></i></button></a>
+                <a href="https://www.instagram.com/developers.rgt?igsh=MXF1bml6OHAyeXcwNA==" target="_blank"><button><i
+                            class="rede fa-brands fa-instagram"></i></button></a>
 
                 <a href="https://www.linkedin.com/in/developers-rgt-862402309/" target="_blank"><button><i
                             class="fa-brands fa-linkedin"></i></button></a>
@@ -312,53 +323,53 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Alternar o menu sanduíche ao clicar no ícone
-        $(document).ready(function() {
-            $('.navbar-toggler').on('click', function() {
-                $('.navbar-collapse').toggleClass('show');
-            });
-
-            // Fechar o menu sanduíche ao clicar fora dele
-            $(document).on('click', function(event) {
-                if (!$(event.target).closest('.navbar').length) {
-                    $('.navbar-collapse').removeClass('show');
-                }
-            });
-
-            // Fechar o menu sanduíche ao clicar em um item
-            $('.navbar-nav>li>a').on('click', function() {
-                $('.navbar-collapse').removeClass('show');
-            });
+    // Alternar o menu sanduíche ao clicar no ícone
+    $(document).ready(function() {
+        $('.navbar-toggler').on('click', function() {
+            $('.navbar-collapse').toggleClass('show');
         });
+
+        // Fechar o menu sanduíche ao clicar fora dele
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.navbar').length) {
+                $('.navbar-collapse').removeClass('show');
+            }
+        });
+
+        // Fechar o menu sanduíche ao clicar em um item
+        $('.navbar-nav>li>a').on('click', function() {
+            $('.navbar-collapse').removeClass('show');
+        });
+    });
     </script>
 
     <!-- Scripts atualizados para Bootstrap 5 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Inicialização do carrossel
-        document.addEventListener('DOMContentLoaded', function() {
-            var myCarousel = document.querySelector('#comentariosCarousel');
-            var carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 999999999, // Muda a cada 5 segundos
-                wrap: true
-            });
+    // Inicialização do carrossel
+    document.addEventListener('DOMContentLoaded', function() {
+        var myCarousel = document.querySelector('#comentariosCarousel');
+        var carousel = new bootstrap.Carousel(myCarousel, {
+            interval: 999999999, // Muda a cada 5 segundos
+            wrap: true
+        });
 
-            // Menu mobile (ajustado para Bootstrap 5)
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const navbarCollapse = document.querySelector('.navbar-collapse');
+        // Menu mobile (ajustado para Bootstrap 5)
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
 
-            navbarToggler.addEventListener('click', function() {
-                navbarCollapse.classList.toggle('show');
-            });
+        navbarToggler.addEventListener('click', function() {
+            navbarCollapse.classList.toggle('show');
+        });
 
-            // Fechar menu ao clicar em um item
-            document.querySelectorAll('.navbar-nav>li>a').forEach(function(element) {
-                element.addEventListener('click', function() {
-                    navbarCollapse.classList.remove('show');
-                });
+        // Fechar menu ao clicar em um item
+        document.querySelectorAll('.navbar-nav>li>a').forEach(function(element) {
+            element.addEventListener('click', function() {
+                navbarCollapse.classList.remove('show');
             });
         });
+    });
     </script>
 
 </body>
