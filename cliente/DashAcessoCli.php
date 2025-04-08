@@ -576,7 +576,7 @@ unset($_SESSION['alert']);
                     </div>
                 </div>
                 <div class="logout text-center mt-3">
-                    <a href="buscarProf.php" class="btn btn-secondary">Buscar Profissionais</a>
+                    <a href="buscarProf.php" class="btn-secondary">Buscar Profissionais</a>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarioModal">
                         <i class="fas fa-comment me-2"></i>Adicionar Comentário
                     </button>
