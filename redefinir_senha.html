@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Redefinir Senha - Ateliê Conecta</title>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-  <link rel="stylesheet" href="../assets/css/stylesSenhas.css">
+  <link rel="icon" href="data:,"> <!-- Evita erro de favicon -->
+
+  <!-- Firebase compatível com navegador -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -70,8 +73,19 @@
 
     .message {
       margin-top: 20px;
-      color: green;
       font-weight: bold;
+    }
+
+    .loading {
+      color: #555;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
     }
   </style>
 </head>
@@ -89,34 +103,48 @@
 </div>
 
 <script>
-  // Config Firebase
+  // Configuração do Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAZpzg3BakfudIj95o91UCdbd1TVdrqUz4",
-    authDomain: "https://atelieconecta-d9030-default-rtdb.firebaseio.com/",
+    authDomain: "atelieconecta-d9030.firebaseapp.com",
   };
 
+  // Inicializa o Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const oobCode = urlParams.get('oobCode');
-  const mode = urlParams.get('mode');
-
   async function handleReset() {
+    const messageEl = document.getElementById('message');
     const newPassword = document.getElementById('newPassword').value;
 
-    if (mode === 'resetPassword' && oobCode && newPassword) {
+    messageEl.className = "message loading";
+    messageEl.textContent = "Processando...";
+
+    if (!newPassword || newPassword.length < 6) {
+      messageEl.className = "message error";
+      messageEl.textContent = "A senha deve ter pelo menos 6 caracteres.";
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const oobCode = urlParams.get('oobCode');
+    const mode = urlParams.get('mode');
+
+    if (mode === 'resetPassword' && oobCode) {
       try {
         await auth.confirmPasswordReset(oobCode, newPassword);
-        document.getElementById('message').textContent = "Senha atualizada com sucesso! Redirecionando...";
+        messageEl.className = "message success";
+        messageEl.textContent = "Senha atualizada com sucesso! Redirecionando...";
         setTimeout(() => {
           window.location.href = "perfil.php";
         }, 2500);
       } catch (error) {
-        document.getElementById('message').textContent = "Erro ao atualizar a senha: " + error.message;
+        messageEl.className = "message error";
+        messageEl.textContent = "Erro ao atualizar a senha: " + error.message;
       }
     } else {
-      document.getElementById('message').textContent = "Link inválido ou expirado.";
+      messageEl.className = "message error";
+      messageEl.textContent = "Link inválido ou expirado.";
     }
   }
 </script>
