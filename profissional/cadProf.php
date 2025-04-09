@@ -268,13 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         margin-top: 5px;
     }
 
-    /* .servicos-opcoes {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    } */
-
-    .checkbox-container {
+       .checkbox-container {
         display: flex;
         align-items: center;
     }
@@ -283,14 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         margin-right: 8px;
     }
 
-    /* .servicos-container {
-        max-height: 300px;
-        overflow-y: auto;
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    } */
+    
 
     .tipo-pessoa-container {
         display: flex;
@@ -328,12 +315,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         text-align: center;
         margin-bottom: 20px;
     }
-/* 
-    .botoes-container {
-        display: flex;
-        justify-content: space-between;
-    } */
 
+   
     .txt-labelService {
         display: block;
         margin-bottom: 10px;
@@ -363,6 +346,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
+    }
+
+    /* Estilo para campos desabilitados */
+    input:disabled,
+    select:disabled {
+        background-color: rgb(125, 121, 121) !important;
+        color: rgb(37, 36, 36) !important;
+        cursor: not-allowed;
+        border-color: #ced4da !important;
+    }
+
+    
+
+    #cep-loading {
+        color: #666;
+        font-size: 12px;
+        margin-left: 10px;
+        font-style: italic;
+        display: none;
     }
     </style>
     <script>
@@ -480,6 +482,91 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         document.getElementById('cpf_cnpj').value = '';
     }
     </script>
+
+    <script>
+    // Função para bloquear/desbloquear campos de endereço
+    function toggleAddressFields(enable) {
+        document.getElementById('rua').disabled = !enable;
+        document.getElementById('bairro').disabled = !enable;
+        document.getElementById('cidade').disabled = !enable;
+        document.getElementById('estado').disabled = !enable;
+    }
+
+    // Modifica a função de buscar CEP
+    async function buscarEnderecoPorCEP() {
+        const cepInput = document.getElementById('cep');
+        const cep = cepInput.value.replace(/\D/g, '');
+        const loadingElement = document.getElementById('cep-loading');
+
+        // Verifica se o CEP tem 8 dígitos
+        if (cep.length !== 8) {
+            toggleAddressFields(false); // Mantém campos bloqueados se CEP incompleto
+            return;
+        }
+
+        loadingElement.style.display = 'inline';
+        toggleAddressFields(false); // Bloqueia durante a busca
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+            if (!response.ok) {
+                throw new Error('Erro na requisição');
+            }
+
+            const data = await response.json();
+
+            if (data.erro) {
+                console.log('CEP não encontrado');
+                toggleAddressFields(true); // Libera campos se CEP não encontrado
+                document.getElementById('rua').focus(); // Foco no endereço
+                return;
+            }
+
+            // Preenche os campos com os dados da API
+            document.getElementById('rua').value = data.logradouro || '';
+            document.getElementById('bairro').value = data.bairro || '';
+            document.getElementById('cidade').value = data.localidade || '';
+
+            // Define o estado no select
+            const estadoSelect = document.getElementById('estado');
+            if (estadoSelect) {
+                estadoSelect.value = data.uf || '';
+            }
+
+            // Libera os campos para edição após preenchimento
+            toggleAddressFields(true);
+            document.getElementById('rua').focus(); // Foco no campo Endereço
+
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            toggleAddressFields(true); // Libera campos em caso de erro
+            document.getElementById('rua').focus(); // Foco no campo Endereço
+        } finally {
+            loadingElement.style.display = 'none';
+        }
+    }
+
+    // Adiciona foco automático no CEP após digitar telefone
+    document.addEventListener('DOMContentLoaded', function() {
+        const celInput = document.getElementById('cel');
+        if (celInput) {
+            celInput.addEventListener('input', function() {
+                if (this.value.replace(/\D/g, '').length >= 11) { // Quando telefone estiver completo
+                    document.getElementById('cep').focus();
+                }
+            });
+        }
+
+        // Inicializa com campos de endereço bloqueados
+        toggleAddressFields(false);
+
+        const cepInput = document.getElementById('cep');
+        if (cepInput) {
+            cepInput.addEventListener('blur', buscarEnderecoPorCEP);
+        }
+    });
+    </script>
 </head>
 
 <body>
@@ -545,7 +632,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="linha">
                 <div class="inputbox">
-                    <input type="text" name="rua" id="rua" placeholder="Endereço completo"
+                    <input type="text" name="rua" id="rua" placeholder="Endereço completo" disabled
                         value="<?= isset($rua) ? htmlspecialchars($rua, ENT_QUOTES, 'UTF-8') : '' ?>"
                         class="<?= isset($invalidFields['rua']) ? 'invalid-field' : '' ?>" required>
                     <?php if (isset($invalidFields['rua'])): ?>
@@ -556,7 +643,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="linha">
                 <div class="inputbox">
-                    <input type="text" name="bairro" id="bairro" placeholder="Bairro"
+                    <input type="text" name="bairro" id="bairro" placeholder="Bairro" disabled
                         value="<?= isset($bairro) ? htmlspecialchars($bairro, ENT_QUOTES, 'UTF-8') : '' ?>"
                         class="<?= isset($invalidFields['bairro']) ? 'invalid-field' : '' ?>" required>
                     <?php if (isset($invalidFields['bairro'])): ?>
@@ -564,7 +651,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php endif; ?>
                 </div>
                 <div class="inputbox">
-                    <input type="text" name="cidade" id="cidade" placeholder="Cidade"
+                    <input type="text" name="cidade" id="cidade" placeholder="Cidade" disabled
                         value="<?= isset($cidade) ? htmlspecialchars($cidade, ENT_QUOTES, 'UTF-8') : '' ?>"
                         class="<?= isset($invalidFields['cidade']) ? 'invalid-field' : '' ?>" required>
                     <?php if (isset($invalidFields['cidade'])): ?>
@@ -572,7 +659,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php endif; ?>
                 </div>
                 <div class="inputbox">
-                    <select name="estado" id="estado" required
+                    <select name="estado" id="estado" disabled required
                         class="<?= isset($invalidFields['estado']) ? 'invalid-field' : '' ?>">
                         <option value="" disabled selected>Selecione o Estado</option>
                         <?php foreach ($estados as $sigla => $nome): ?>
@@ -590,12 +677,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="text" name="cep" id="cep" placeholder="CEP"
                         value="<?= isset($cep) ? htmlspecialchars($cep, ENT_QUOTES, 'UTF-8') : '' ?>"
                         class="<?= isset($invalidFields['cep']) ? 'invalid-field' : '' ?>" required>
+                    <span id="cep-loading" style="display: none;">Buscando...</span>
                     <?php if (isset($invalidFields['cep'])): ?>
                     <div class="error-msg"><?= htmlspecialchars($invalidFields['cep'], ENT_QUOTES, 'UTF-8') ?></div>
                     <?php endif; ?>
                 </div>
             </div>
-
             <div class="rede">
                 <h2>Redes Sociais (Opcionais)</h2>
                 <div class="inputbox">
@@ -609,7 +696,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php endforeach; ?>
                     </select>
                     <input type="text" name="whatsapp_ddd" id="whatsapp_ddd" placeholder="DDD"
-                        oninput="generateWhatsappURL()" maxlength="2" >
+                        oninput="generateWhatsappURL()" maxlength="2">
                     <input type="text" name="whatsapp_numero" id="whatsapp_numero" placeholder="Número do WhatsApp"
                         oninput="generateWhatsappURL()">
                 </div>
@@ -617,8 +704,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="inputbox">
                     <span class="at-icon">@</span>
-                    <input type="text" name="insta_user" id="insta_user"
-                        placeholder="Usuário Instagram" oninput="generateInstagramURL()">
+                    <input type="text" name="insta_user" id="insta_user" placeholder="Usuário Instagram"
+                        oninput="generateInstagramURL()">
                     <input type="text" name="face_user" id="face_user" placeholder="Usuário Facebook"
                         oninput="generateFacebookURL()">
                 </div>
